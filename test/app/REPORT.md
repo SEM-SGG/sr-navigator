@@ -216,3 +216,63 @@ Kern, Veröffentlichung, Unit, `npm run build`. Alle Schritte enden ohne Fehler.
   des Workflows.
 - Safari ist nicht getestet.
 
+---
+
+# Etappe 5: Öffentliches Repository und Versionsprüfung
+
+Stand: 18. November 2026, Version 1.3.0. Auftrag: Der SR-Navigator folgt dem SGK-Navigator (SPEC §15): öffentliches
+Repository `SEM-SGG/sr-navigator`, Versionsprüfung über die Projektseite, Download ohne GitHub-Konto. Die Aussagen der
+Etappen 3 und 4 zur festen Marke `sr-navigator-aktuell`, zum Ordner im SGG Toolkit und zur Anmeldung bei GitHub gelten
+nicht mehr.
+
+## 1 Tests im Schlusslauf
+
+| Suite | Mit `raw/` (Arbeitsverzeichnis) | Frischer Ordner ohne `raw/` | Auf GitHub (Workflow «CI») |
+|---|---|---|---|
+| Kern (`npm run test:core`, `SR_NO_NET=1`) | 48 bestanden, 1 übersprungen | 41 bestanden, 8 übersprungen | bestanden |
+| Veröffentlichung (`npm run test:release`) | 5 bestanden | 5 bestanden | bestanden |
+| Unit Oberfläche (`npm run test:app:unit`) | 33 bestanden | 33 bestanden | bestanden |
+| Playwright, alle Projekte | 56 bestanden | nicht gefahren | nicht gefahren |
+| Playwright, Projekt chrome (`NO_NET=1`) | in den 56 enthalten | 38 bestanden, 6 übersprungen | bestanden |
+| Zusatzlauf Firefox und Edge (Verweise, Versionsprüfung) | 38 bestanden | nicht gefahren | nicht gefahren |
+| Layoutprüfung | DE, FR, IT je 116 Prüfungen, 0 Befunde | nicht gefahren | nicht gefahren |
+
+## 2 Was die neuen Tests belegen
+
+- Eine aktuelle Datei stellt beim Start genau eine Anfrage, an die Versionsangabe, und zeigt keinen Hinweis.
+- Nennt die Versionsangabe eine höhere Version, erscheint der Hinweis mit Version, Datum und Download-Link. «Später
+  erinnern» bleibt nach dem Neuladen bestehen, und am selben Tag folgt keine zweite Anfrage.
+- Eine ältere Version in der Versionsangabe ergibt keinen Hinweis. Eine Download-Adresse ausserhalb des Repositorys
+  übernimmt der Navigator nicht.
+- Nicht erreichbare, fehlerhafte oder ungültige Versionsangaben bleiben beim Start ohne Meldung. Die manuelle Suche
+  meldet den Fehler und findet danach die neue Version.
+- Mit abgeschalteter Prüfung stellt der Navigator beim Start keine Anfrage. Die manuelle Suche geht weiterhin.
+- Eine Datei mit Build-Datum 1. Juni 2026 erinnert ohne erreichbare Versionsangabe nach ihrem Alter. Nach einer
+  gelungenen Prüfung mit dem Ergebnis «aktuell» verschwindet der Hinweis.
+- Der Build mit `--no-update-check` stellt keine Anfrage, zeigt keinen Schalter und nennt die Projektseite nicht in der CSP.
+- Hinweis und Abschnitt «Version» erscheinen in DE, FR und IT bei 1024, 1280, 1440 und 1920 px ohne abgeschnittenen
+  oder überlappenden Text.
+- Kein Browsertest fragt die echte Projektseite ab: `test/app/pw.mjs` ersetzt die Versionsangabe durch eine Attrappe.
+
+## 3 Geprüft auf GitHub
+
+| Gegenstand | Ergebnis |
+|---|---|
+| Workflow «CI» nach dem ersten Hochladen | alle Schritte bestanden, einschliesslich Browsertests in Chrome |
+| Workflow «Release», Teil Release | Release `v1.3.0` mit `sr-navigator.html` angelegt |
+| Workflow «Release», Teil Projektseite | fehlgeschlagen im Schritt `actions/configure-pages`: GitHub Pages ist im Repository nicht eingeschaltet |
+| Workflow «Fassungen», von Hand gestartet | bestanden, Issue #1 «Neue Fassungen auf Fedlex» eröffnet |
+| Download `…/releases/latest/download/sr-navigator.html` | HTTP 200, Datei mit Version 1.3.0 |
+| Heruntergeladene Datei im Browser | startet ohne Fehler; einzige Anfrage ist die Versionsangabe; diese fehlt noch, der Navigator bleibt still |
+
+## 4 Offen oder nicht geprüft
+
+- GitHub Pages muss im Repository einmal eingeschaltet werden (`MAINTAINING.md`, Abschnitt «Einmalige Einrichtung»).
+  Bis dahin gibt es weder Projektseite noch Versionsangabe, und der Navigator weist nicht auf neue Versionen hin.
+- Der Hinweis ist gegen die echte Versionsangabe nicht geprüft, weil sie noch fehlt. Geprüft ist er gegen die Attrappe.
+- Die Fassungsprüfung meldet für die VZAE ersetzte Dateien der Fassung vom 1. Oktober 2026. Der Vergleich mit den
+  eingebetteten Rohdaten zeigt: Wortlaut DE und FR gleich, Wortlaut IT an 14 Stellen anders. Die Bibliothek ist nicht
+  nachgeführt.
+- Für den Code ist keine Lizenz festgelegt.
+- Safari ist nicht getestet.
+
