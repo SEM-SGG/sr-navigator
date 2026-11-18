@@ -1,13 +1,13 @@
 # Prüfbericht Datensatz SR-Navigator (Agent DATEN)
 
-Erzeugt von `node scripts/validate.mjs` am 2026-11-15 aus `data/library.json` (generiert 2026-11-15) und den Quelldateien in `raw/`. Alle Zahlen stammen aus maschinellen Prüfungen, die bei jedem Lauf neu ausgeführt werden.
+Erzeugt von `node scripts/validate.mjs` am 2026-11-18 aus `data/library.json` (generiert 2026-11-18) und den Quelldateien in `raw/`. Alle Zahlen stammen aus maschinellen Prüfungen, die bei jedem Lauf neu ausgeführt werden.
 
 ## 1 Übersicht
 
 | Erlass | SR | Stände (XML) | Fassungen | Einheiten | Wortlaut min. | Wörter fehlend / zusätzlich | Fussnoten fehlend / zusätzlich | Änderungen gedeckt | redaktionell | Impacts gefunden / erklärt / offen | Sprachgleich | Schlüssel stabil | Markup-Fehler | loadWork = Build |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | AIG | 142.20 | 23 | 54 | 269 | 100,00 % | 0 / 0 | 0 / 0 | 3079 von 3252 | 73 | 253 / 4 / 0 von 257 | 5091 von 5116 | 3383 von 3383 | 0 von 26425 | ja |
-| VZAE | 142.201 | 16 | 54 | 157 | 100,00 % | 0 / 0 | 0 / 0 | 938 von 947 | 9 | 49 / 0 / 0 von 49 | 2473 von 2489 | 1498 von 1498 | 0 von 12317 | ja |
+| VZAE | 142.201 | 16 | 54 | 157 | 100,00 % | 0 / 0 | 0 / 0 | 939 von 949 | 10 | 49 / 0 / 0 von 49 | 2473 von 2489 | 1531 von 1531 | 0 von 12417 | ja |
 | VEV | 142.204 | 25 | 33 | 99 | 100,00 % | 0 / 0 | 0 / 0 | 996 von 1077 | 51 | 105 / 0 / 0 von 105 | 1977 von 2025 | 2290 von 2293 | 0 von 12501 | ja |
 | AsylG | 142.31 | 12 | 40 | 225 | 100,00 % | 0 / 0 | 0 / 0 | 1137 von 1188 | 9 | 91 / 2 / 0 von 93 | 2554 von 2576 | 3292 von 3292 | 0 von 21083 | ja |
 | EESV | 142.206 | 6 | 6 | 27 | 100,00 % | 0 / 0 | 0 / 0 | 166 von 166 | 0 | 12 / 0 / 0 von 12 | 158 von 162 | 218 von 218 | 0 von 1907 | ja |
@@ -143,7 +143,7 @@ Methode: Für jeden Stand und jede Sprache wird der Quelltext unabhängig vom Pa
 | 20260612 | it | 23694 | 100,00 % | 0 | 0 | 291 | 0 | 0 |
 | 20261001 | de | 20014 | 100,00 % | 0 | 0 | 281 | 0 | 0 |
 | 20261001 | fr | 26796 | 100,00 % | 0 | 0 | 293 | 0 | 0 |
-| 20261001 | it | 23735 | 100,00 % | 0 | 0 | 292 | 0 | 0 |
+| 20261001 | it | 23727 | 100,00 % | 0 | 0 | 291 | 0 | 0 |
 
 ### VEV (SR 142.204)
 
@@ -306,7 +306,7 @@ Rein typografische Unterschiede lösen keine neue Version aus (SPEC §5.1). Der 
 | Erlass | durch Fussnote | durch Impact | nur Herkunft (gleicher Wortlaut) | redaktionell | strukturell |
 |---|---|---|---|---|---|
 | AIG | 2297 | 699 | 83 | 73 | 100 |
-| VZAE | 611 | 57 | 270 | 9 | 0 |
+| VZAE | 611 | 57 | 271 | 10 | 0 |
 | VEV | 576 | 285 | 135 | 51 | 30 |
 | AsylG | 993 | 120 | 24 | 9 | 42 |
 | EESV | 79 | 10 | 77 | 0 | 0 |
@@ -497,7 +497,7 @@ Rein typografische Unterschiede lösen keine neue Version aus (SPEC §5.1). Der 
 
 ### VZAE: redaktionelle Änderungen (Block `x: "editorial"`)
 
-- 7: Textänderung ohne Änderungshinweis mit passendem Inkrafttreten (redaktionelle Nachführung der Quelle)
+- 8: Textänderung ohne Änderungshinweis mit passendem Inkrafttreten (redaktionelle Nachführung der Quelle)
 - 2: Absatz in der Quelle anders aufgeteilt oder zusammengefasst; Wortlaut sonst gleich
 
 | Stand | Sprache | Einheit | Schlüssel | vorher | nachher | Art |
@@ -511,6 +511,7 @@ Rein typografische Unterschiede lösen keine neue Version aus (SPEC §5.1). Der 
 | 20260422 | fr | art_77_d | p2 |  Le SEM aide les cantons lors de l’examen des attestations des compétences linguistiques visées à l’al. 2, let. d. Il pe … |  Le SEM aide les cantons lors de l’examen des attestations des compétences linguistiques visées à l’al. 1, let. d. Il pe … | Textänderung ohne Änderungshinweis mit passendem Inkrafttreten |
 | 20260422 | it | art_77_d | p2 |  La SEM supporta i Cantoni nel verificare la dimostrazione delle competenze linguistiche secondo il capoverso 2 lettera  … |  La SEM supporta i Cantoni nel verificare la dimostrazione delle competenze linguistiche secondo il capoverso 1 lettera  … | Textänderung ohne Änderungshinweis mit passendem Inkrafttreten |
 | 20260422 | it | art_82 | p1 |  Le autorità di polizia, quelle giudiziarie e quelle preposte alle inchieste penali comunicano spontaneamente alle autor … |  Le autorità di polizia e giudiziarie così come le autorità istruttorie penali comunicano spontaneamente alle autorità c … | Textänderung ohne Änderungshinweis mit passendem Inkrafttreten |
+| 20261001 | it | art_83_a | p1 |  Le autorità cantonali della migrazione impongono senza formalità, in base alla direttiva 2001/40/CE, la partenza dalla  … |  Le autorità cantonali della migrazione impongono senza formalità, in base alla direttiva 2001/40/CE, la partenza dalla  … | Textänderung ohne Änderungshinweis mit passendem Inkrafttreten |
 
 ### VEV: redaktionelle Änderungen (Block `x: "editorial"`)
 
@@ -848,7 +849,7 @@ Geprüft: jeder Block, dessen Wortlaut (normalisiert, ohne triviale Texte wie «
 | Erlass | Paare | Schlüsselwechsel |
 |---|---|---|
 | AIG | 3383 | 0 |
-| VZAE | 1498 | 0 |
+| VZAE | 1531 | 0 |
 | VEV | 2293 | 3 |
 | AsylG | 3292 | 0 |
 | EESV | 218 | 0 |
@@ -863,15 +864,41 @@ Geprüft: jeder Block, dessen Wortlaut (normalisiert, ohne triviale Texte wie «
 
 | Erlass | SPARQL-Abfragen | Dateien | Laufzeit | Abweichungen |
 |---|---|---|---|---|
-| cc-2007-758 | 11 | 69 | 6.5 s | keine |
-| cc-2007-759 | 11 | 48 | 2.1 s | keine |
-| cc-2018-493 | 9 | 75 | 2.1 s | keine |
-| cc-1999-358 | 10 | 36 | 2.9 s | keine |
+| cc-2007-758 | 11 | 69 | 7.1 s | keine |
+| cc-2007-759 | 11 | 48 | 2.4 s | keine |
+| cc-2018-493 | 9 | 75 | 2.7 s | keine |
+| cc-1999-358 | 10 | 36 | 3.1 s | keine |
 | cc-2021-734 | 8 | 18 | 0.3 s | keine |
 
 ### Echter Abruf gegen Fedlex
 
-Nicht ausgeführt (`--no-net`).
+Suche «142.209»: cc-2007-763 (GebV-AIG, Verordnung vom 24. Oktober 2007 über die Gebühren zum Ausländer- und Integrationsgesetz (Gebührenverordnung AIG, GebV-AIG)), Status inForce, 17 Fassungen, 6 mit XML ab 2021-01-01 (1623 ms). `loadWork` echt: 6 Stände, 17 Fassungen, 17 Einheiten in 3.4 s.
+
+| Stand | Sprache | Wörter | Abdeckung | fehlend | zusätzlich |
+|---|---|---|---|---|---|
+| 20210101 | de | 2344 | 100,00 % | 0 | 0 |
+| 20210101 | fr | 3117 | 100,00 % | 0 | 0 |
+| 20210101 | it | 2781 | 100,00 % | 0 | 0 |
+| 20211105 | de | 2383 | 100,00 % | 0 | 0 |
+| 20211105 | fr | 3174 | 100,00 % | 0 | 0 |
+| 20211105 | it | 2826 | 100,00 % | 0 | 0 |
+| 20230111 | de | 2411 | 100,00 % | 0 | 0 |
+| 20230111 | fr | 3209 | 100,00 % | 0 | 0 |
+| 20230111 | it | 2855 | 100,00 % | 0 | 0 |
+| 20230123 | de | 2422 | 100,00 % | 0 | 0 |
+| 20230123 | fr | 3218 | 100,00 % | 0 | 0 |
+| 20230123 | it | 2863 | 100,00 % | 0 | 0 |
+| 20240301 | de | 2439 | 100,00 % | 0 | 0 |
+| 20240301 | fr | 3243 | 100,00 % | 0 | 0 |
+| 20240301 | it | 2880 | 100,00 % | 0 | 0 |
+| 20240611 | de | 2440 | 100,00 % | 0 | 0 |
+| 20240611 | fr | 3243 | 100,00 % | 0 | 0 |
+| 20240611 | it | 2880 | 100,00 % | 0 | 0 |
+
+Echter Abruf gegen Build aus `raw/cc-2007-763` (Tiefenvergleich, ohne Feld `fetched`): identisch.
+Prüfungen 1 bis 4 und 6 auf dem echt geladenen Bundle: Wortlaut min. 100,00 %, Fussnoten fehlend 0, Änderungen 18 gedeckt / 0 redaktionell / 0 strukturell, Impacts 6 gefunden / 0 erklärt / 0 offen von 6, Sprachgleich 102 von 102, Schlüssel stabil 240 von 240, Markup-Verstösse 0.
+
+Suche (echt, 6750 ms für fünf Suchen): «142.2» 42 Treffer (142.20 AIG (inForce), 142.201 VZAE (inForce), 142.201.1 ZV-EJPD (inForce), 142.203 VFP (inForce), 142.204 VEV (inForce), 142.205 VIntA (inForce) …); «vzae» 1 (142.201 VZAE (inForce)); «Einreise- und Ausreisesystem» 1 (142.206 EESV (inForce)); «142.204» 3 (142.204 VEV (inForce), 142.204 VEV (repealed), 142.204 VEV (repealed)); Eingabe mit SPARQL-Fragment 0 Treffer (Literal maskiert, Abfrage unverändert).
 
 ## 7 Markup (Prüfung 6)
 
@@ -880,7 +907,7 @@ Erlaubt in `t`, `title`, `label`, `heading`, `l`: `<i> <b> <sup> <sub> <br>` und
 | Erlass | geprüfte Felder | Verstösse |
 |---|---|---|
 | AIG | 26425 | 0 |
-| VZAE | 12317 | 0 |
+| VZAE | 12417 | 0 |
 | VEV | 12501 | 0 |
 | AsylG | 21083 | 0 |
 | EESV | 1907 | 0 |
@@ -891,13 +918,13 @@ Erlaubt in `t`, `title`, `label`, `heading`, `l`: `<i> <b> <sup> <sub> <br>` und
 | Erlass | JSON | gzip |
 |---|---|---|
 | cc-2007-758 | 5.37 MB | 0.56 MB |
-| cc-2007-759 | 1.86 MB | 0.21 MB |
+| cc-2007-759 | 1.88 MB | 0.21 MB |
 | cc-2018-493 | 1.96 MB | 0.17 MB |
 | cc-1999-358 | 4.16 MB | 0.38 MB |
 | cc-2021-734 | 0.29 MB | 0.04 MB |
-| data/library.json gesamt | 13.64 MB | 1.36 MB (base64 ≈ 1.81 MB) |
+| data/library.json gesamt | 13.66 MB | 1.36 MB (base64 ≈ 1.81 MB) |
 
-`buildBundle` für das AIG (23 Stände × 3 Sprachen = 69 Dateien, Node 22 mit linkedom als DOMParser, ohne Netz): 5.4 s, 6.1 s (zwei Läufe). Im Browser übernimmt der native DOMParser das Parsen.
+`buildBundle` für das AIG (23 Stände × 3 Sprachen = 69 Dateien, Node 22 mit linkedom als DOMParser, ohne Netz): 6.6 s, 6.6 s (zwei Läufe). Im Browser übernimmt der native DOMParser das Parsen.
 
 Hinweis zu Fussnoten: Unveränderte Blöcke übernehmen Wortlaut und Auszeichnung der Vorfassung (SPEC §5.1). Ändert die Quelle nur Fussnoten (Text, nicht Nummer), entsteht eine Version mit `fnOnly: true` und Blöcken mit `x: "fn"`; darum ist die Spalte «Fussnoten fehlend» in Kapitel 2 überall 0. Eine reine Verschiebung der Fussnotennummer `n` löst keine Version aus (Test `test/core/model.test.mjs`).
 
@@ -906,7 +933,7 @@ Hinweis zu Fussnoten: Unveränderte Blöcke übernehmen Wortlaut und Auszeichnun
 | Erlass | mehrteilige Änderungshinweise (verschiedene) | daraus zusätzliche Ereignisse in acts[].changes | Kurzbezeichnungen gesetzt / null / Bruchstück | Impact-Daten verworfen (Beschluss- statt Inkrafttreten) | Kopf eines Artikels im Text (Quelle) | Versionen nur Fussnoten (fnOnly) | Blöcke x: editorial / origin / fn |
 |---|---|---|---|---|---|---|---|
 | AIG | 150 | 70 | 172 / 89 / 0 | 6 | 0 | 167 | 73 / 83 / 203 |
-| VZAE | 59 | 29 | 138 / 60 / 0 | 0 | 0 | 108 | 8 / 270 / 133 |
+| VZAE | 60 | 30 | 139 / 59 / 0 | 0 | 0 | 108 | 9 / 271 / 133 |
 | VEV | 30 | 6 | 96 / 15 / 0 | 0 | 20220115 de: art_34_d p2.s2, art_34_d p2~2.s5; 20220501 de: art_34_d p2.s2, art_34_d p2~2.s5; 20220610 de: art_34_d p2.s2, art_34_d p2~2.s5 | 38 | 51 / 135 / 78 |
 | AsylG | 102 | 70 | 124 / 65 / 0 | 3 | 0 | 701 | 9 / 24 / 730 |
 | EESV | 0 | 0 | 15 / 6 / 0 | 0 | 0 | 3 | 0 / 77 / 4 |

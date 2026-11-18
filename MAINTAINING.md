@@ -60,7 +60,12 @@ Nutzende können neue Fassungen im Navigator selbst über **Aktualisieren** lade
    ```
 
    Für den vollen Testlauf brauchst du die Rohdaten aller fünf Erlasse. Die Befehle stehen im README.
-3. Baue die Bibliothek: `node scripts/build-data.mjs`.
+
+   Meldet das Issue eine ersetzte Datei, führt Fedlex für einen bekannten Stand eine neue Datei-Adresse, zum Beispiel `…-20261001-it-xml-1.xml` statt `…-20261001-it-xml.xml`. `fetch-raw.mjs` vergleicht dazu jede Adresse bei Fedlex mit der Adresse in `raw/<werk>/versions.json`. Es lädt nur Dateien neu, deren Adresse abweicht, und meldet sie mit alter und neuer Adresse und Grösse, zum Beispiel `ersetzt 20261001_it.xml: …-xml.xml (348694 Bytes) -> …-xml-1.xml (348377 Bytes)`. Die übrigen Dateien bleiben liegen. Fehlt `versions.json`, lädt das Skript nur fehlende Dateien und nennt die übrigen unter «ohne Vergleich».
+
+   - Sichere die betroffenen Dateien vor dem Lauf, wenn du alten und neuen Text vergleichen willst. Das Skript überschreibt sie.
+   - `fetch-meta.mjs` meldet danach «abweichende Datei-URLs: 0». Eine andere Zahl heisst: Die Rohdaten passen nicht zu den Metadaten. Führe dann beide Befehle erneut aus.
+3. Baue die Bibliothek: `node scripts/build-data.mjs`. Nach einer ersetzten Datei vergleichst du die neue `data/library.json` mit der Fassung im Repository (`git show HEAD:data/library.json`). Ändern dürfen sich nur das betroffene Werk und der betroffene Stand, dazu Datumsangaben, Datei-Adressen und die Angabe `generator` des Stands.
 4. Erzeuge die Prüfberichte: `node scripts/validate.mjs` und `node scripts/validate-refs.mjs`. Lies `data/VALIDATION.md` und `data/VALIDATION_REFS.md`.
 5. Führe `npm run test:core` und `npm run test:app` aus.
 6. Erhöhe die Version, ergänze `CHANGELOG.md` und eröffne einen Pull Request.

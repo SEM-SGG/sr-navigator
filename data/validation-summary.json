@@ -38,8 +38,8 @@
    "spur": {
     "footnote": 611,
     "impact": 57,
-    "origin": 270,
-    "editorial": 9,
+    "origin": 271,
+    "editorial": 10,
     "structural": 0
    },
    "rev": {
@@ -53,7 +53,7 @@
     2489
    ],
    "keys": [
-    1498,
+    1531,
     0
    ],
    "markup": 0
@@ -168,5 +168,28 @@
    "diffs": 0
   }
  ],
- "live": null
+ "live": {
+  "liveId": "cc-2007-763",
+  "rows": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "rawCmp": 0
+ }
 }

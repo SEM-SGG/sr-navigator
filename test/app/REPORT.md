@@ -267,12 +267,56 @@ nicht mehr.
 
 ## 4 Offen oder nicht geprüft
 
-- GitHub Pages muss im Repository einmal eingeschaltet werden (`MAINTAINING.md`, Abschnitt «Einmalige Einrichtung»).
-  Bis dahin gibt es weder Projektseite noch Versionsangabe, und der Navigator weist nicht auf neue Versionen hin.
-- Der Hinweis ist gegen die echte Versionsangabe nicht geprüft, weil sie noch fehlt. Geprüft ist er gegen die Attrappe.
-- Die Fassungsprüfung meldet für die VZAE ersetzte Dateien der Fassung vom 1. Oktober 2026. Der Vergleich mit den
-  eingebetteten Rohdaten zeigt: Wortlaut DE und FR gleich, Wortlaut IT an 14 Stellen anders. Die Bibliothek ist nicht
-  nachgeführt.
+- Erledigt: GitHub Pages ist im Repository eingeschaltet. Projektseite und Versionsangabe sind live.
+- Erledigt: Der Hinweis ist am 18. November 2026 gegen die echte Versionsangabe geprüft. Die veröffentlichte Datei 1.3.0
+  meldet «aktuell». Ein Testbuild 1.2.9 zeigt den Hinweis auf 1.3.0 mit dem Download-Link der Release.
+- Erledigt mit Version 1.3.1: Die Fassungsprüfung meldete für die VZAE ersetzte Dateien der Fassung vom 1. Oktober 2026.
+  Die Bibliothek ist nachgeführt (Abschnitt «Version 1.3.1: VZAE nachgeführt»).
 - Für den Code ist keine Lizenz festgelegt.
 - Safari ist nicht getestet.
 
+# Version 1.3.1: VZAE nachgeführt
+
+Stand: 18. November 2026. Fedlex hat die Dateien der VZAE-Fassung vom 1. Oktober 2026 in DE, FR und IT ersetzt
+(`…-20261001-<lang>-xml-1.xml` statt `…-xml.xml`). Die übrigen 45 Dateien der VZAE und die vier anderen Erlasse sind
+unverändert. `scripts/fetch-raw.mjs` lädt jetzt eine vorhandene Datei neu, wenn ihre Adresse bei Fedlex abweicht.
+
+## 1 Was sich ändert
+
+- DE und FR: Wortlaut und Fussnoten gleich. Die Dateien unterscheiden sich nur in der Generator-Angabe, in FR zusätzlich
+  in Leerzeichen nach «Chapitre N» und «Section N» und in einem `<br/>` vor dem Titel von Kapitel 4 Abschnitt 5. Der
+  Parser liefert für alte und neue Datei dieselben Einheiten, dieselbe Gliederung und dieselben Fussnoten.
+- IT: 14 Textstellen anders, alle in Art. 83a Abs. 1 und Art. 87 Abs. 1bis Bst. g. Wortlaut neu «Stato Schengen» statt
+  «Stato vincolato dagli Accordi di associazione alla normativa di Schengen» (Art. 83a Abs. 1). Die Fussnoten verweisen
+  neu auf die V vom 6. Mai 2026 (AS 2026 239), in Kraft seit 12. Juni 2026.
+- Die italienische Fedlex-Datei vom 12. Juni 2026 führt noch den alten Wortlaut. Die Chronologie zeigt die Änderung darum
+  beim Stand vom 1. Oktober 2026, gekennzeichnet als **redaktionell**. DE und FR zeigen sie wie bisher beim 12. Juni 2026.
+- Bibliothek: Änderungen nur im Werk `cc-2007-759`, nur im Stand 20261001. Neu sind zwei italienische Versionen
+  (Art. 83a, Art. 87) und zwei Einträge in `acts[].changes`; dazu Datei-Adressen, Generator, PDF-Adresse IT und Datum.
+  Verweis-Index: gleiche Zahlen, nur Zeichenpositionen in Art. 83a IT verschoben.
+
+## 2 Prüfungen
+
+| Prüfung | Vorher (1.3.0) | Nachher (1.3.1) |
+|---|---|---|
+| `check-fassungen.mjs` | VZAE: 20261001 DE, FR, IT ersetzt | alle fünf Erlasse «keine» |
+| `validate.mjs`, VZAE | 100 % Wortlaut, 938 von 947 gedeckt, 9 redaktionell | 100 % Wortlaut, 939 von 949 gedeckt, 10 redaktionell |
+| `validate-refs.mjs`, VZAE 20261001 | Refs DE / FR / IT 464 / 461 / 460, unsicher 6 / 10 / 11 | gleiche Zahlen; Bericht unterscheidet sich nur in Laufzeiten |
+| `check/check_wortlaut.py`, VZAE | 0 Abweichungen | 0 Abweichungen |
+| `check/check_aenderungen.py`, VZAE | 113 von 113 übereinstimmend | 114 von 114 übereinstimmend |
+| `check/check_verweise.py`, VZAE DE 20261001 | 8 von 152 Artikeln abweichend | unverändert 8 von 152 |
+
+## 3 Tests
+
+| Suite | Vorher (1.3.0) | Nachher (1.3.1) |
+|---|---|---|
+| Kern (`SR_NO_NET=1`) | 48 bestanden, 1 übersprungen | 50 bestanden, 1 übersprungen (2 neue Tests für `fetch-raw.mjs`) |
+| Veröffentlichung | 5 bestanden | 5 bestanden |
+| Unit Oberfläche | 33 bestanden | 33 bestanden |
+| Playwright, alle Projekte | 55 bestanden, 1 fehlgeschlagen (Edge, «Abnahme d»; einzeln dreimal bestanden) | 56 bestanden |
+| Zusatzlauf Firefox und Edge | 38 bestanden | 38 bestanden |
+| Layoutprüfung | DE, FR, IT je 116 Prüfungen, 0 Befunde | DE, FR, IT je 116 Prüfungen, 0 Befunde |
+
+Keine Erwartung in einem Test angepasst. Die Browsertests prüfen «Aktualisieren» nur für die EESV. Für die VZAE meldet
+`checkUpdates` mit den Antworten aus `raw/` nachher keine neue Fassung und keine ersetzte Datei; vorher meldete es
+20261001 DE, FR und IT.
