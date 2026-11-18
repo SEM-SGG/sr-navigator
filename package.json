@@ -1,0 +1,36 @@
+{
+  "name": "sr-navigator",
+  "version": "1.3.0",
+  "private": true,
+  "type": "module",
+  "description": "SR-Navigator: Änderungen an Erlassen der Systematischen Rechtssammlung nachvollziehen",
+  "scripts": {
+    "build": "node build.mjs",
+    "site": "node scripts/build-site.mjs",
+    "build:fixtures": "node build.mjs --fixtures --out test/app/out/sr-navigator-fixtures.html",
+    "fixtures": "node test/app/fixtures/make-sr-fixtures.mjs",
+    "test:core": "node --test test/core/*.test.mjs",
+    "test:release": "node --test test/release/*.test.mjs",
+    "check:fassungen": "node scripts/check-fassungen.mjs",
+    "test:app:unit": "node --test test/app/unit.test.mjs",
+    "test:app": "node --test test/app/unit.test.mjs && npx playwright test -c test/app/playwright.config.mjs",
+    "test:app:record": "node test/app/record-fedlex.mjs"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-serif": "^5.3.0",
+    "diff": "^9.0.0",
+    "fflate": "^0.8.3",
+    "htm": "^3.1.1",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^4.2.1",
+    "preact": "^11.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "esbuild": "^0.28.2",
+    "linkedom": "^0.18.15",
+    "pdf-lib": "^1.17.1"
+  }
+}

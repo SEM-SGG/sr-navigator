@@ -1,0 +1,88 @@
+/* SR-Navigator: Design-Tokens. Carbon (Design System des Auftraggebers) mit Akzent Schweizer Rot, neutralem Grau und
+   sparsam eingesetztem Beige. Einzige Quelle für Farben, Abstände, Grössen und Schriften. Orchestrator; nicht ändern. */
+:root {
+  /* Akzent: anklickbar oder gewählt */
+  --primary: #dc0018;          /* Weiss darauf 5.2:1 */
+  --primary-hover: #b80014;
+  --primary-active: #8f0010;
+  --on-primary: #ffffff;
+  --link: #b80014;             /* auf Weiss 7.0:1 */
+  --link-hover: #8f0010;
+  --focus: #161616;
+  --focus-inverse: #ffffff;
+
+  /* Grund */
+  --canvas: #ffffff;
+  --canvas-hover: #f4f4f4;
+  --surface-1: #f4f4f4;
+  --surface-2: #e0e0e0;
+  --surface-hover: #e8e8e8;
+  --inverse-canvas: #161616;
+  --inverse-surface-1: #262626;
+  --overlay: rgba(22, 22, 22, 0.5);
+
+  /* Beige: Hinweise, «noch nicht in Kraft», gewählte Zeile */
+  --beige-1: #f7f3ea;
+  --beige-2: #ece4d3;
+  --beige-3: #cdbd9a;          /* nur Grafik */
+  --beige-4: #9a8452;          /* Grafik mit 3.5:1 auf Weiss: Schraffur, Randmarke «künftig» */
+  --beige-text: #54431a;       /* auf beige-1 8.4:1 */
+  --highlight: var(--beige-1);
+
+  /* Text */
+  --ink: #161616;
+  --ink-muted: #525252;
+  --ink-subtle: #6f6f6f;
+  --ink-disabled: #8c8c8c;
+  --inverse-ink: #ffffff;
+  --inverse-ink-muted: #c6c6c6;
+
+  /* Linien */
+  --hairline: #e0e0e0;
+  --border-strong: #8d8d8d;
+  --hairline-strong: #161616;
+
+  /* Signal: immer als Paar *-text auf *-bg, dazu Wort und Icon */
+  --success: #24a148; --success-text: #0e6027; --success-bg: #defbe6;
+  --warning: #b28600; --warning-text: #3d3100; --warning-bg: #fcf4d6;
+  --error: #a2191f;   --error-text: #750e13;   --error-bg: #fff1f1;
+  --info: #525252;    --info-text: #161616;    --info-bg: #f4f4f4;
+  --pending: var(--beige-4); --pending-text: var(--beige-text); --pending-bg: var(--beige-1);
+
+  /* Diff: eingefügt unterstrichen, gestrichen durchgestrichen */
+  --diff-ins-bg: #defbe6; --diff-ins-text: #0e6027;
+  --diff-del-bg: #fff1f1; --diff-del-text: #a2191f;
+
+  /* Herkunft der Textstellen (keine Farbe je Erlass) */
+  --origin-base: #c6c6c6;
+  --origin-amended: #525252;
+  --origin-selected: var(--primary);
+  --origin-future: var(--beige-4);
+
+  --shadow-overlay: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  /* Raster 4 px */
+  --space-xxs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 32px; --space-xxl: 48px;
+  --radius-none: 0px; --radius-xs: 2px; --radius-sm: 4px;
+  --size-control-sm: 32px; --size-control-md: 40px; --size-control-lg: 48px;
+  --size-top-nav: 48px; --size-sidebar: 320px; --size-sidebar-sm: 240px; --size-panel: 440px;
+  --size-measure: 680px; --size-content-max: 1584px;
+
+  --font-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  --motion-fast: 110ms; --motion-slow: 240ms; --motion-curve: cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+/* Typografie-Stile (Carbon): Seitentitel leicht (300), Fliesstext 400, Hervorhebung 600, nie 700 */
+.display-md { font-family: var(--font-sans); font-size: 42px; line-height: 1.2; font-weight: 300; letter-spacing: 0; }
+.headline { font-family: var(--font-sans); font-size: 32px; line-height: 1.25; font-weight: 400; }
+.card-title { font-family: var(--font-sans); font-size: 24px; line-height: 1.33; font-weight: 400; }
+.subhead { font-family: var(--font-sans); font-size: 20px; line-height: 1.4; font-weight: 400; }
+.body { font-family: var(--font-sans); font-size: 16px; line-height: 1.5; font-weight: 400; letter-spacing: 0.16px; }
+.body-sm { font-family: var(--font-sans); font-size: 14px; line-height: 1.29; font-weight: 400; letter-spacing: 0.16px; }
+.body-emphasis { font-family: var(--font-sans); font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: 0.16px; }
+.label, .caption { font-family: var(--font-sans); font-size: 12px; line-height: 1.33; font-weight: 400; letter-spacing: 0.32px; }
+.legal-body { font-family: var(--font-serif); font-size: 17px; line-height: 1.7; font-weight: 400; }
+.legal-compact { font-family: var(--font-serif); font-size: 15px; line-height: 1.65; font-weight: 400; }
+.code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; font-weight: 400; }

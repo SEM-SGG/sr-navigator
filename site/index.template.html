@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="de" data-ui="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>SR-Navigator</title>
+<style>
+  :root { --ink: #161616; --ink-muted: #525252; --canvas: #ffffff; --surface: #f4f4f4; --hairline: #e0e0e0; --primary: #dc0018; --primary-hover: #b80014; --focus: #161616; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.5; color: var(--ink); background: var(--canvas); }
+  header { border-bottom: 1px solid var(--hairline); }
+  .bar { max-width: 960px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { font-weight: 600; letter-spacing: 0.16px; }
+  .brand b { color: var(--primary); }
+  .langs { display: flex; }
+  .langs button { font: inherit; font-size: 14px; min-width: 44px; height: 32px; border: 1px solid var(--ink); background: var(--canvas); color: var(--ink); cursor: pointer; margin-left: -1px; }
+  .langs button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); }
+  main { max-width: 960px; margin: 0 auto; padding: 48px 24px 64px; }
+  h1 { font-size: 42px; line-height: 1.19; font-weight: 300; margin: 0 0 16px; }
+  h2 { font-size: 20px; line-height: 1.4; font-weight: 600; margin: 40px 0 12px; }
+  p { margin: 0 0 12px; max-width: 68ch; }
+  .lead { font-size: 20px; line-height: 1.4; font-weight: 300; }
+  .cta { margin: 32px 0 8px; padding: 24px; background: var(--surface); border-left: 4px solid var(--primary); }
+  .btn { display: inline-block; padding: 14px 64px 14px 16px; background: var(--primary); color: #ffffff; text-decoration: none; font-size: 16px; }
+  .btn:hover { background: var(--primary-hover); }
+  .meta { margin: 12px 0 0; font-size: 14px; color: var(--ink-muted); }
+  ol, ul { margin: 0 0 12px; padding-left: 24px; max-width: 68ch; }
+  li { margin: 0 0 6px; }
+  a { color: var(--ink); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; }
+  .note { font-size: 14px; color: var(--ink-muted); }
+  footer { border-top: 1px solid var(--hairline); margin-top: 48px; padding-top: 16px; font-size: 14px; color: var(--ink-muted); }
+  html.js section[data-lang] { display: none; }
+  html.js[data-ui="de"] section[data-lang="de"], html.js[data-ui="fr"] section[data-lang="fr"], html.js[data-ui="it"] section[data-lang="it"] { display: block; }
+  html:not(.js) .langs { display: none; }
+  html:not(.js) section[data-lang] + section[data-lang] { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--hairline); }
+  @media (max-width: 600px) { h1 { font-size: 32px; } .btn { display: block; padding-right: 16px; } }
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <span class="brand"><b>SR</b> Navigator</span>
+  <div class="langs" role="group" aria-label="Sprache, langue, lingua">
+    <button type="button" data-set="de" lang="de" aria-pressed="true">DE</button><button type="button" data-set="fr" lang="fr" aria-pressed="false">FR</button><button type="button" data-set="it" lang="it" aria-pressed="false">IT</button>
+  </div>
+</div></header>
+<main>
+
+<section data-lang="de" lang="de">
+  <h1>SR-Navigator</h1>
+  <p class="lead">Der SR-Navigator zeigt, wie sich Erlasse der Systematischen Rechtssammlung der Schweiz (SR) je Bestimmung geändert haben.</p>
+  <div class="cta">
+    <a class="btn" href="{{DOWNLOAD_URL}}">SR-Navigator herunterladen</a>
+    <p class="meta">Version {{VERSION}} vom {{DATE_DE}}. Eine HTML-Datei{{SIZE_DE}}.</p>
+  </div>
+  <h2>So startest du</h2>
+  <ol>
+    <li>Lade die Datei herunter und speichere sie in einem Ordner deiner Wahl.</li>
+    <li>Öffne die Datei mit einem Doppelklick. Sie läuft in Chrome, Edge und Firefox, ohne Installation.</li>
+    <li>Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.</li>
+  </ol>
+  <h2>Funktionen</h2>
+  <ul>
+    <li>Jede Bestimmung in jeder Fassung lesen, mit Fussnoten und Chronologie der Änderungen.</li>
+    <li>Zwei Fassungen vergleichen, mit Unterschieden auf Wortebene.</li>
+    <li>Verweise einer Bestimmung als Netz und die Verweisstruktur des ganzen Erlasses ansehen.</li>
+    <li>Ausschnitte als PNG oder PDF exportieren, mit Zitat und Quelle.</li>
+    <li>Neue Fassungen und weitere Erlasse auf Knopfdruck von Fedlex beziehen.</li>
+  </ul>
+  <p>Fest eingebettet sind AIG (SR 142.20), VZAE (SR 142.201), VEV (SR 142.204), AsylG (SR 142.31) und EESV (SR 142.206).</p>
+  <h2>Neue Versionen</h2>
+  <p>Der Navigator meldet selbst, wenn eine neuere Version vorliegt. Er ruft dazu höchstens einmal pro Tag die Versionsangabe dieser Seite ab. Die Prüfung lässt sich in der Ansicht «Info» abschalten.</p>
+  <h2>Verbindlichkeit</h2>
+  <p>Der SR-Navigator ist kein amtliches Produkt. Er zeigt die Fassungen von Fedlex und markiert Unterschiede. Massgebend ist die Amtliche Sammlung (AS).</p>
+  <div class="links"><a href="{{LIST_URL}}">Alle Versionen und Änderungen</a><a href="{{REPO_URL}}">Quellcode auf GitHub</a><a href="{{ISSUES_URL}}">Fehler melden</a></div>
+  <p class="note">Eine Meldung verlangt ein GitHub-Konto und ist öffentlich sichtbar. Trage keine vertraulichen Inhalte ein.</p>
+</section>
+
+<section data-lang="fr" lang="fr">
+  <h1>SR-Navigator</h1>
+  <p class="lead">Le SR-Navigator montre, disposition par disposition, comment les actes du Recueil systématique du droit fédéral (RS) ont été modifiés.</p>
+  <div class="cta">
+    <a class="btn" href="{{DOWNLOAD_URL}}">Télécharger le SR-Navigator</a>
+    <p class="meta">Version {{VERSION}} du {{DATE_FR}}. Un fichier HTML{{SIZE_FR}}.</p>
+  </div>
+  <h2>Pour commencer</h2>
+  <ol>
+    <li>Télécharger le fichier et l’enregistrer dans un dossier de son choix.</li>
+    <li>Ouvrir le fichier par un double-clic. Il fonctionne dans Chrome, Edge et Firefox, sans installation.</li>
+    <li>Travailler toujours dans le même navigateur. Les actes ajoutés et le panier sont enregistrés dans ce navigateur.</li>
+  </ol>
+  <h2>Fonctions</h2>
+  <ul>
+    <li>Lire chaque disposition dans chaque version, avec les notes et la chronologie des modifications.</li>
+    <li>Comparer deux versions, avec les différences mot par mot.</li>
+    <li>Afficher les renvois d’une disposition sous forme de réseau et la structure des renvois de l’acte entier.</li>
+    <li>Exporter des extraits en PNG ou en PDF, avec citation et source.</li>
+    <li>Obtenir sur demande de nouvelles versions et d’autres actes depuis Fedlex.</li>
+  </ul>
+  <p>Sont intégrés la LEI (RS 142.20), l’OASA (RS 142.201), l’OEV (RS 142.204), la LAsi (RS 142.31) et l’OEES (RS 142.206).</p>
+  <h2>Nouvelles versions</h2>
+  <p>L’outil signale lui-même qu’une version plus récente existe. À cette fin, il consulte au plus une fois par jour l’indication de version de cette page. La vérification se désactive dans la vue «Info».</p>
+  <h2>Portée juridique</h2>
+  <p>Le SR-Navigator n’est pas un produit officiel. Il affiche les versions de Fedlex et marque les différences. Le Recueil officiel (RO) fait foi.</p>
+  <div class="links"><a href="{{LIST_URL}}">Toutes les versions et modifications</a><a href="{{REPO_URL}}">Code source sur GitHub</a><a href="{{ISSUES_URL}}">Signaler une erreur</a></div>
+  <p class="note">Un signalement exige un compte GitHub et est visible publiquement. Ne saisir aucun contenu confidentiel.</p>
+</section>
+
+<section data-lang="it" lang="it">
+  <h1>SR-Navigator</h1>
+  <p class="lead">Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli atti della Raccolta sistematica del diritto federale (RS).</p>
+  <div class="cta">
+    <a class="btn" href="{{DOWNLOAD_URL}}">Scaricare il SR-Navigator</a>
+    <p class="meta">Versione {{VERSION}} del {{DATE_IT}}. Un file HTML{{SIZE_IT}}.</p>
+  </div>
+  <h2>Per iniziare</h2>
+  <ol>
+    <li>Scaricare il file e salvarlo in una cartella a scelta.</li>
+    <li>Aprire il file con un doppio clic. Funziona in Chrome, Edge e Firefox, senza installazione.</li>
+    <li>Lavorare sempre nello stesso browser. Gli atti aggiunti e il cestino sono salvati in questo browser.</li>
+  </ol>
+  <h2>Funzioni</h2>
+  <ul>
+    <li>Leggere ogni disposizione in ogni versione, con le note e la cronologia delle modifiche.</li>
+    <li>Confrontare due versioni, con le differenze parola per parola.</li>
+    <li>Visualizzare i rinvii di una disposizione come rete e la struttura dei rinvii dell’intero atto.</li>
+    <li>Esportare estratti in PNG o PDF, con citazione e fonte.</li>
+    <li>Ottenere su richiesta nuove versioni e altri atti da Fedlex.</li>
+  </ul>
+  <p>Sono integrati la LStrI (RS 142.20), l’OASA (RS 142.201), l’OEV (RS 142.204), la LAsi (RS 142.31) e l’OEES (RS 142.206).</p>
+  <h2>Nuove versioni</h2>
+  <p>Lo strumento segnala da sé quando esiste una versione più recente. A tale scopo consulta al massimo una volta al giorno l’indicazione della versione di questa pagina. La verifica si disattiva nella vista «Info».</p>
+  <h2>Valore giuridico</h2>
+  <p>Il SR-Navigator non è un prodotto ufficiale. Mostra le versioni di Fedlex e ne evidenzia le differenze. Fa stato la Raccolta ufficiale (RU).</p>
+  <div class="links"><a href="{{LIST_URL}}">Tutte le versioni e le modifiche</a><a href="{{REPO_URL}}">Codice sorgente su GitHub</a><a href="{{ISSUES_URL}}">Segnalare un errore</a></div>
+  <p class="note">Una segnalazione richiede un account GitHub ed è visibile pubblicamente. Non inserire contenuti riservati.</p>
+</section>
+
+<footer>SR-Navigator {{VERSION}}</footer>
+</main>
+<script>
+(function () {
+  var root = document.documentElement, langs = ['de', 'fr', 'it'];
+  root.classList.add('js');
+  function set(l) {
+    if (langs.indexOf(l) < 0) l = 'de';
+    root.setAttribute('data-ui', l); root.lang = l;
+    Array.prototype.forEach.call(document.querySelectorAll('.langs button'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-set') === l)); });
+  }
+  var fromHash = location.hash.replace('#', ''), fromBrowser = (navigator.language || 'de').slice(0, 2).toLowerCase();
+  set(langs.indexOf(fromHash) >= 0 ? fromHash : fromBrowser);
+  Array.prototype.forEach.call(document.querySelectorAll('.langs button'), function (b) {
+    b.addEventListener('click', function () { var l = b.getAttribute('data-set'); set(l); try { history.replaceState(null, '', '#' + l); } catch (e) {} });
+  });
+})();
+</script>
+</body>
+</html>

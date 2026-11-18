@@ -1,0 +1,28 @@
+name: Fassungen
+
+# Prüft jeden Montag, ob Fedlex neue Fassungen der eingebetteten Erlasse führt, und eröffnet dazu ein Issue.
+# GitHub schaltet zeitgesteuerte Workflows ab, wenn im Repository 60 Tage lang nichts geschieht.
+on:
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Check Fedlex for new versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare the embedded acts with Fedlex
+        run: node scripts/check-fassungen.mjs --issue

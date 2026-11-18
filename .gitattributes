@@ -1,0 +1,4 @@
+# Erzeugte Dateien: GitHub klappt sie in Pull Requests zu und zeigt keinen Zeilenvergleich.
+data/library.json linguist-generated=true -diff
+test/app/fixtures/*.json linguist-generated=true -diff
+scripts/dev/cache/*.json linguist-generated=true -diff

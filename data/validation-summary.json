@@ -1,0 +1,172 @@
+{
+ "results": [
+  {
+   "id": "cc-2007-758",
+   "minCov": 1,
+   "miss": 0,
+   "extra": 0,
+   "fnMiss": 0,
+   "spur": {
+    "footnote": 2297,
+    "impact": 699,
+    "origin": 83,
+    "editorial": 73,
+    "structural": 100
+   },
+   "rev": {
+    "total": 257,
+    "found": 253,
+    "explained": 4,
+    "open": 0
+   },
+   "lang": [
+    5091,
+    5116
+   ],
+   "keys": [
+    3383,
+    0
+   ],
+   "markup": 0
+  },
+  {
+   "id": "cc-2007-759",
+   "minCov": 1,
+   "miss": 0,
+   "extra": 0,
+   "fnMiss": 0,
+   "spur": {
+    "footnote": 611,
+    "impact": 57,
+    "origin": 270,
+    "editorial": 9,
+    "structural": 0
+   },
+   "rev": {
+    "total": 49,
+    "found": 49,
+    "explained": 0,
+    "open": 0
+   },
+   "lang": [
+    2473,
+    2489
+   ],
+   "keys": [
+    1498,
+    0
+   ],
+   "markup": 0
+  },
+  {
+   "id": "cc-2018-493",
+   "minCov": 1,
+   "miss": 0,
+   "extra": 0,
+   "fnMiss": 0,
+   "spur": {
+    "footnote": 576,
+    "impact": 285,
+    "origin": 135,
+    "editorial": 51,
+    "structural": 30
+   },
+   "rev": {
+    "total": 105,
+    "found": 105,
+    "explained": 0,
+    "open": 0
+   },
+   "lang": [
+    1977,
+    2025
+   ],
+   "keys": [
+    2293,
+    3
+   ],
+   "markup": 0
+  },
+  {
+   "id": "cc-1999-358",
+   "minCov": 1,
+   "miss": 0,
+   "extra": 0,
+   "fnMiss": 0,
+   "spur": {
+    "footnote": 993,
+    "impact": 120,
+    "origin": 24,
+    "editorial": 9,
+    "structural": 42
+   },
+   "rev": {
+    "total": 93,
+    "found": 91,
+    "explained": 2,
+    "open": 0
+   },
+   "lang": [
+    2554,
+    2576
+   ],
+   "keys": [
+    3292,
+    0
+   ],
+   "markup": 0
+  },
+  {
+   "id": "cc-2021-734",
+   "minCov": 1,
+   "miss": 0,
+   "extra": 0,
+   "fnMiss": 0,
+   "spur": {
+    "footnote": 79,
+    "impact": 10,
+    "origin": 77,
+    "editorial": 0,
+    "structural": 0
+   },
+   "rev": {
+    "total": 12,
+    "found": 12,
+    "explained": 0,
+    "open": 0
+   },
+   "lang": [
+    158,
+    162
+   ],
+   "keys": [
+    218,
+    0
+   ],
+   "markup": 0
+  }
+ ],
+ "load": [
+  {
+   "id": "cc-2007-758",
+   "diffs": 0
+  },
+  {
+   "id": "cc-2007-759",
+   "diffs": 0
+  },
+  {
+   "id": "cc-2018-493",
+   "diffs": 0
+  },
+  {
+   "id": "cc-1999-358",
+   "diffs": 0
+  },
+  {
+   "id": "cc-2021-734",
+   "diffs": 0
+  }
+ ],
+ "live": null
+}
