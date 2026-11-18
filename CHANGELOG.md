@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.3.1 (18. November 2026)
+
+- VZAE, Stand vom 1. Oktober 2026: Fedlex hat diesen Stand in Deutsch, Französisch und Italienisch neu veröffentlicht. Der Navigator enthält jetzt die neuen Dateien.
+- Deutsch und Französisch: Der Wortlaut bleibt gleich.
+- Italienisch: Art. 83a Abs. 1 spricht neu von «Stato Schengen» statt von «Stato vincolato dagli Accordi di associazione alla normativa di Schengen». Die Fussnoten zu Art. 83a Abs. 1 und Art. 87 Abs. 1bis Bst. g verweisen neu auf die Verordnung vom 6. Mai 2026 (AS 2026 239).
+- Diese Änderung gilt seit dem 12. Juni 2026. Fedlex führt sie im italienischen Text aber erst im Stand vom 1. Oktober 2026. Der Navigator zeigt sie deshalb dort und kennzeichnet sie als redaktionell.
+
 ## 1.3.0 (18. November 2026)
 
 - Der Navigator sucht selbst nach einer neuen Version. Er ruft dazu beim Start höchstens einmal pro Tag die Versionsangabe der Projektseite ab. Die Suche lässt sich in der Ansicht «Info» abschalten und dort von Hand starten.
