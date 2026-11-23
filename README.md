@@ -14,6 +14,8 @@ Du kannst die [aktuelle Datei auch direkt herunterladen](https://github.com/SEM-
 
 Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.
 
+Die [Produktdokumentation](docs/sr-navigator-dokumentation.html) beschreibt den SR-Navigator in Deutsch, Französisch und Italienisch. Sie ist eine eigenständige HTML-Datei mit Sprachumschalter und lässt sich offline lesen. GitHub zeigt HTML-Dateien als Quelltext an und eine Datei dieser Grösse gar nicht: Öffne die Dateiseite, wähle **Download raw file** und öffne die heruntergeladene Datei im Browser.
+
 ## Funktionen
 
 - **Lesen:** jede Bestimmung in jeder Fassung, mit Fussnoten und Chronologie der Änderungen.
@@ -93,6 +95,7 @@ node scripts/fetch-meta.mjs cc-2007-758 cc-2007-759 cc-2018-493 cc-1999-358 cc-2
 | `src/core/` | Parser, Datenmodell, Fedlex-Abruf, Verweis-Index |
 | `src/app/` | Oberfläche (Preact), Texte DE, FR, IT, Gestaltung |
 | `site/` | Vorlage der Projektseite |
+| `docs/` | Produktdokumentation als eigenständige HTML-Datei (DE, FR, IT), Abfragen an Fedlex |
 | `data/` | Bibliothek der eingebetteten Erlasse und Prüfberichte |
 | `test/` | Tests für Kern, Veröffentlichung und Oberfläche, Prüfbericht `test/app/REPORT.md` |
 | `check/` | unabhängige Prüfskripte für Wortlaut, Änderungen und Verweise |
