@@ -159,7 +159,8 @@ export async function main(argv = process.argv.slice(2)) {
             const name = `${s.stage}_${f.lang}.xml`;
             const raw = replacedRaw.get(`${r.id}/${name}`);
             const oldUrl = (ost && ost.source && ost.source.url && ost.source.url[f.lang]) || (raw && raw.prevUrl) || null;
-            const newUrl = f.url || (nst && nst.source && nst.source.url && nst.source.url[f.lang]) || null;
+            // Massgebend ist die Adresse der Datei, die wirklich eingebaut ist (Fedlex kann sie seit der Prüfung erneut ersetzt haben).
+            const newUrl = (nst && nst.source && nst.source.url && nst.source.url[f.lang]) || f.url || null;
             const file = join(ROOT, 'raw', r.id, name);
             files.push({ lang: f.lang, oldUrl, newUrl, oldBytes: raw ? raw.before : oldUrl ? await remoteSize(oldUrl) : null, newBytes: existsSync(file) ? statSync(file).size : null });
           }

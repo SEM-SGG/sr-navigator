@@ -149,7 +149,11 @@ export function publish({ einbau }) {
   }
   // Ein Pull Request, den ein Workflow mit dem Standard-Token eröffnet, löst «CI» nicht aus; workflow_dispatch schon.
   const ci = sh('gh', ['workflow', 'run', 'ci.yml', '--ref', branch], { allowFail: true });
-  if (ci.status !== 0) console.error(`Workflow «CI» nicht gestartet: ${(ci.stderr || '').trim()}`);
+  if (ci.status !== 0) {
+    console.error(`Workflow «CI» nicht gestartet: ${(ci.stderr || '').trim()}`);
+    // Der Hinweis steht dort, wo die pflegende Person liest: Ohne ihn fehlte unter «Checks» der Lauf ohne Erklärung.
+    sh('gh', ['pr', 'comment', url, '--body', `Der Workflow «CI» ist zu diesem Pull Request nicht gestartet. Starte ihn von Hand, bevor du zusammenführst: **Actions**, Workflow «CI», **Run workflow**, Zweig \`${branch}\`.`], { allowFail: true });
+  }
   summary(`${draft ? 'Entwurf' : 'Pull Request'}: ${url}`);
   if (failed) { console.error(`\nEinbau unvollständig:\n- ${reasons.join('\n- ')}`); return 1; }
   return ci.status === 0 ? 0 : 1;

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Attrappe für gh in den Tests unter test/release/. Zustand in $GH_STUB_DIR, Aufrufe in calls.log.
 #   gh release view|create|delete   eine Datei je Release (Inhalt: Titel), für publish.test.mjs
-#   gh pr list|create|edit|ready     ein Ordner je Pull Request unter prs/<nummer>/, für fassungen-pr.test.mjs
+#   gh pr list|create|edit|ready|comment     ein Ordner je Pull Request unter prs/<nummer>/, für fassungen-pr.test.mjs
 #   gh workflow run <datei> --ref <zweig>   Eintrag in workflow-runs.log
 # GH_STUB_FAIL_CREATE=<marke> lässt «release create» scheitern, GH_STUB_FAIL_WORKFLOW=1 «workflow run».
 set -euo pipefail
@@ -60,6 +60,12 @@ pr_cmd() {
           *) echo "stub: unbekannte Option $1" >&2; exit 64 ;;
         esac
       done
+      ;;
+    comment)
+      local n="${1##*/}"; shift
+      [ -d "$prs/$n" ] || { echo "no pull requests found for $n" >&2; exit 1; }
+      [ "${1:-}" = --body ] || { echo "stub: erwartet «pr comment <nummer|adresse> --body <text>»" >&2; exit 64; }
+      printf '%s\n' "$2" >> "$prs/$n/comments"
       ;;
     ready)
       local n="$1"; shift

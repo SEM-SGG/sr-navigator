@@ -56,7 +56,7 @@ function sandbox() {
   const prs = () => {
     const d = join(stub, 'prs');
     if (!existsSync(d)) return [];
-    return readdirSync(d).sort().map((n) => Object.fromEntries(['head', 'base', 'title', 'body', 'draft', 'state'].map((f) => [f, readFileSync(join(d, n, f), 'utf8')])));
+    return readdirSync(d).sort().map((n) => ({ ...Object.fromEntries(['head', 'base', 'title', 'body', 'draft', 'state'].map((f) => [f, readFileSync(join(d, n, f), 'utf8')])), comments: existsSync(join(d, n, 'comments')) ? readFileSync(join(d, n, 'comments'), 'utf8') : '' }));
   };
   const runs = () => (existsSync(join(stub, 'workflow-runs.log')) ? readFileSync(join(stub, 'workflow-runs.log'), 'utf8').trim().split('\n') : []);
   const remoteGit = (args) => git(args, remote);
@@ -188,4 +188,5 @@ test('publish: CI lässt sich nicht starten, Lauf endet rot, Pull Request bleibt
   assert.equal(r.status, 1);
   assert.match(r.stderr, /Workflow «CI» nicht gestartet/);
   assert.equal(s.prs().length, 1);
+  assert.match(s.prs()[0].comments, /Workflow «CI» ist zu diesem Pull Request nicht gestartet[\s\S]*Zweig `fassungen\/einbau`/);
 });
