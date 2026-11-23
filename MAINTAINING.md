@@ -1,6 +1,6 @@
 # Pflegeanleitung
 
-Diese Anleitung richtet sich an die Person, die den SR-Navigator pflegt. Die ersten drei Abschnitte verlangen nur einen Browser und ein GitHub-Konto mit Schreibrecht im Repository.
+Diese Anleitung richtet sich an die Person, die den SR-Navigator pflegt. Ausser dem «Einbau von Hand» verlangt sie nur einen Browser und ein GitHub-Konto mit Schreibrecht im Repository.
 
 ## Neue Version veröffentlichen
 
@@ -42,14 +42,70 @@ Welche Zahl du erhöhst:
 | `Version … hat nicht die Form 1.2.3` | Tippfehler in `package.json` | Version berichtigen |
 | Fehler im Schritt «Deploy to GitHub Pages» | Projektseite ist nicht eingerichtet | Abschnitt «Einmalige Einrichtung» |
 | Ein Test schlägt fehl | Die Änderung hat ein Verhalten verändert | Änderung zurücknehmen oder berichtigen |
+| Lauf «Fassungen» rot, Pull Request ist ein Entwurf | Einbau, Prüfung oder Test gescheitert | Abschnitt «Wenn der Pull Request ein Entwurf ist» |
+| `Rohdaten von Fedlex nicht geladen` | Fedlex war nicht erreichbar | Workflow «Fassungen» später über **Run workflow** neu starten |
+| `GitHub Actions is not permitted to create or approve pull requests` | Einstellung für Pull Requests fehlt | Abschnitt «Einmalige Einrichtung», Schritte 4 und 5 |
+| `Workflow «CI» nicht gestartet` | Der Workflow «CI» lief zum Pull Request nicht an | Unter **Actions** den Workflow «CI» wählen, **Run workflow**, Zweig `fassungen/einbau` |
 
 3. Starte einen abgebrochenen Lauf «Release» unter **Actions** über **Run workflow** neu. Er holt nach, was fehlt, und legt nichts doppelt an.
 
 ## Neue Fassung einbauen
 
-Der Workflow «Fassungen» fragt Fedlex jeden Montag ab. Findet er eine neue Fassung oder eine ersetzte Datei eines eingebetteten Erlasses, eröffnet er das Issue «Neue Fassungen auf Fedlex».
+Der Workflow «Fassungen» fragt Fedlex jeden Montag ab. Findet er eine neue Fassung oder eine ersetzte Datei eines eingebetteten Erlasses, eröffnet er das Issue «Neue Fassungen auf Fedlex». Danach baut er die Fassung ein und eröffnet einen Pull Request, zum Beispiel «SR-Navigator 1.3.2: VZAE-Fassung vom 1. Oktober 2026 nachgeführt». Du prüfst den Pull Request und führst ihn zusammen. Der Workflow «Release» veröffentlicht danach die neue Version.
 
-Nutzende können neue Fassungen im Navigator selbst über **Aktualisieren** laden. Der feste Einbau erspart ihnen diesen Schritt. Er verlangt Node.js auf deinem Gerät.
+Nutzende können neue Fassungen im Navigator selbst über **Aktualisieren** laden. Der feste Einbau erspart ihnen diesen Schritt.
+
+### Pull Request prüfen und zusammenführen
+
+1. Öffne im Repository **Pull requests** und darin den Pull Request des Workflows. Er stammt von `github-actions` und liegt auf dem Zweig `fassungen/einbau`.
+2. Lies den Abschnitt «Befund». Er zeigt dieselbe Tabelle wie das Issue.
+3. Lies den Abschnitt «Was sich ändert». Er nennt je Erlass den neuen oder ersetzten Stand und je Sprache die geänderten Bestimmungen. Bei einer ersetzten Datei stehen die bisherige und die neue Datei mit Grösse dabei.
+4. Prüfe die Abschnitte «Prüfberichte», «Übrige Erlasse und Stände» und «Tests». Woran du einen guten Pull Request erkennst, steht unten.
+5. Öffne den Reiter **Checks**. Der Lauf «CI» ist grün. Er startet einige Minuten nach dem Pull Request.
+6. Lies den Abschnitt «Text im Changelog». Er wird zum Text der Release. Du darfst ihn verbessern, zum Beispiel um die geänderte Bestimmung: Öffne **Files changed**, bei `CHANGELOG.md` das Menü **…** und **Edit file**. Speichere mit **Commit changes** im selben Zweig.
+7. Wähle **Merge pull request** und **Confirm merge**. Der Pull Request schliesst das Issue.
+8. Prüfe die Veröffentlichung wie im Abschnitt «Prüfen, ob die Veröffentlichung geklappt hat».
+
+Ein guter Pull Request erfüllt diese Punkte:
+
+- Er ist kein Entwurf und beginnt nicht mit «Nicht zusammenführen».
+- Die Version steigt um eins in der letzten Stelle, zum Beispiel von `1.3.1` auf `1.3.2`.
+- «Was sich ändert» nennt nur die Erlasse und Stände aus dem Befund.
+- Unter «Prüfberichte» zeigt jede Zeile «bestanden» oder «Hinweis». Ein Hinweis heisst: Die Zahl ist gestiegen, und `data/VALIDATION.md` begründet jeden Fall einzeln. Bei einer neuen Fassung kommt das vor.
+- Unter «Übrige Erlasse und Stände» steht keine Warnung. Ein Hinweis zu Metadaten, zum Beispiel zu laufenden Vorhaben, ist unbedenklich.
+- Unter «Tests» zeigt jede Zeile «bestanden».
+
+Als bestanden gelten diese Prüfungen:
+
+| Prüfung | bestanden, wenn |
+| --- | --- |
+| Wortlaut vollständig | Abdeckung 100 % in jedem Erlass, Stand und jeder Sprache |
+| Fussnoten vollständig | keine fehlende Fussnote |
+| Impact-Einträge ohne Änderung | keiner offen |
+| Schlüsselwechsel | nicht mehr als vorher |
+| Unerlaubtes Markup | keines |
+| Laden über Fedlex-Abfragen = Bau | keine Abweichung |
+
+Änderungen ohne Beleg, Sprachausnahmen und der echte Abruf eines nicht eingebetteten Erlasses ergeben höchstens einen Hinweis.
+
+### Wenn der Pull Request ein Entwurf ist
+
+Scheitert der Einbau, eine Prüfung oder ein Test, eröffnet der Workflow den Pull Request als Entwurf. Der Text beginnt mit «Nicht zusammenführen» und nennt die Gründe. Der Lauf «Fassungen» ist rot.
+
+1. Führe den Entwurf nicht zusammen.
+2. Lies die Gründe am Anfang des Pull Requests. Bei einem fehlgeschlagenen Test stehen die letzten Zeilen der Ausgabe unter «Tests».
+3. Liegt die Ursache bei Fedlex oder im Netz, zum Beispiel `fetch failed` oder `SPARQL 503`, starte den Workflow «Fassungen» unter **Actions** über **Run workflow** neu. Er baut den Einbau neu und aktualisiert den Pull Request.
+4. Bleibt der Fehler, gib den Pull Request an die Person weiter, die den Code betreut. Sie baut die Fassung von Hand ein (Unterabschnitt «Einbau von Hand»).
+
+Ein offener Pull Request mit demselben Befund bleibt beim nächsten Lauf unverändert. Ein Entwurf nach einem Fehler wird bei jedem Lauf neu gebaut. Führt Fedlex inzwischen weitere Fassungen, baut der Lauf alle ein und überschreibt den Zweig.
+
+Eröffnet der Workflow das Issue, aber keinen Pull Request, ist schon das Laden der Rohdaten gescheitert. Starte den Workflow später über **Run workflow** neu.
+
+Mit **Run workflow** und dem Schalter **Probelauf** prüfst du den Ablauf, ohne ein Issue zu eröffnen. Der Pull Request ist dann ein Entwurf mit «Probelauf:» im Titel. Schliesse ihn nach der Durchsicht.
+
+### Einbau von Hand
+
+Gelingt der automatische Einbau nicht, baust du die Fassung auf deinem Gerät ein. Dafür brauchst du Node.js. `node scripts/apply-fassungen.mjs` führt die Schritte 2 bis 4 in einem Lauf aus, erhöht die Version und ergänzt `CHANGELOG.md`. Die Einzelschritte:
 
 1. Klone das Repository und führe `npm ci` aus.
 2. Lade die Rohdaten des Erlasses, hier am Beispiel der VZAE:
@@ -94,3 +150,5 @@ Bereits verteilte Dateien behalten die alten Adressen. Nach einer Übertragung d
 1. Öffne im Repository **Settings**, dann **Pages**.
 2. Wähle unter **Build and deployment** bei **Source** den Eintrag **GitHub Actions**.
 3. Starte unter **Actions** den Workflow «Release» über **Run workflow**.
+4. Öffne **Settings**, dann **Actions** und **General**.
+5. Setze unter **Workflow permissions** das Häkchen bei **Allow GitHub Actions to create and approve pull requests** und wähle **Save**. Ohne diese Einstellung eröffnet der Workflow «Fassungen» keinen Pull Request.

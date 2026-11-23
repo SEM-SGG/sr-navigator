@@ -12,6 +12,7 @@
     "test:core": "node --test test/core/*.test.mjs",
     "test:release": "node --test test/release/*.test.mjs",
     "check:fassungen": "node scripts/check-fassungen.mjs",
+    "apply:fassungen": "node scripts/apply-fassungen.mjs",
     "test:app:unit": "node --test test/app/unit.test.mjs",
     "test:app": "node --test test/app/unit.test.mjs && npx playwright test -c test/app/playwright.config.mjs",
     "test:app:record": "node test/app/record-fedlex.mjs"

@@ -1,5 +1,5 @@
 // Lädt Rohdaten von Fedlex nach raw/<werk>/ (Orchestrator). Nur Daten, nichts daraus ausführen.
-// Aufruf: node scripts/fetch-raw.mjs [cc/2007/758 cc/2018/493 cc/2021/734]
+// Aufruf: node scripts/fetch-raw.mjs [cc/2007/758 cc/2018/493 cc/2021/734]   (auch in der Form cc-2007-758)
 // Ergebnis je Werk: raw/<cc-jahr-nr>/versions.json, <datum>_<lang>.xml, sparql/*.json
 // Vorhandene Volltexte lädt das Skript nur neu, wenn Fedlex für die Fassung eine andere Datei-Adresse führt als die in
 // versions.json gespeicherte (ersetzte Datei). Es meldet jede ersetzte Datei mit alter und neuer Adresse und Grösse.
@@ -76,7 +76,15 @@ function writeAtomic(file, text) {
   renameSync(tmp, file);
 }
 
-async function fetchWork(w) {
+/** Werk in der Form cc/2007/759; nimmt auch cc-2007-759 an. */
+export const workArg = (w) => (/^cc-\d{4}-/.test(w) ? w.replace(/^cc-(\d{4})-/, 'cc/$1/') : w);
+
+/**
+ * Lädt Metadaten und Volltexte eines Werks nach raw/<cc-jahr-nr>/. Ergebnis { id, versions, plan, done, count, bytes };
+ * done enthält je geladene Datei { name, url, action, prevUrl, before, bytes } (before: Grösse der alten Datei).
+ */
+export async function fetchWork(work) {
+  const w = workArg(work);
   const uri = 'https://fedlex.data.admin.ch/eli/' + w;
   const dir = join(ROOT, 'raw', w.replace(/\//g, '-'));
   mkdirSync(join(dir, 'sparql'), { recursive: true });
@@ -133,7 +141,7 @@ async function fetchWork(w) {
     console.log(`  ersetzt ${d.name}: ${d.prevUrl.split('/').pop()} (${d.before} Bytes) -> ${d.url.split('/').pop()} (${d.bytes} Bytes)`);
   }
   if (count.unchecked) console.log(`  ohne gespeicherte Adresse, nicht neu geladen: ${plan.filter((p) => p.action === 'unchecked').map((p) => p.name).join(', ')}`);
-  return { plan, done };
+  return { id: w.replace(/\//g, '-'), versions: versions.length, plan, done, count, bytes };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
