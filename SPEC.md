@@ -580,7 +580,8 @@ Person führt einen Pull Request zusammen, statt eine Fassung mit Node.js einzub
 - **Netzzugriff und CSP:** unverändert. `connect-src` nennt Fedlex und den Ursprung der Projektseite.
 - **Grenze:** GitHub Pages liefert mit `max-age=600` aus. Bis zehn Minuten nach einer Release kann «Seite neu laden»
   noch die alte Datei liefern; der Hinweis bleibt dann stehen.
-- **Projektseite:** `site/index.template.html` verlinkt `app/` erst nach dem Test im Netz des SEM.
+- **Projektseite:** `site/index.template.html` nennt «Im Browser öffnen» (`app/`) als ersten Weg und den Download als
+  zweiten (Entscheid vom 23. November 2026, vor dem Test im Netz des SEM).
 - **Kein Service Worker.** Für die Nutzung ohne Netz bleibt der Download.
 - **Zustandsspeicher** (`src/app/state.js`): `useRoute` und `createStore().use()` holen einen Wert nach, der zwischen dem
   ersten Rendern und der Anmeldung gesetzt wurde. Vorher erschien der Hinweis auf eine neue Version in diesem Fall erst

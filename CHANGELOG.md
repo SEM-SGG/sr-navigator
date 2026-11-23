@@ -2,7 +2,7 @@
 
 ## 1.4.0 (23. November 2026)
 
-- Der Navigator liegt zusätzlich auf der Projektseite unter `app/` und lässt sich dort im Browser öffnen, ohne Download. Es ist dieselbe Datei wie in der Release.
+- Der Navigator lässt sich im Browser öffnen, ohne Download: Die Projektseite führt mit «Im Browser öffnen» zur Adresse `app/`. Es ist dieselbe Datei wie in der Release.
 - Im Browser geöffnet, meldet der Navigator eine neue Version mit «Seite neu laden» statt mit einem Download. Der Hinweis nach dem Alter der Datei entfällt dort.
 - Hinzugefügte Erlasse, Sammelkorb und Einstellungen liegen im Speicher des Browsers, getrennt von der heruntergeladenen Datei. Wer wechselt, nimmt den Stand über die Projektdatei mit (Ansicht «Bibliothek»).
 - Korrektur: Der Hinweis auf eine neue Version erschien in seltenen Fällen erst nach dem nächsten Wechsel der Ansicht.

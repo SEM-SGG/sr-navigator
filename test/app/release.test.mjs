@@ -204,6 +204,10 @@ test('build-site: app/index.html ist bytegleich zu dist/<asset>; ohne Datei ents
   assert.ok(readFileSync(join(s.out, 'app/index.html')).equals(s.bytes), 'Kopie weicht ab');
   assert.match(a.stdout, /app\/index\.html/);
   for (const f of ['index.html', 'version.json', '.nojekyll']) assert.ok(existsSync(join(s.out, f)), f);
+  // Die Projektseite führt in allen drei Sprachen zuerst zum Navigator im Browser, daneben zum Download.
+  const page = readFileSync(join(s.out, 'index.html'), 'utf8');
+  assert.equal((page.match(/<a class="btn" href="app\/">/g) || []).length, 3);
+  assert.equal((page.match(/<a class="btn btn-2" href="https:\/\/github\.com\/[^"]+\/releases\/latest\/download\/[^"]+">/g) || []).length, 3);
   const b = siteSandbox({ app: false });
   const r = b.run();
   assert.equal(r.status, 0, r.stderr);

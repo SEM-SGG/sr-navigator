@@ -326,7 +326,7 @@ Keine Erwartung in einem Test angepasst. Die Browsertests prüfen «Aktualisiere
 Stand: 23. November 2026, Version 1.4.0. Auftrag: Dieselbe Datei liegt zusätzlich auf der Projektseite unter
 `app/` (`https://sem-sgg.github.io/sr-navigator/app/`) und lässt sich über einen Link öffnen. Es bleibt bei einem Build.
 Die Datei erkennt zur Laufzeit an `location.href`, ob sie unter `siteUrl` liegt, und passt nur den Versionshinweis an.
-Die Projektseite verlinkt `app/` noch nicht.
+Die Projektseite nennt «Im Browser öffnen» (`app/`) als ersten Weg.
 
 ## 1 Tests
 
