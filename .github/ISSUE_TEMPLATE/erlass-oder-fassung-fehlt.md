@@ -5,7 +5,7 @@ title: ""
 labels: []
 ---
 
-Diese Meldung ist öffentlich sichtbar. Nach der Datenregel der SGG (README, Abschnitt «Datenregel») gehören Inhalte mit dem Vermerk INTERN, VERTRAULICH oder GEHEIM, besonders schützenswerte Personendaten und Falldaten zu Personen aus Verfahren nicht in ein Issue. Ohne GitHub-Konto schreibst du an sektion-grenze@sem.admin.ch.
+Diese Meldung (Issue) ist öffentlich sichtbar. Trage nach der Datenregel der SGG (README, Abschnitt «Datenregel») keine Inhalte mit dem Vermerk INTERN, VERTRAULICH oder GEHEIM ein. Auch besonders schützenswerte Personendaten und Falldaten zu Personen aus Verfahren gehören nicht hierher. Ohne GitHub-Konto schreibst du an sektion-grenze@sem.admin.ch.
 
 **Erlass** (Kurzbezeichnung und SR-Nummer, zum Beispiel VZAE, SR 142.201):
 

@@ -24,7 +24,7 @@
 
 ## Rückgängig machen
 
-<!-- Meist: Revert des Merge-Commits und eine neue Version. -->
+<!-- Meist: den zusammengeführten Pull Request auf GitHub über **Revert** rückgängig machen und danach eine neue Version veröffentlichen. -->
 
 <!-- Genau eine der beiden Zeilen stehen lassen: -->
 Produktdokumentation: nachgeführt

@@ -59,12 +59,12 @@ Nach dem Eröffnen wartest du den Lauf «CI / Tests and build» im Pull Request 
 
 ## Abläufe
 
-Jeder Ablauf beginnt mit dem Auftrag, den eine Fachperson kopiert und dir gibt. Die Pünktchen ersetzt sie durch die Nummer oder die SR-Nummer.
+Jeder Ablauf beginnt mit dem Auftrag, den eine Fachperson kopiert und dir gibt. Dabei ersetzt sie `…` durch die Nummer des Pull Requests, die Nummer des Issues oder die SR-Nummer.
 
 ### Gescheiterter Einbau neuer Fassungen
 
 ```
-Der Einbau der neuen Fassungen ist gescheitert, Pull Request #… im Repository SEM-SGG/sr-navigator ist ein Entwurf: Bring ihn in Ordnung. Halte dich an AGENTS.md, Ablauf «Gescheiterter Einbau neuer Fassungen».
+Der Einbau der neuen Fassungen ist gescheitert. Pull Request #… im Repository SEM-SGG/sr-navigator ist ein Entwurf: Bring ihn in Ordnung. Halte dich an AGENTS.md, Ablauf «Gescheiterter Einbau neuer Fassungen».
 ```
 
 Hintergrund: Der Workflow «Fassungen» (`.github/workflows/fassungen.yml`) prüft jeden Montag Fedlex, eröffnet das Issue «Neue Fassungen auf Fedlex», baut mit `scripts/apply-fassungen.mjs` ein und eröffnet mit `scripts/fassungen-pr.mjs` einen Pull Request auf dem Zweig `fassungen/einbau`. Scheitert der Einbau, eine Prüfung oder ein Test, ist der Pull Request ein Entwurf mit dem Vermerk «Nicht zusammenführen».
@@ -77,7 +77,7 @@ Hintergrund: Der Workflow «Fassungen» (`.github/workflows/fassungen.yml`) prü
 6. Lies `data/VALIDATION.md` und `data/VALIDATION_REFS.md`. Die Kriterien für «bestanden» stehen in `MAINTAINING.md`, Abschnitt «Pull Request prüfen und zusammenführen». Jeder Hinweis braucht dort eine Begründung.
 7. Führe die Prüfbefehle aus, dazu `npm run test:core` mit Rohdaten und ohne `SR_NO_NET`.
 8. Committe die Dateien aus `COMMIT_FILES` in `scripts/fassungen-pr.mjs`, dazu deine Korrekturen und Tests. `raw/` ist von Git ausgeschlossen.
-9. Eröffne den Pull Request gegen `main`. Titel wie der Workflow, zum Beispiel «SR-Navigator 1.4.2: VZAE-Fassung vom 1. Januar 2027 nachgeführt» (Feld `subject` in `einbau.json`). In der Beschreibung nennt «Ausgangslage» den Entwurf und den Grund, «Von der prüfenden Person zu kontrollieren» übernimmt die Tabelle «Befund» und die Prüfberichte aus `pr.md` und den Text im Changelog. Schreibe dazu: «Nach dem Zusammenführen den Entwurf #… schliessen.» Schliesse mit `Closes #<nummer>` für das Issue «Neue Fassungen auf Fedlex» (die Nummer steht am Ende des Entwurfs).
+9. Eröffne den Pull Request gegen `main`. Titel wie der Workflow, zum Beispiel «SR-Navigator 1.4.2: VZAE-Fassung vom 1. Januar 2027 nachgeführt» (Feld `subject` in `einbau.json`). In der Beschreibung nennt «Ausgangslage» den Entwurf und den Grund, «Von der prüfenden Person zu kontrollieren» übernimmt die Tabelle «Befund» und die Prüfberichte aus `pr.md` und den Text im Changelog. Schreibe dazu: «Nach dem Zusammenführen den Entwurf #… mit **Close pull request** schliessen.» Schliesse mit `Closes #<nummer>` für das Issue «Neue Fassungen auf Fedlex» (die Nummer steht am Ende des Entwurfs).
 
 ### Erlass fest einbetten
 
@@ -121,11 +121,11 @@ Das Repository erhält keine Pull Requests von Dependabot: Es gibt keine `.githu
 Die prüfende Person ist eine Fachperson ohne GitHub-Erfahrung. Sie liest die Beschreibung im Browser und entscheidet danach über das Zusammenführen. Die Vorlage `.github/pull_request_template.md` gibt die Abschnitte vor:
 
 1. **Ausgangslage:** Welches Problem gab es, für wen, und wer hat den Auftrag gegeben (Issue, Entwurf)? Ohne Fachjargon.
-2. **Änderungen:** Was sich für Nutzende und für die pflegende Person ändert, in ganzen Sätzen. Dateinamen nur, wo sie beim Prüfen helfen.
-3. **Von der prüfenden Person zu kontrollieren:** Was die Person im Browser ansehen oder entscheiden soll, als nummerierte Schritte mit den Namen der Knöpfe, zum Beispiel «Öffne **Files changed** und lies `CHANGELOG.md`». Dazu, was nach dem Zusammenführen geschieht (Release, Projektseite).
-4. **Testing:** Welche Prüfbefehle mit welchem Ergebnis gelaufen sind, und was du nicht prüfen konntest (zum Beispiel Firefox und Edge, die Projektseite auf GitHub Pages).
+2. **Änderungen:** Was sich für Nutzende und für die pflegende Person ändert, in ganzen Sätzen. Nenne Dateinamen nur, wo sie beim Prüfen helfen.
+3. **Von der prüfenden Person zu kontrollieren:** Was die Person im Browser ansehen oder entscheiden soll, als nummerierte Schritte mit den Namen der Knöpfe, zum Beispiel «Öffne **Files changed** und lies `CHANGELOG.md`». Nenne ausserdem, was nach dem Zusammenführen geschieht (zum Beispiel neue Release, Aktualisierung der Projektseite).
+4. **Testing:** Welche Prüfbefehle mit welchem Ergebnis gelaufen sind und was du nicht prüfen konntest (zum Beispiel Firefox und Edge, die Projektseite auf GitHub Pages).
 5. **Risiko:** Was schlimmstenfalls passiert und woran die Person es merkt.
-6. **Rückgängig machen:** Wie sich die Änderung zurücknehmen lässt, meist «Revert des Merge-Commits und eine neue Version».
+6. **Rückgängig machen:** Wie sich die Änderung zurücknehmen lässt, meist: den zusammengeführten Pull Request auf GitHub über **Revert** rückgängig machen und danach eine neue Version veröffentlichen.
 
 Am Ende steht genau eine dieser Zeilen:
 

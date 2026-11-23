@@ -12,7 +12,7 @@ Die [Produktdokumentation](https://sem-sgg.github.io/sr-navigator/dokumentation.
 2. Lege ein Lesezeichen an. Die Adresse lautet `https://sem-sgg.github.io/sr-navigator/app/`.
 3. Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.
 
-Die Adresse im Browser führt zur gewählten Bestimmung und Fassung. Kopierst du sie und gibst sie weiter, öffnet sie bei allen dieselbe Stelle. Selbst hinzugefügte Erlasse muss die empfangende Person zuerst ebenfalls hinzufügen.
+Die Adresse im Browser führt direkt zur gewählten Bestimmung und Fassung. Kopierst du diese Adresse und gibst sie weiter, öffnet sich bei allen dieselbe Stelle. Selbst hinzugefügte Erlasse muss die empfangende Person zuerst ebenfalls hinzufügen.
 
 ### Ohne Internetverbindung arbeiten
 
@@ -20,7 +20,7 @@ Die Adresse im Browser führt zur gewählten Bestimmung und Fassung. Kopierst du
 2. Speichere die Datei `sr-navigator.html` in einem Ordner deiner Wahl.
 3. Öffne die Datei mit einem Doppelklick.
 
-Die Datei und der Navigator im Browser speichern ihre Daten getrennt. Mit der Projektdatei (Ansicht **Bibliothek**) nimmst du deinen Stand von einem zum anderen mit. Eine Adresse aus der heruntergeladenen Datei nennt den Ordner auf deinem Rechner. Sie öffnet dieselbe Stelle nur, wenn die Datei bei der empfangenden Person am selben Ort liegt.
+Die Datei und der Navigator im Browser speichern ihre Daten getrennt. Mit der Projektdatei (Ansicht **Bibliothek**) nimmst du deinen Stand von einem zum anderen mit. Bei der heruntergeladenen Datei nennt die Adresse im Browser den Ordner auf deinem Rechner. Gibst du sie weiter, öffnet sich dieselbe Stelle nur, wenn die Datei bei der empfangenden Person am selben Ort liegt.
 
 ## Funktionen
 
@@ -68,7 +68,7 @@ Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli at
 
 ## Rückmeldung und Fehler
 
-- **Mit GitHub-Konto:** Melde Fehler und Wünsche über [ein Issue in diesem Repository](https://github.com/SEM-SGG/sr-navigator/issues/new/choose). Ein Issue ist öffentlich sichtbar. Halte dich an die Datenregel.
+- **Mit GitHub-Konto:** Melde Fehler und Wünsche über [ein Issue in diesem Repository](https://github.com/SEM-SGG/sr-navigator/issues/new/choose) (einen Eintrag auf GitHub). Ein Issue ist öffentlich sichtbar. Halte dich an die Datenregel (Abschnitt unten).
 - **Ohne GitHub-Konto:** Schreibe an [sektion-grenze@sem.admin.ch](mailto:sektion-grenze@sem.admin.ch).
 
 ## Datenregel
@@ -82,13 +82,13 @@ Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli at
 >
 > Als klassifiziert gilt, was einen Klassifizierungsvermerk trägt. Die Regel ergänzt die Weisungen des SEM und ersetzt sie nicht.
 
-Für den SR-Navigator heisst das: Er arbeitet mit öffentlichen Erlasstexten von Fedlex. Deine eigenen Angaben (hinzugefügte Erlasse, Sammelkorb, Einstellungen) liegen im Speicher deines Browsers, Projektdatei und Exporte als PNG oder PDF in Dateien, die du selbst speicherst; das fällt unter Punkt 1. An Fedlex gehen nur Abfragen nach Fassungen und Metadaten, der Abruf der Rechtstexte und bei der Suche unter «Erlass hinzufügen» der eingegebene Suchbegriff; Issues und Pull Requests auf GitHub sind öffentlich und fallen unter Punkt 2.
+Für den SR-Navigator heisst das: Er arbeitet mit öffentlichen Erlasstexten von Fedlex. Deine eigenen Angaben (hinzugefügte Erlasse, Sammelkorb, Einstellungen) liegen im Speicher deines Browsers. Die Projektdatei und Exporte als PNG oder PDF speicherst du selbst lokal ab. Das fällt unter Punkt 1. An Fedlex gehen nur Abfragen nach Fassungen und Metadaten, der Abruf der Rechtstexte und bei der Suche unter «Erlass hinzufügen» der eingegebene Suchbegriff. Issues und Pull Requests (Änderungsvorschläge) auf GitHub sind öffentlich und fallen unter Punkt 2.
 
 ## Für Pflegende
 
 Die Pflegeanleitung steht in [`MAINTAINING.md`](MAINTAINING.md): neue Version veröffentlichen, neue Fassung einbauen, Vorgehen bei einem fehlgeschlagenen Lauf, Übergabe an eine Nachfolge.
 
-Bau- und Pflegearbeiten erledigt ein Agent, zum Beispiel Claude Code im Browser oder Codex mit angebundenem Repository. Seine Arbeitsanleitung steht in [`AGENTS.md`](AGENTS.md). Dort stehen auch die Aufträge, die du einem Agenten kopieren kannst, zum Beispiel für einen gescheiterten Einbau neuer Fassungen.
+Bau- und Pflegearbeiten erledigt ein Agent (ein KI-Werkzeug wie Claude Code im Browser oder Codex mit angebundenem Repository). Seine Arbeitsanleitung steht in [`AGENTS.md`](AGENTS.md). Dort findest du auch vorgefertigte Aufträge, die du kopieren und einem Agenten geben kannst, zum Beispiel für einen gescheiterten Einbau neuer Fassungen.
 
 ### Lokal bauen und testen
 

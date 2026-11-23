@@ -2,11 +2,11 @@
 
 Diese Anleitung richtet sich an die Person, die den SR-Navigator pflegt. Ausser dem «Einbau von Hand» verlangt sie nur einen Browser und ein GitHub-Konto mit Schreibrecht im Repository.
 
-Was Code oder Node.js verlangt, erledigt ein Agent, zum Beispiel Claude Code im Browser oder Codex mit angebundenem Repository. Du gibst ihm einen der kopierbaren Aufträge aus [`AGENTS.md`](AGENTS.md), Abschnitt «Abläufe», und prüfst danach seinen Pull Request.
+Was Programmcode oder Node.js verlangt, erledigt ein Agent (ein KI-Werkzeug wie Claude Code im Browser oder Codex mit angebundenem Repository). Du kopierst einen der Aufträge aus [`AGENTS.md`](AGENTS.md), Abschnitt «Abläufe», gibst ihn dem Agenten und prüfst danach seinen Pull Request (Änderungsvorschlag auf GitHub).
 
 ## Neue Version veröffentlichen
 
-GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien. Die Version in der Produktdokumentation setzt ein Agent nach (Schritt 7).
+GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien. Die Version in der Produktdokumentation führt ein Agent nach (Schritt 7).
 
 1. Öffne im Repository die Datei `package.json` und klicke auf den Stift.
 2. Erhöhe die Zahl bei `"version"`, zum Beispiel von `1.3.0` auf `1.3.1`.
@@ -14,11 +14,13 @@ GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien.
 4. Öffne im selben Zweig die Datei `CHANGELOG.md` und klicke auf den Stift.
 5. Füge zuoberst einen Abschnitt mit der neuen Version ein. Die Überschrift hat die Form `## 1.3.1 (2. Dezember 2026)`. Darunter steht je Änderung eine Zeile mit `- `. Der Abschnitt wird zum Text der Release.
 6. Speichere mit **Commit changes** im selben Zweig.
-7. Eröffne den Pull Request. Der Workflow «CI» prüft die Änderung. Der Schritt «Check the version in the product documentation» ist rot, solange `docs/sr-navigator-dokumentation.html` die alte Version nennt. Gib dann einem Agenten diesen Auftrag:
+7. Eröffne den Pull Request. Der Workflow «CI» (automatischer Ablauf für die Prüfung, kurz für Continuous Integration) prüft die Änderung. Der Schritt «Check the version in the product documentation» bleibt rot, solange `docs/sr-navigator-dokumentation.html` die alte Version nennt. Kopiere dann diesen Auftrag für einen Agenten und ersetze `…` durch die Nummer des Pull Requests:
 
    ```
-   Setze in Pull Request #… im Repository SEM-SGG/sr-navigator die Version in der Produktdokumentation nach. Halte dich an AGENTS.md.
+   Führe in Pull Request #… im Repository SEM-SGG/sr-navigator die Version in der Produktdokumentation nach. Halte dich an AGENTS.md.
    ```
+
+   Der Agent passt die Datei auf dem Zweig des Pull Requests an. Danach läuft «CI» erneut und wird grün.
 8. Führe den Pull Request zusammen, sobald der Lauf grün ist.
 
 Der Workflow «Release» legt danach die Release `v1.3.1` an und aktualisiert die Projektseite. Ab dann zeigen alle Navigatoren mit älterer Version den Hinweis auf die neue Datei.
@@ -47,11 +49,11 @@ Welche Zahl du erhöhst:
 | --- | --- | --- |
 | `CHANGELOG.md: Abschnitt … fehlt` | Zur Version in `package.json` gibt es keinen Abschnitt | Abschnitt ergänzen, Überschrift genau in der Form `## 1.3.1 (Datum)` |
 | `Version … hat nicht die Form 1.2.3` | Tippfehler in `package.json` | Version berichtigen |
-| `docs/sr-navigator-dokumentation.html: Die Versionsangabe passt nicht zu package.json` | Die Produktdokumentation nennt eine andere Version | Die Meldung nennt jede Zeile. Ein Agent führt `node scripts/check-dokumentation.mjs --fix` aus (Abschnitt «Neue Version veröffentlichen», Schritt 7). |
+| `docs/sr-navigator-dokumentation.html: Die Versionsangabe passt nicht zu package.json` | Die Produktdokumentation nennt eine andere Version | Die Meldung nennt jede betroffene Zeile. Gib einem Agenten den Auftrag aus Abschnitt «Neue Version veröffentlichen», Schritt 7 (er führt `node scripts/check-dokumentation.mjs --fix` aus). |
 | Fehler im Schritt «Deploy to GitHub Pages» | Projektseite ist nicht eingerichtet | Abschnitt «Einmalige Einrichtung» |
 | Ein Test schlägt fehl | Die Änderung hat ein Verhalten verändert | Änderung zurücknehmen oder berichtigen |
 | Lauf «Fassungen» rot, Pull Request ist ein Entwurf | Einbau, Prüfung oder Test gescheitert | Abschnitt «Wenn der Pull Request ein Entwurf ist» |
-| Am Montag ist kein Lauf «Fassungen» erschienen | GitHub hat den zeitgesteuerten Lauf verspätet, ausgelassen oder abgeschaltet | Abschnitt «Zeitgesteuerter Lauf: Übergabe, Verspätung, Start von Hand» |
+| Am Montag ist kein Lauf «Fassungen» erschienen | GitHub hat den zeitgesteuerten Lauf verzögert, ausgelassen oder abgeschaltet | Abschnitt «Zeitgesteuerter Lauf: Übergabe, Verspätung, Start von Hand» |
 | `Rohdaten von Fedlex nicht geladen` | Fedlex war nicht erreichbar | Workflow «Fassungen» später über **Run workflow** neu starten |
 | `GitHub Actions is not permitted to create or approve pull requests` | Einstellung für Pull Requests fehlt | Abschnitt «Einmalige Einrichtung», Schritte 4 und 5 |
 | Im Pull Request des Workflows fehlt **Approve workflows to run**, und kein Lauf «CI» erscheint | GitHub hat zum Pull Request keinen Lauf angelegt | Im Pull Request **Close pull request** und danach **Reopen pull request** wählen. Das startet «CI». |
@@ -70,7 +72,7 @@ Nutzende können neue Fassungen im Navigator selbst über **Aktualisieren** lade
 2. Lies den Abschnitt «Befund». Er zeigt dieselbe Tabelle wie das Issue.
 3. Lies den Abschnitt «Was sich ändert». Er nennt je Erlass den neuen oder ersetzten Stand und je Sprache die geänderten Bestimmungen. Bei einer ersetzten Datei stehen die bisherige und die neue Datei mit Grösse dabei.
 4. Prüfe die Abschnitte «Prüfberichte», «Übrige Erlasse und Stände» und «Tests». Woran du einen guten Pull Request erkennst, steht unten.
-5. Gib den Lauf «CI» frei: Unten im Pull Request steht «Some checks are waiting for approval». Wähle dort **Approve workflows to run**. GitHub verlangt diese Freigabe, weil der Pull Request von einem Workflow stammt. Die Tests sind beim Einbau schon gelaufen (Abschnitt «Tests» im Pull Request). Die Freigabe wiederholt sie im Lauf «CI» auf dem Stand des Pull Requests, ohne die Tests mit den Rohdaten von Fedlex. Nach einigen Minuten zeigt der Pull Request «CI / Tests and build» mit grünem Haken. Fehlt **Approve workflows to run** und erscheint kein Lauf «CI», wähle unten **Close pull request** und danach **Reopen pull request**. Das startet «CI».
+5. Gib den Lauf «CI» frei: Unten im Pull Request steht «Some checks are waiting for approval». Wähle dort **Approve workflows to run**. Nach einigen Minuten zeigt der Pull Request «CI / Tests and build» mit grünem Haken. GitHub verlangt diese Freigabe, weil der Pull Request von einem Workflow stammt. Die Freigabe wiederholt die bereits gelaufenen Tests aus dem Abschnitt «Tests» auf dem Stand des Pull Requests (ohne die Tests mit den Rohdaten von Fedlex). Fehlt **Approve workflows to run** und erscheint kein Lauf «CI», wähle unten **Close pull request** und danach **Reopen pull request**. Das startet «CI».
 6. Lies den Abschnitt «Text im Changelog». Er wird zum Text der Release. Du darfst ihn verbessern, zum Beispiel um die geänderte Bestimmung: Öffne **Files changed**, bei `CHANGELOG.md` das Menü **…** und **Edit file**. Speichere mit **Commit changes** im selben Zweig.
 7. Wähle **Merge pull request** und **Confirm merge**. Der Pull Request schliesst das Issue.
 8. Prüfe die Veröffentlichung wie im Abschnitt «Prüfen, ob die Veröffentlichung geklappt hat».
@@ -104,13 +106,13 @@ Scheitert der Einbau, eine Prüfung oder ein Test, eröffnet der Workflow den Pu
 1. Führe den Entwurf nicht zusammen.
 2. Lies die Gründe am Anfang des Pull Requests. Bei einem fehlgeschlagenen Test stehen die letzten Zeilen der Ausgabe unter «Tests».
 3. Liegt die Ursache bei Fedlex oder im Netz, zum Beispiel `fetch failed` oder `SPARQL 503`, starte den Workflow «Fassungen» unter **Actions** über **Run workflow** neu. Er baut den Einbau neu und aktualisiert den Pull Request.
-4. Bleibt der Fehler, gib einem Agenten diesen Auftrag. Setze die Nummer des Pull Requests ein:
+4. Bleibt der Fehler, kopiere diesen Auftrag für einen Agenten und ersetze `…` durch die Nummer des Pull Requests:
 
    ```
-   Der Einbau der neuen Fassungen ist gescheitert, Pull Request #… im Repository SEM-SGG/sr-navigator ist ein Entwurf: Bring ihn in Ordnung. Halte dich an AGENTS.md, Ablauf «Gescheiterter Einbau neuer Fassungen».
+   Der Einbau der neuen Fassungen ist gescheitert. Pull Request #… im Repository SEM-SGG/sr-navigator ist ein Entwurf: Bring ihn in Ordnung. Halte dich an AGENTS.md, Ablauf «Gescheiterter Einbau neuer Fassungen».
    ```
 
-   Der Agent baut die Fassung ein, lässt Prüfungen und Tests laufen und eröffnet einen eigenen Pull Request, den du prüfst und zusammenführst. Er nennt in der Beschreibung, was der Grund war und was du kontrollieren sollst. Den Entwurf schliesst du nach dem Zusammenführen.
+   Der Agent baut die Fassung ein, führt Prüfungen und Tests aus und eröffnet einen eigenen Pull Request. In dessen Beschreibung nennt er die Ursache und was du kontrollieren sollst. Prüfe diesen Pull Request und führe ihn zusammen. Schliesse danach den Entwurf mit **Close pull request**.
 5. Steht kein Agent zur Verfügung, baut eine Person mit Node.js die Fassung von Hand ein (Unterabschnitt «Einbau von Hand»).
 
 Ein offener Pull Request mit demselben Befund bleibt beim nächsten Lauf unverändert. Ein Entwurf nach einem Fehler wird bei jedem Lauf neu gebaut. Führt Fedlex inzwischen weitere Fassungen, baut der Lauf alle ein und überschreibt den Zweig.
@@ -167,7 +169,7 @@ Die Datei `release.config.json` steuert Adressen und Versionsprüfung. Nach eine
 | `asset` | Dateiname in der Release |
 | `siteUrl` | Adresse der Projektseite, Form `https://<besitzer>.github.io/<repo>/` |
 | `manifest` | Name der Versionsangabe auf der Projektseite |
-| `contact` | Funktionsadresse für Rückmeldungen ohne GitHub-Konto (Ansicht Info und Projektseite) |
+| `contact` | Funktionsadresse für Rückmeldungen ohne GitHub-Konto (Ansicht **Info** und Projektseite) |
 | `checkEveryHours` | Abstand zwischen zwei Suchen beim Start, in Stunden |
 | `snoozeDays` | Tage, um die «Später erinnern» den Hinweis zurückstellt |
 | `remindAfterDays` | Alter der Datei in Tagen, ab dem der Navigator ohne erreichbare Versionsangabe erinnert |
