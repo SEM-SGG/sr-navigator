@@ -2,4 +2,10 @@ blank_issues_enabled: true
 contact_links:
   - name: Projektseite mit Download
     url: https://sem-sgg.github.io/sr-navigator/
-    about: Aktuelle Datei herunterladen und Kurzanleitung lesen.
+    about: Navigator im Browser öffnen, aktuelle Datei herunterladen und Kurzanleitung lesen.
+  - name: Produktdokumentation
+    url: https://sem-sgg.github.io/sr-navigator/dokumentation.html
+    about: Funktionen, Methodik, Netzzugriffe und Einrichtung in Deutsch, Französisch und Italienisch.
+  - name: Rückmeldung ohne GitHub-Konto
+    url: mailto:sektion-grenze@sem.admin.ch
+    about: E-Mail an die Sektion Grundlagen Grenze (SGG) im Staatssekretariat für Migration (SEM). Meldungen auf GitHub (Issues) sind dagegen öffentlich sichtbar.

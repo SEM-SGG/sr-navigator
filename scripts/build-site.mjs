@@ -1,5 +1,7 @@
-// Baut die Projektseite (GitHub Pages) nach dist/site/: index.html (Download-Seite in DE, FR, IT), version.json und
-// app/index.html (der Navigator selbst, unverändert kopiert aus dist/<asset>, zum Öffnen über einen Link).
+// Baut die Projektseite (GitHub Pages) nach dist/site/: index.html (Download-Seite in DE, FR, IT), version.json,
+// dokumentation.html (die Produktdokumentation, unverändert kopiert aus docs/sr-navigator-dokumentation.html; feste
+// Adresse <siteUrl>dokumentation.html nach der Konvention der Organisation) und app/index.html (der Navigator selbst,
+// unverändert kopiert aus dist/<asset>, zum Öffnen über einen Link).
 // Der Navigator ruft version.json ab, um auf eine neuere Version hinzuweisen (src/app/update.js).
 // Aufruf im Wurzelverzeichnis:
 //   node scripts/build-site.mjs [--date JJJJ-MM-TT] [--out dist/site] [--require-app]
@@ -11,6 +13,9 @@ import { dirname, resolve, join } from 'node:path';
 import { changelogSection } from './lib/changelog.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** Produktdokumentation im Repository und ihr Name auf der Projektseite. */
+export const DOC_SOURCE = 'docs/sr-navigator-dokumentation.html';
+export const DOC_PAGE = 'dokumentation.html';
 
 /** Versionsangabe für den Navigator: { version, date, url, notes: { de } }. url zeigt auf die Datei genau dieser Release. */
 export function buildManifest({ version, date, config, notes }) {
@@ -32,7 +37,9 @@ export function renderPage(template, { version, date, config, sizeBytes }) {
     SIZE_DE: mb ? `, rund ${mb.replace('.', ',')} MB` : '', SIZE_FR: mb ? `, environ ${mb.replace('.', ',')} Mo` : '', SIZE_IT: mb ? `, circa ${mb.replace('.', ',')} MB` : '',
     DOWNLOAD_URL: `${config.repoUrl}/releases/latest/download/${config.asset}`,
     LIST_URL: `${config.repoUrl}/releases`, REPO_URL: config.repoUrl, ISSUES_URL: `${config.repoUrl}/issues/new/choose`,
+    DOCS_URL: DOC_PAGE, CONTACT: config.contact || '', CONTACT_URL: config.contact ? `mailto:${config.contact}` : '',
   };
+  if (!/^[\w.+-]+@[\w-]+(\.[\w-]+)+$/.test(values.CONTACT)) throw new Error('release.config.json: Feld «contact» fehlt oder ist keine E-Mail-Adresse.');
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => {
     if (!(k in values)) throw new Error(`Vorlage: unbekannter Platzhalter {{${k}}}`);
     return esc(values[k]);
@@ -55,14 +62,17 @@ function main() {
     throw new Error(`dist/${config.asset} fehlt. Ohne diese Datei entsteht keine Seite unter app/. Zuerst «npm run build» ausführen oder die Datei der Release nach dist/ laden.`);
   }
   const sizeBytes = hasApp ? statSync(asset).size : null;
+  const doc = join(ROOT, DOC_SOURCE);
+  if (!existsSync(doc)) throw new Error(`${DOC_SOURCE} fehlt. Ohne diese Datei entsteht keine Seite ${DOC_PAGE}.`);
   mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'index.html'), renderPage(read('site/index.template.html'), { version, date, config, sizeBytes }));
   writeFileSync(join(out, config.manifest || 'version.json'), JSON.stringify(buildManifest({ version, date, config, notes }), null, 2) + '\n');
   writeFileSync(join(out, '.nojekyll'), '');
+  copyFileSync(doc, join(out, DOC_PAGE));
   // Navigator unter app/: dieselbe Datei wie in der Release, Byte für Byte. Ohne Build entfällt app/index.html (eine alte Kopie wird entfernt).
   if (hasApp) { mkdirSync(join(out, 'app'), { recursive: true }); copyFileSync(asset, join(out, 'app', 'index.html')); }
   else rmSync(join(out, 'app', 'index.html'), { force: true });
-  const files = ['index.html', config.manifest || 'version.json', ...(hasApp ? [`app/index.html (Kopie von dist/${config.asset})`] : [])];
+  const files = ['index.html', config.manifest || 'version.json', `${DOC_PAGE} (Kopie von ${DOC_SOURCE})`, ...(hasApp ? [`app/index.html (Kopie von dist/${config.asset})`] : [])];
   console.log(`${out.replace(ROOT + '/', '')}: ${files.join(', ')} (Version ${version} vom ${date})`);
   if (!hasApp) console.log(`dist/${config.asset} fehlt: Seite ohne app/ gebaut.`);
 }

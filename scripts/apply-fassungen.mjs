@@ -1,6 +1,7 @@
 // Baut neue Fassungen und ersetzte Dateien von Fedlex in die Bibliothek ein (Workflow «Fassungen», MAINTAINING.md):
 // Rohdaten aller eingebetteten Erlasse laden (fetch-raw.mjs, fetch-meta.mjs), Bibliothek bauen (build-data.mjs),
-// Prüfberichte erzeugen (validate.mjs, validate-refs.mjs), Version um eine Patch-Stufe erhöhen, CHANGELOG.md ergänzen.
+// Prüfberichte erzeugen (validate.mjs, validate-refs.mjs), Version um eine Patch-Stufe erhöhen (package.json,
+// package-lock.json und Versionsangaben der Produktdokumentation), CHANGELOG.md ergänzen.
 // Das Ergebnis für den Pull Request steht danach in <out>/einbau.json (scripts/fassungen-pr.mjs publish).
 // Aufruf im Wurzelverzeichnis:
 //   node scripts/apply-fassungen.mjs                          prüft Fedlex selbst (wie check-fassungen.mjs) und baut ein
@@ -19,6 +20,7 @@ import { fetchWork } from './fetch-raw.mjs';
 import { fetchMeta } from './fetch-meta.mjs';
 import { checkLibrary } from './check-fassungen.mjs';
 import { changelogSection } from './lib/changelog.mjs';
+import { DOC_FILE, setDocVersion } from './lib/dokumentation.mjs';
 import {
   findingRows, replacedStages, fingerprint, bumpVersionFiles, insertChangelog, changelogLines, commitSubject,
   stageChanges, stageDiff, stageKind, foreignChanges, judgeValidation, fmtDate, todayZurich,
@@ -89,7 +91,7 @@ export async function main(argv = process.argv.slice(2)) {
   const out = opt.out || mkdtempSync(join(tmpdir(), 'sr-einbau-'));
   mkdirSync(out, { recursive: true });
   const today = opt.today || todayZurich();
-  const before = { lib: readJson('data/library.json'), summary: readJson('data/validation-summary.json'), pkg: read('package.json'), lock: read('package-lock.json'), changelog: read('CHANGELOG.md') };
+  const before = { lib: readJson('data/library.json'), summary: readJson('data/validation-summary.json'), pkg: read('package.json'), lock: read('package-lock.json'), changelog: read('CHANGELOG.md'), doc: read(DOC_FILE) };
   const versionBefore = JSON.parse(before.pkg).version;
   const befund = opt.befund ? JSON.parse(readFileSync(opt.befund, 'utf8')) : { rows: await checkLibrary(before.lib), issue: null };
   const rows = befund.rows;
@@ -131,9 +133,12 @@ export async function main(argv = process.argv.slice(2)) {
       const built = readJson('data/library.json');
       const kinds = Object.fromEntries(found.flatMap((r) => r.newVersions.map((date) => [`${r.id}|${date}`, stageKind(built.works[r.id], date)])));
       const md = insertChangelog(before.changelog, v.version, fmtDate(today), changelogLines(rows, kinds));
+      // Die Produktdokumentation nennt dieselbe Version (Prüfung scripts/check-dokumentation.mjs in «CI» und «Release»).
+      const doc = setDocVersion(before.doc, v.version);
       writeFileSync(join(ROOT, 'package.json'), v.pkg);
       writeFileSync(join(ROOT, 'package-lock.json'), v.lock);
       writeFileSync(join(ROOT, 'CHANGELOG.md'), md);
+      writeFileSync(join(ROOT, DOC_FILE), doc);
       e.version = v.version;
       e.changelog = changelogSection(md, v.version);
       e.subject = commitSubject(v.version, rows);

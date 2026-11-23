@@ -45,7 +45,7 @@ async function open(page, url, hash = '#/bibliothek') {
 }
 const info = async (page) => { await page.evaluate(() => { location.hash = '#/info'; }); const sec = page.locator('section[aria-labelledby="vs-h"]'); await expect(sec).toBeVisible(); return sec; };
 
-test('Aktuelle Datei: genau eine Anfrage an die Versionsangabe, kein Hinweis; Info nennt Version, Prüfung und Links', async ({ page }) => {
+test('Aktuelle Datei: genau eine Anfrage an die Versionsangabe, kein Hinweis; Info nennt Version, Prüfung, Links und E-Mail-Adresse', async ({ page }) => {
   const log = await open(page, NEW);
   expect(log.requests).toEqual([MANIFEST_URL]);
   await expect(page.locator('.update-hint')).toHaveCount(0);
@@ -60,7 +60,11 @@ test('Aktuelle Datei: genau eine Anfrage an die Versionsangabe, kein Hinweis; In
     expect(await a.getAttribute('target')).toBe('_blank');
     expect(await a.getAttribute('rel')).toBe('noopener noreferrer');
   }
-  expect(hrefs).toEqual([CFG.siteUrl, LIST_URL, CFG.repoUrl, `${CFG.repoUrl}/issues/new/choose`]);
+  expect(hrefs).toEqual([CFG.siteUrl, `${CFG.siteUrl}dokumentation.html`, LIST_URL, CFG.repoUrl, `${CFG.repoUrl}/issues/new/choose`]);
+  // Rückmeldung ohne GitHub-Konto: Funktionsadresse aus release.config.json als mailto-Link, ohne neuen Tab.
+  const mail = sec.locator('.vs-contact a');
+  await expect(mail).toHaveText(CFG.contact);
+  expect(await mail.getAttribute('href')).toBe(`mailto:${CFG.contact}`);
   expect(log.errors).toEqual([]);
   expect(log.requests).toEqual([MANIFEST_URL]);
 });
