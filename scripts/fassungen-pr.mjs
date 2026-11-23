@@ -6,7 +6,7 @@
 //       führt die Tests aus und schreibt <ordner>/tests.json (Endet mit Fehler, wenn ein Test fehlschlägt.)
 //   node scripts/fassungen-pr.mjs publish --einbau <ordner>
 //       liest einbau.json (scripts/apply-fassungen.mjs) und tests.json, committet auf den festen Einbau-Zweig, pusht,
-//       eröffnet oder aktualisiert den Pull Request und startet den Workflow «CI». Endet mit Fehler, wenn Einbau,
+//       eröffnet oder aktualisiert den Pull Request. «CI» gibt ein Mensch im Pull Request frei. Endet mit Fehler, wenn Einbau,
 //       Prüfung oder Test fehlschlugen (dann ist der Pull Request ein Entwurf). Ohne Rohdaten kein Pull Request.
 // Umgebung: GH_TOKEN, GH_REPO für gh; BASE Zielzweig (Vorgabe main); PROBELAUF=true für einen Probelauf
 // (Titel «Probelauf:», immer Entwurf); PLAYWRIGHT_CONFIG für eine andere Konfiguration der Browsertests (lokal).
@@ -147,16 +147,12 @@ export function publish({ einbau }) {
     url = gh(['pr', 'create', '--base', base, '--head', branch, '--title', title, '--body-file', bodyFile, ...(draft ? ['--draft'] : [])]).trim();
     console.log(`Pull Request eröffnet${draft ? ' (Entwurf)' : ''}: ${url}`);
   }
-  // Ein Pull Request, den ein Workflow mit dem Standard-Token eröffnet, löst «CI» nicht aus; workflow_dispatch schon.
-  const ci = sh('gh', ['workflow', 'run', 'ci.yml', '--ref', branch], { allowFail: true });
-  if (ci.status !== 0) {
-    console.error(`Workflow «CI» nicht gestartet: ${(ci.stderr || '').trim()}`);
-    // Der Hinweis steht dort, wo die pflegende Person liest: Ohne ihn fehlte unter «Checks» der Lauf ohne Erklärung.
-    sh('gh', ['pr', 'comment', url, '--body', `Der Workflow «CI» ist zu diesem Pull Request nicht gestartet. Starte ihn von Hand, bevor du zusammenführst: **Actions**, Workflow «CI», **Run workflow**, Zweig \`${branch}\`.`], { allowFail: true });
-  }
+  // «CI» startet der Workflow nicht selbst: GitHub legt zum Pull Request des Standard-Tokens einen Lauf an, der auf die
+  // Freigabe eines Menschen wartet (**Approve workflows to run** im Pull Request). Ein über workflow_dispatch gestarteter
+  // Lauf erschiene nicht unter den Checks des Pull Requests (Probelauf vom 23. November 2026).
   summary(`${draft ? 'Entwurf' : 'Pull Request'}: ${url}`);
   if (failed) { console.error(`\nEinbau unvollständig:\n- ${reasons.join('\n- ')}`); return 1; }
-  return ci.status === 0 ? 0 : 1;
+  return 0;
 }
 
 function args(argv) {

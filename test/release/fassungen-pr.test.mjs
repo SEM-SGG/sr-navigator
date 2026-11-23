@@ -56,11 +56,10 @@ function sandbox() {
   const prs = () => {
     const d = join(stub, 'prs');
     if (!existsSync(d)) return [];
-    return readdirSync(d).sort().map((n) => ({ ...Object.fromEntries(['head', 'base', 'title', 'body', 'draft', 'state'].map((f) => [f, readFileSync(join(d, n, f), 'utf8')])), comments: existsSync(join(d, n, 'comments')) ? readFileSync(join(d, n, 'comments'), 'utf8') : '' }));
+    return readdirSync(d).sort().map((n) => Object.fromEntries(['head', 'base', 'title', 'body', 'draft', 'state'].map((f) => [f, readFileSync(join(d, n, f), 'utf8')])));
   };
-  const runs = () => (existsSync(join(stub, 'workflow-runs.log')) ? readFileSync(join(stub, 'workflow-runs.log'), 'utf8').trim().split('\n') : []);
   const remoteGit = (args) => git(args, remote);
-  return { dir, work, change, publish, plan, prs, runs, remoteGit };
+  return { dir, work, change, publish, plan, prs, remoteGit };
 }
 
 const row = { id: 'cc-2007-759', abbr: 'VZAE', sr: '142.201', url: 'https://www.fedlex.admin.ch/eli/cc/2007/759/de', newVersions: [], newFiles: [], changedFiles: [{ stage: '20261001', lang: 'it', url: 'https://example.invalid/it-xml-1.xml' }], error: null };
@@ -75,7 +74,7 @@ function einbau(fp, o = {}) {
 const passed = { results: [{ id: 'core', label: 'Kern mit Rohdaten (test:core)', ok: true, counts: { pass: 3 } }] };
 const failedTests = { results: [{ id: 'core', label: 'Kern mit Rohdaten (test:core)', ok: false, counts: { pass: 2, fail: 1 }, tail: 'not ok 3' }] };
 
-test('publish: eröffnet den Pull Request auf dem festen Zweig, Commit von github-actions[bot], startet CI', () => {
+test('publish: eröffnet den Pull Request auf dem festen Zweig, Commit von github-actions[bot]', () => {
   const s = sandbox();
   s.change('1.3.1');
   const r = s.publish(einbau('aaaaaaaaaaaaaaaa'), passed);
@@ -87,7 +86,6 @@ test('publish: eröffnet den Pull Request auf dem festen Zweig, Commit von githu
   assert.match(pr.body, /\nCloses #7\n$/);
   assert.equal(s.remoteGit(['log', '-1', '--format=%an <%ae>|%s', 'fassungen/einbau']), 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>|SR-Navigator 1.3.1: VZAE-Fassung vom 1. Oktober 2026 nachgeführt');
   assert.deepEqual(s.remoteGit(['diff', '--name-only', 'main', 'fassungen/einbau']).split('\n'), ['data/library.json', 'package.json'], 'nur Dateien des Einbaus');
-  assert.deepEqual(s.runs(), ['ci.yml fassungen/einbau']);
   assert.equal(s.remoteGit(['rev-parse', 'main']), s.remoteGit(['rev-parse', 'fassungen/einbau~1']), 'Zweig beginnt auf main');
 });
 
@@ -125,7 +123,6 @@ test('publish: anderer Befund überschreibt den Zweig und aktualisiert Text und 
   assert.equal(s.prs()[0].title, 'SR-Navigator 1.3.1: Fassungen von VZAE und EESV nachgeführt');
   assert.notEqual(s.remoteGit(['rev-parse', 'fassungen/einbau']), first);
   assert.equal(s.remoteGit(['rev-list', '--count', 'main..fassungen/einbau']), '1', 'Zweig überschrieben, nicht ergänzt');
-  assert.deepEqual(s.runs(), ['ci.yml fassungen/einbau', 'ci.yml fassungen/einbau']);
 });
 
 test('publish: Entwurf mit Vermerk bei fehlgeschlagenem Test, Lauf endet rot; danach wieder bereit', () => {
@@ -138,7 +135,6 @@ test('publish: Entwurf mit Vermerk bei fehlgeschlagenem Test, Lauf endet rot; da
   assert.equal(pr.draft, 'true');
   assert.match(pr.body, /\*\*Nicht zusammenführen\.\*\*/);
   assert.match(pr.body, /<!-- sr-fassungen-status: fehler -->/);
-  assert.deepEqual(s.runs(), ['ci.yml fassungen/einbau']);
   // derselbe Befund wird nach einem Fehler neu gebaut
   assert.match(s.plan({ hasFindings: true, fingerprint: 'aaaaaaaaaaaaaaaa', rows: [row] }).output, /^einbau<<(\S+)\ntrue\n\1$/m);
   const ok = s.publish(einbau('aaaaaaaaaaaaaaaa'), passed);
@@ -165,7 +161,6 @@ test('publish: ohne Rohdaten kein Pull Request, kein Push', () => {
   assert.equal(r.status, 1);
   assert.match(r.stderr, /Rohdaten von Fedlex nicht geladen: fetch failed\. Kein Pull Request; das Issue bleibt\./);
   assert.deepEqual(s.prs(), []);
-  assert.deepEqual(s.runs(), []);
   assert.equal(spawnSync('git', ['rev-parse', '--verify', '--quiet', 'refs/heads/fassungen/einbau'], { cwd: join(s.dir, 'remote.git') }).status, 1);
 });
 
@@ -178,15 +173,4 @@ test('publish: Probelauf eröffnet einen Entwurf mit «Probelauf:» auf eigenem 
   assert.deepEqual([pr.head, pr.draft], ['fassungen/probelauf-main', 'true']);
   assert.match(pr.title, /^Probelauf: SR-Navigator 1\.3\.1/);
   assert.doesNotMatch(pr.body, /Closes #/);
-  assert.deepEqual(s.runs(), ['ci.yml fassungen/probelauf-main']);
-});
-
-test('publish: CI lässt sich nicht starten, Lauf endet rot, Pull Request bleibt', () => {
-  const s = sandbox();
-  s.change('1.3.1');
-  const r = s.publish(einbau('aaaaaaaaaaaaaaaa'), passed, { GH_STUB_FAIL_WORKFLOW: '1' });
-  assert.equal(r.status, 1);
-  assert.match(r.stderr, /Workflow «CI» nicht gestartet/);
-  assert.equal(s.prs().length, 1);
-  assert.match(s.prs()[0].comments, /Workflow «CI» ist zu diesem Pull Request nicht gestartet[\s\S]*Zweig `fassungen\/einbau`/);
 });

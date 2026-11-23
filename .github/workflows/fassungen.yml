@@ -5,6 +5,7 @@ name: Fassungen
 # Workflow läuft (zeitgesteuert: main). Scheitert der Einbau, eine Prüfung oder ein Test, ist der Pull Request ein Entwurf
 # und der Lauf endet rot. Scheitert schon das Laden der Rohdaten, entsteht kein Pull Request; das Issue bleibt.
 # Ein offener Pull Request mit demselben Befund (Fingerabdruck) bleibt unverändert.
+# «CI» zum Pull Request wartet auf die Freigabe eines Menschen (Approve workflows to run).
 # Der Probelauf (manueller Start) eröffnet kein Issue und den Pull Request immer als Entwurf mit «Probelauf:» im Titel.
 # GitHub schaltet zeitgesteuerte Workflows ab, wenn im Repository 60 Tage lang nichts geschieht.
 on:
@@ -64,7 +65,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      actions: write
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}

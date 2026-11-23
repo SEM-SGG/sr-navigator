@@ -502,7 +502,7 @@ export function prText(e, tests, { probelauf = false } = {}) {
   L.push(
     '1. Vergleiche den Abschnitt «Befund» mit der Meldung auf Fedlex. Die Links in der Tabelle führen zum Erlass.',
     '2. Prüfe die Abschnitte «Prüfberichte» und «Tests». Jede Zeile zeigt «bestanden» oder «Hinweis». Unter «Übrige Erlasse und Stände» steht keine Warnung.',
-    '3. Öffne den Reiter **Checks**. Der Lauf «CI» ist grün. Er startet einige Minuten nach dem Pull Request.',
+    '3. Unten im Pull Request steht «Some checks are waiting for approval». Wähle dort **Approve workflows to run**. Der Lauf «CI» startet und ist nach einigen Minuten grün.',
     '4. Lies den Abschnitt «Text im Changelog». Du darfst ihn vor dem Zusammenführen verbessern: Öffne **Files changed**, bei `CHANGELOG.md` das Menü **…** und **Edit file**. Speichere mit **Commit changes** im selben Zweig.',
     `5. Wähle **Merge pull request**. Der Workflow «Release» veröffentlicht danach die Version ${e.version || 'mit der neuen Nummer'}.`,
     '',

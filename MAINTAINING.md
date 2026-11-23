@@ -45,7 +45,7 @@ Welche Zahl du erhöhst:
 | Lauf «Fassungen» rot, Pull Request ist ein Entwurf | Einbau, Prüfung oder Test gescheitert | Abschnitt «Wenn der Pull Request ein Entwurf ist» |
 | `Rohdaten von Fedlex nicht geladen` | Fedlex war nicht erreichbar | Workflow «Fassungen» später über **Run workflow** neu starten |
 | `GitHub Actions is not permitted to create or approve pull requests` | Einstellung für Pull Requests fehlt | Abschnitt «Einmalige Einrichtung», Schritte 4 und 5 |
-| `Workflow «CI» nicht gestartet` | Der Workflow «CI» lief zum Pull Request nicht an | Unter **Actions** den Workflow «CI» wählen, **Run workflow**, Zweig `fassungen/einbau` |
+| Im Pull Request des Workflows fehlt **Approve workflows to run**, und kein Lauf «CI» erscheint | GitHub hat zum Pull Request keinen Lauf angelegt | Im Pull Request **Close pull request** und danach **Reopen pull request** wählen. Das startet «CI». |
 
 3. Starte einen abgebrochenen Lauf «Release» unter **Actions** über **Run workflow** neu. Er holt nach, was fehlt, und legt nichts doppelt an.
 
@@ -61,7 +61,7 @@ Nutzende können neue Fassungen im Navigator selbst über **Aktualisieren** lade
 2. Lies den Abschnitt «Befund». Er zeigt dieselbe Tabelle wie das Issue.
 3. Lies den Abschnitt «Was sich ändert». Er nennt je Erlass den neuen oder ersetzten Stand und je Sprache die geänderten Bestimmungen. Bei einer ersetzten Datei stehen die bisherige und die neue Datei mit Grösse dabei.
 4. Prüfe die Abschnitte «Prüfberichte», «Übrige Erlasse und Stände» und «Tests». Woran du einen guten Pull Request erkennst, steht unten.
-5. Öffne den Reiter **Checks**. Der Lauf «CI» ist grün. Er startet einige Minuten nach dem Pull Request.
+5. Gib den Lauf «CI» frei: Unten im Pull Request steht «Some checks are waiting for approval». Wähle dort **Approve workflows to run**. GitHub verlangt diese Freigabe, weil der Pull Request von einem Workflow stammt. Nach einigen Minuten zeigt der Pull Request «CI / Tests and build» mit grünem Haken.
 6. Lies den Abschnitt «Text im Changelog». Er wird zum Text der Release. Du darfst ihn verbessern, zum Beispiel um die geänderte Bestimmung: Öffne **Files changed**, bei `CHANGELOG.md` das Menü **…** und **Edit file**. Speichere mit **Commit changes** im selben Zweig.
 7. Wähle **Merge pull request** und **Confirm merge**. Der Pull Request schliesst das Issue.
 8. Prüfe die Veröffentlichung wie im Abschnitt «Prüfen, ob die Veröffentlichung geklappt hat».
@@ -152,3 +152,5 @@ Bereits verteilte Dateien behalten die alten Adressen. Nach einer Übertragung d
 3. Starte unter **Actions** den Workflow «Release» über **Run workflow**.
 4. Öffne **Settings**, dann **Actions** und **General**.
 5. Setze unter **Workflow permissions** das Häkchen bei **Allow GitHub Actions to create and approve pull requests** und wähle **Save**. Ohne diese Einstellung eröffnet der Workflow «Fassungen» keinen Pull Request.
+
+Ist das Häkchen in Schritt 5 ausgegraut, sperrt die Organisation die Einstellung. Eine Person mit Admin-Recht in der Organisation setzt dasselbe Häkchen zuerst dort: Organisation **SEM-SGG**, **Settings**, **Actions**, **General**, **Workflow permissions**. Danach lässt es sich im Repository setzen.

@@ -608,9 +608,12 @@ Person führt einen Pull Request zusammen, statt eine Fassung mit Node.js einzub
   Prüfberichte vorher und nachher, Testergebnis und die Prüfschritte für die pflegende Person. Scheitert Einbau, Prüfung
   oder Test, ist der Pull Request ein Entwurf und der Lauf rot. Ein offener Pull Request mit demselben Fingerabdruck und
   Status «ok» bleibt unverändert.
-- **CI:** Ein Pull Request des Standard-Tokens löst «CI» nicht aus. Der Workflow startet «CI» über `workflow_dispatch` auf
-  dem Zweig.
-- **Einrichtung:** Einstellung «Allow GitHub Actions to create and approve pull requests».
+- **CI:** GitHub legt zum Pull Request des Standard-Tokens einen Lauf «CI» an, der auf Freigabe wartet. Die pflegende
+  Person gibt ihn im Pull Request mit «Approve workflows to run» frei. Der Workflow startet «CI» nicht selbst: Ein über
+  `workflow_dispatch` gestarteter Lauf legt den Check nur auf dem Commit an, er erscheint nicht unter den Checks des
+  Pull Requests (Probelauf vom 23. November 2026, Pull Request 6).
+- **Einrichtung:** Einstellung «Allow GitHub Actions to create and approve pull requests», in der Organisation und im
+  Repository.
 - **Tests:** `test/release/fassungen.test.mjs`, `test/release/fassungen-pr.test.mjs` (git gegen ein lokales Remote,
   Attrappe für `gh`). Die Tests zur EESV in `test/core/` lesen Zahl und Datum der Stände aus `raw/`, damit eine neue
   Fassung sie nicht bricht.
