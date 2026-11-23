@@ -49,10 +49,13 @@ function output(pairs) {
 const summary = (line) => { if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, line + '\n'); };
 const env = () => ({ base: process.env.BASE || 'main', probelauf: process.env.PROBELAUF === 'true' });
 
-/** Offener Pull Request des Workflows auf dem Einbau-Zweig, sonst null. */
+/**
+ * Offener Pull Request des Workflows auf dem Einbau-Zweig, sonst null. Ein Pull Request aus einem Fork mit demselben
+ * Zweignamen zählt nicht: «gh pr list --head» vergleicht nur den Namen des Zweigs.
+ */
+export const ownPr = (list) => (list || []).find((p) => !p.isCrossRepository) || null;
 export function openPr(branch, base) {
-  const list = JSON.parse(gh(['pr', 'list', '--head', branch, '--base', base, '--state', 'open', '--json', 'number,body,isDraft,url,title']) || '[]');
-  return list[0] || null;
+  return ownPr(JSON.parse(gh(['pr', 'list', '--head', branch, '--base', base, '--state', 'open', '--json', 'number,body,isDraft,url,title,isCrossRepository']) || '[]'));
 }
 
 export function plan({ befundFile }) {
@@ -121,7 +124,16 @@ export function publish({ einbau }) {
   const msg = `${e.subject || title}\n\nEingebaut vom Workflow «Fassungen» (Fingerabdruck ${e.fingerprint}).${failed ? '\nEinbau unvollständig: ' + reasons.join(' ') : ''}`;
   const id = { GIT_AUTHOR_NAME: BOT.name, GIT_AUTHOR_EMAIL: BOT.email, GIT_COMMITTER_NAME: BOT.name, GIT_COMMITTER_EMAIL: BOT.email };
   git(['commit', '--allow-empty', '--quiet', '--no-verify', '-F', '-'], { input: msg, env: id });
-  git(['push', '--force', '--quiet', 'origin', `HEAD:refs/heads/${branch}`]);
+  // Weist GitHub das Überschreiben des Zweigs zurück, löscht der Lauf den Zweig und legt ihn neu an. Ein offener
+  // Pull Request schliesst sich dabei; unten entsteht ein neuer.
+  const push = () => sh('git', ['push', '--force', '--quiet', 'origin', `HEAD:refs/heads/${branch}`], { allowFail: true });
+  let pushed = push();
+  if (pushed.status !== 0) {
+    console.error(`Push auf ${branch} abgewiesen: ${(pushed.stderr || '').trim()}\nZweiter Versuch mit neu angelegtem Zweig.`);
+    sh('git', ['push', '--quiet', 'origin', '--delete', branch], { allowFail: true });
+    pushed = push();
+    if (pushed.status !== 0) throw new Error(`git push: ${(pushed.stderr || pushed.stdout || '').trim()}`);
+  }
 
   const pr = openPr(branch, base);
   let url;

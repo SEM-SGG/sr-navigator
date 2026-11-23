@@ -77,7 +77,7 @@ function writeAtomic(file, text) {
 }
 
 /** Werk in der Form cc/2007/759; nimmt auch cc-2007-759 an. */
-export const workArg = (w) => (/^cc-\d{4}-/.test(w) ? w.replace(/^cc-(\d{4})-/, 'cc/$1/') : w);
+export const workArg = (w) => String(w).replace(/^cc-(\d+)-/, 'cc/$1/');
 
 /**
  * Lädt Metadaten und Volltexte eines Werks nach raw/<cc-jahr-nr>/. Ergebnis { id, versions, plan, done, count, bytes };
@@ -109,7 +109,9 @@ export async function fetchWork(work) {
     const v = { uri: c.cons, date, end: c.end || null, files: {} };
     for (const [l, code] of Object.entries(LANGS)) {
       const f = files.filter((x) => x.cons === c.cons && x.lang === LANG + code);
-      const pick = (fmt) => (f.find((x) => x.fmt.endsWith('/user-format/' + fmt)) || {}).file || null;
+      // bei mehreren Dateien je Format: die mit der höchsten Nummer im Dateinamen, wie normalizeVersions im Kern
+      const num = (u) => { const m = /-(\d+)\.\w+$/.exec(u || ''); return m ? +m[1] : 0; };
+      const pick = (fmt) => f.filter((x) => x.fmt.endsWith('/user-format/' + fmt)).map((x) => x.file).sort((a, b) => num(b) - num(a))[0] || null;
       v.files[l] = { xml: pick('xml'), pdf: pick('pdf-a'), html: pick('html') };
     }
     return v;

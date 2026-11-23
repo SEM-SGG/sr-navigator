@@ -5,7 +5,10 @@ import assert from 'node:assert/strict';
 import {
   bumpPatch, bumpVersionFiles, insertChangelog, changelogLines, commitSubject, fingerprint, fingerprintOf, statusOf, planPr,
   branchName, keyLabel, stageDiff, stageChanges, describeUnit, foreignChanges, judgeValidation, testCounts, prText, befundTable,
+  stageKind, MAX_BODY,
 } from '../../scripts/lib/fassungen.mjs';
+import { ownPr } from '../../scripts/fassungen-pr.mjs';
+import { workArg } from '../../scripts/fetch-raw.mjs';
 import { changelogSection, changelogDate } from '../../scripts/lib/changelog.mjs';
 
 const F = 'https://fedlex.data.admin.ch/filestore/fedlex.data.admin.ch/eli/cc/2007/759/20261001/';
@@ -275,4 +278,59 @@ test('Text des Pull Requests: Entwurf bei Fehler, bei nicht bestandener Prüfung
   const n = prText(einbau({ works: [{ id: 'x', abbr: 'EESV', sr: '142.206', replacedStages: [], newStages: [{ stage: '20270101', kind: 'fehlt', langs: {} }] }] }), okTests());
   assert.equal(n.failed, true);
   assert.match(n.body, /Die neue Fassung vom 1\. Januar 2027 fehlt nach dem Einbau/);
+});
+
+// ------------------------------------------------------------------ Befunde aus dem Review
+
+test('Neuer Stand ohne Befund ergibt eine Warnung, im betroffenen wie im übrigen Erlass', () => {
+  const { old, neu } = libs();
+  const n = structuredClone(neu);
+  n.works['w-b'].stages.push({ ...n.works['w-b'].stages[0], id: '20270101' });
+  const w = foreignChanges(old, n, { 'w-a': ['20261001'] }).find((x) => x.abbr === 'AIG');
+  assert.ok(w.text.some((t) => t.stage === '20270101' && /steht aber nicht im Befund/.test(t.units[0])));
+  const m = structuredClone(neu);
+  m.works['w-a'].stages.push({ ...m.works['w-a'].stages[0], id: '20270101' });
+  assert.ok(foreignChanges(old, m, { 'w-a': ['20261001'] }).find((x) => x.abbr === 'VZAE').text.some((t) => t.stage === '20270101'));
+  assert.deepEqual(foreignChanges(old, m, { 'w-a': ['20261001', '20270101'] }), [], 'Stand aus dem Befund ist keine Warnung');
+});
+
+test('Changelog: Fassung ohne XML und fehlende Fassung heissen nicht «enthält die neue Fassung»', () => {
+  const r = [row({ id: 'cc-2021-734', abbr: 'EESV', sr: '142.206', newVersions: ['2027-01-01', '2027-03-01', '2027-06-01'] })];
+  const lines = changelogLines(r, { 'cc-2021-734|2027-03-01': 'ohne-xml', 'cc-2021-734|2027-06-01': 'fehlt' });
+  assert.deepEqual(lines, [
+    'EESV (SR 142.206): Der Navigator enthält die neue Fassung vom 1. Januar 2027.',
+    'EESV (SR 142.206): Fedlex führt die Fassung vom 1. März 2027 ohne Text im Format XML. Der Navigator zeigt sie auf der Zeitachse, ohne Wortlaut.',
+    'EESV (SR 142.206): Die Fassung vom 1. Juni 2027 liess sich nicht einbauen.',
+  ]);
+  const b = { stages: [{ id: '20270101' }], timeline: [{ date: '2027-01-01' }, { date: '2027-03-01' }] };
+  assert.deepEqual(['2027-01-01', '2027-03-01', '2027-06-01'].map((d) => stageKind(b, d)), ['text', 'ohne-xml', 'fehlt']);
+});
+
+test('Text des Pull Requests bleibt unter der Grenze von GitHub und behält Fingerabdruck und «Closes»', () => {
+  const text = Array.from({ length: 400 }, (_, i) => ({ stage: '20250101', lang: 'de', units: Array.from({ length: 12 }, (_, k) => `Art. ${i}.${k} mit einer langen Bezeichnung`) }));
+  const e = { today: '2026-11-23', versionBefore: '1.3.1', version: '1.3.2', rows: [replacedRow()], issue: 7, fingerprint: 'abcdef0123456789', subject: 'SR-Navigator 1.3.2: Test', changelog: '- x', works: [],
+    foreign: [{ id: 'w-b', abbr: 'AIG', affected: false, text, meta: [] }], validation: null, step: null, error: null };
+  const tail = 'x'.repeat(4000);
+  const tests = { results: Array.from({ length: 30 }, (_, i) => ({ id: 't' + i, label: 'Test ' + i, ok: false, counts: {}, tail })) };
+  const { body, failed } = prText(e, tests);
+  assert.ok(failed);
+  assert.ok(body.length <= MAX_BODY, `Länge ${body.length}`);
+  assert.equal(fingerprintOf(body), 'abcdef0123456789');
+  assert.equal(statusOf(body), 'fehler');
+  assert.match(body, /Text gekürzt/);
+  assert.match(body, /\nCloses #7\n$/);
+  assert.match(body, /AIG: 380 weitere Stände und Sprachen mit Abweichungen/);
+});
+
+test('Pull Request aus einem Fork zählt nicht als Pull Request des Workflows', () => {
+  assert.equal(ownPr([{ number: 9, isCrossRepository: true }]), null);
+  assert.equal(ownPr([{ number: 9, isCrossRepository: true }, { number: 12, isCrossRepository: false }]).number, 12);
+  assert.equal(ownPr([{ number: 3 }]).number, 3);
+  assert.equal(ownPr([]), null);
+});
+
+test('fetch-raw: beide Schreibweisen des Werks, auch mit kurzem Jahr', () => {
+  assert.equal(workArg('cc-2007-759'), 'cc/2007/759');
+  assert.equal(workArg('cc/2007/759'), 'cc/2007/759');
+  assert.equal(workArg('cc-54-757_781_799'), 'cc/54/757_781_799');
 });

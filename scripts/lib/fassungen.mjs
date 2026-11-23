@@ -139,15 +139,29 @@ export function befundTable(rows) {
   return lines.join('\n');
 }
 
-/** Zeilen für CHANGELOG.md, je Befund eine. */
-export function changelogLines(rows) {
+/** Wie eine neue Fassung in der gebauten Bibliothek steht: text (Stand mit Wortlaut), ohne-xml (nur Zeitachse), fehlt. */
+export function stageKind(bundle, date) {
+  const stage = date.replace(/-/g, '');
+  if (bundle.stages.some((x) => x.id === stage)) return 'text';
+  return bundle.timeline.some((t) => t.date === date) ? 'ohne-xml' : 'fehlt';
+}
+
+/**
+ * Zeilen für CHANGELOG.md, je Befund eine. kinds: { '<werk>|<datum>': text | ohne-xml | fehlt } aus der gebauten
+ * Bibliothek (stageKind); ohne Angabe gilt text. Nur Fassungen mit Wortlaut heissen «enthält die neue Fassung».
+ */
+export function changelogLines(rows, kinds = {}) {
   const out = [];
   for (const r of findingRows(rows)) {
     const name = `${r.abbr} (SR ${r.sr})`;
-    if (r.newVersions.length) {
-      const d = joinDe(r.newVersions.map(fmtDate));
-      out.push(r.newVersions.length === 1 ? `${name}: Der Navigator enthält die neue Fassung vom ${d}.` : `${name}: Der Navigator enthält die neuen Fassungen vom ${d}.`);
+    const kind = (date) => kinds[`${r.id}|${date}`] || 'text';
+    const text = r.newVersions.filter((d) => kind(d) === 'text');
+    if (text.length) {
+      const d = joinDe(text.map(fmtDate));
+      out.push(text.length === 1 ? `${name}: Der Navigator enthält die neue Fassung vom ${d}.` : `${name}: Der Navigator enthält die neuen Fassungen vom ${d}.`);
     }
+    for (const date of r.newVersions.filter((d) => kind(d) === 'ohne-xml')) out.push(`${name}: Fedlex führt die Fassung vom ${fmtDate(date)} ohne Text im Format XML. Der Navigator zeigt sie auf der Zeitachse, ohne Wortlaut.`);
+    for (const date of r.newVersions.filter((d) => kind(d) === 'fehlt')) out.push(`${name}: Die Fassung vom ${fmtDate(date)} liess sich nicht einbauen.`);
     for (const s of replacedStages(r)) {
       const what = s.langs.length === 1 ? `die Datei in ${langList(s.langs)}` : `die Dateien in ${langList(s.langs)}`;
       out.push(`${name}, Stand vom ${fmtDate(stageDate(s.stage))}: Fedlex hat ${what} neu veröffentlicht. Der Navigator enthält jetzt die neue${s.langs.length === 1 ? '' : 'n'} Datei${s.langs.length === 1 ? '' : 'en'}.`);
@@ -228,6 +242,7 @@ export function stageDiff(oldB, newB, stageId, lang) {
       if (fnSet(av.fn) !== fnSet(bv.fn)) changes.push({ key: null, change: 'fn' });
       if (!!av.repealed !== !!bv.repealed) changes.push({ key: null, change: bv.repealed ? 'repealed' : 'inserted' });
     }
+    if (!changes.length) continue; // «fehlt» gegen «nicht vorhanden»: kein Unterschied im Wortlaut
     out.push({ unit: uid, label: unitLabel(b ? newB : oldB, uid, lang, stageId), changes });
   }
   return out;
@@ -275,7 +290,7 @@ const FIELD_DE = { units: 'Bestimmungen (Auszeichnung)', acts: 'ändernde Erlass
 /**
  * Vergleicht alte und neue Bibliothek. affected: { <werk>: [Stände] } mit neuen und ersetzten Ständen.
  * Ergebnis [{ id, abbr, affected, text: [{ stage, lang, units: [Bezeichnung] }], meta: [Feld] }]
- *   text  Wortlaut oder Fussnoten eines nicht betroffenen Stands geändert, oder Stand fehlt (Warnung)
+ *   text  Wortlaut oder Fussnoten eines nicht betroffenen Stands geändert, Stand fehlt oder Stand neu ohne Befund (Warnung)
  *   meta  andere Felder eines nicht betroffenen Erlasses geändert (Hinweis)
  */
 export function foreignChanges(oldLib, newLib, affected) {
@@ -297,6 +312,9 @@ export function foreignChanges(oldLib, newLib, affected) {
         if (units.length) r.text.push({ stage: st.id, lang: l, units });
       }
     }
+    // Ein Stand, der neu ist und nicht im Befund steht (Prüfung des Erlasses gescheitert oder Fedlex seither nachgeführt)
+    const oldStages = new Set(a.stages.map((s) => s.id));
+    for (const st of b.stages) if (!oldStages.has(st.id) && !skip.has(st.id)) r.text.push({ stage: st.id, lang: null, units: ['Stand neu in der Bibliothek, steht aber nicht im Befund'] });
     if (!isAff) r.meta = [...new Set(diffPaths(stripAllowed(a), stripAllowed(b)).map((p) => p.split('/')[1] || '/'))].map((f) => FIELD_DE[f] || f);
     if (r.text.length || r.meta.length) out.push(r);
   }
@@ -372,6 +390,9 @@ export function testCounts(output) {
 
 const VERDICT_DE = { ok: '**bestanden**', fail: '**nicht bestanden**', note: 'Hinweis' };
 const MAX_UNITS = 30;
+const MAX_WARN = 20; // Warnzeilen je Erlass unter «Übrige Erlasse und Stände»
+/** GitHub nimmt höchstens 65536 Zeichen im Text eines Pull Requests an. */
+export const MAX_BODY = 60000;
 
 function unitLines(perLang) {
   // perLang: { de: [unit], fr: [...], it: [...] } -> Zeilen; gleiche Listen werden zusammengefasst
@@ -458,7 +479,8 @@ export function prText(e, tests, { probelauf = false } = {}) {
     L.push('## Übrige Erlasse und Stände', '');
     if (!e.foreign.length) L.push('Alle übrigen Erlasse und Stände sind inhaltlich unverändert. Geändert haben sich nur Datumsangaben, Datei-Adressen und Angaben zur Herkunft der Dateien.');
     for (const w of e.foreign) {
-      for (const t of w.text) L.push(`- **Warnung:** ${w.abbr}${t.stage ? `, Stand vom ${fmtDate(stageDate(t.stage))}` : ''}${t.lang ? `, ${LANG_NAMES[t.lang]}` : ''}: ${t.units.slice(0, 12).map(cell).join(', ')}${t.units.length > 12 ? ` und ${t.units.length - 12} weitere` : ''}`);
+      for (const t of w.text.slice(0, MAX_WARN)) L.push(`- **Warnung:** ${w.abbr}${t.stage ? `, Stand vom ${fmtDate(stageDate(t.stage))}` : ''}${t.lang ? `, ${LANG_NAMES[t.lang]}` : ''}: ${t.units.slice(0, 12).map(cell).join(', ')}${t.units.length > 12 ? ` und ${t.units.length - 12} weitere` : ''}`);
+      if (w.text.length > MAX_WARN) L.push(`- **Warnung:** ${w.abbr}: ${w.text.length - MAX_WARN} weitere Stände und Sprachen mit Abweichungen.`);
       if (w.meta.length) L.push(`- Hinweis: ${w.abbr}: Fedlex hat Metadaten nachgeführt (${joinDe(w.meta)}). Der Wortlaut ist unverändert.`);
     }
     L.push('');
@@ -486,6 +508,8 @@ export function prText(e, tests, { probelauf = false } = {}) {
     '',
     'Ist der Pull Request ein Entwurf, führe ihn nicht zusammen. Das Vorgehen steht in `MAINTAINING.md`, Abschnitt «Neue Fassung einbauen».',
   );
-  if (e.issue && !probelauf) L.push('', `Closes #${e.issue}`);
-  return { title, body: L.join('\n') + '\n', failed, reasons };
+  const closes = e.issue && !probelauf ? `\nCloses #${e.issue}\n` : '';
+  let body = L.join('\n') + '\n';
+  if (body.length + closes.length > MAX_BODY) body = body.slice(0, MAX_BODY - closes.length - 200) + '\n\n… Text gekürzt, weil GitHub die Länge begrenzt. Der volle Text liegt im Artefakt «einbau» des Laufs (`pr.md`).\n';
+  return { title, body: body + closes, failed, reasons };
 }

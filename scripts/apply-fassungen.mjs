@@ -21,7 +21,7 @@ import { checkLibrary } from './check-fassungen.mjs';
 import { changelogSection } from './lib/changelog.mjs';
 import {
   findingRows, replacedStages, fingerprint, bumpVersionFiles, insertChangelog, changelogLines, commitSubject,
-  stageChanges, stageDiff, foreignChanges, judgeValidation, fmtDate, todayZurich,
+  stageChanges, stageDiff, stageKind, foreignChanges, judgeValidation, fmtDate, todayZurich,
 } from './lib/fassungen.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -127,7 +127,10 @@ export async function main(argv = process.argv.slice(2)) {
     // 4 Version und Changelog
     await step('Version und Changelog', () => {
       const v = bumpVersionFiles(before.pkg, before.lock);
-      const md = insertChangelog(before.changelog, v.version, fmtDate(today), changelogLines(rows));
+      // Der Wortlaut im Changelog folgt dem, was die gebaute Bibliothek wirklich enthält (Fassung ohne XML: nur Zeitachse).
+      const built = readJson('data/library.json');
+      const kinds = Object.fromEntries(found.flatMap((r) => r.newVersions.map((date) => [`${r.id}|${date}`, stageKind(built.works[r.id], date)])));
+      const md = insertChangelog(before.changelog, v.version, fmtDate(today), changelogLines(rows, kinds));
       writeFileSync(join(ROOT, 'package.json'), v.pkg);
       writeFileSync(join(ROOT, 'package-lock.json'), v.lock);
       writeFileSync(join(ROOT, 'CHANGELOG.md'), md);
@@ -144,9 +147,8 @@ export async function main(argv = process.argv.slice(2)) {
         const w = { id: r.id, abbr: r.abbr, sr: r.sr, newStages: [], replacedStages: [] };
         for (const date of r.newVersions) {
           const stage = date.replace(/-/g, '');
-          const s = { stage, kind: 'text', langs: {} };
-          if (!nb.stages.some((x) => x.id === stage)) s.kind = nb.timeline.some((t) => t.date === date) ? 'ohne-xml' : 'fehlt';
-          else for (const l of nb.langs) s.langs[l] = stageChanges(nb, stage, l);
+          const s = { stage, kind: stageKind(nb, date), langs: {} };
+          if (s.kind === 'text') for (const l of nb.langs) s.langs[l] = stageChanges(nb, stage, l);
           w.newStages.push(s);
           (affected[r.id] ||= []).push(stage);
         }

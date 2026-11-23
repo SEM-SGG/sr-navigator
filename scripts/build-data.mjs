@@ -2,6 +2,7 @@
 // Aufruf: node scripts/build-data.mjs [cc-2021-734 …]   (ohne Argument: alle eingebetteten Erlasse)
 import { readdirSync, readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { DOMParser } from 'linkedom';
 import { buildBundle } from '../src/core/model.js';
 import { fetchWorkMeta, fetchActsMeta, actIdsInTexts } from '../src/core/fedlex.js';
@@ -41,7 +42,7 @@ export function writeAtomic(file, text) {
   renameSync(tmp, file);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const ids = process.argv.slice(2).length ? process.argv.slice(2) : EMBEDDED;
   const out = join(ROOT, 'data', 'library.json');
   mkdirSync(join(ROOT, 'data'), { recursive: true });
