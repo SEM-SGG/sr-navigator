@@ -123,7 +123,7 @@ Mit **Run workflow** und dem Schalter **Probelauf** prüfst du den Ablauf, ohne 
 
 ### Einbau von Hand
 
-Diesen Weg geht ein Agent (Auftrag oben) oder eine Person mit Node.js auf ihrem Gerät. `node scripts/apply-fassungen.mjs` führt die Schritte 2 bis 4 in einem Lauf aus, erhöht die Version und ergänzt `CHANGELOG.md`. Die Einzelschritte:
+Diesen Weg geht ein Agent (Auftrag oben) oder eine Person mit Node.js auf ihrem Gerät. `node scripts/apply-fassungen.mjs` führt die Schritte 2 bis 4 in einem Lauf aus, erhöht die Version in `package.json`, `package-lock.json` und in der Produktdokumentation und ergänzt `CHANGELOG.md`. Die Einzelschritte:
 
 1. Klone das Repository und führe `npm ci` aus.
 2. Lade die Rohdaten des Erlasses, hier am Beispiel der VZAE:
@@ -142,7 +142,7 @@ Diesen Weg geht ein Agent (Auftrag oben) oder eine Person mit Node.js auf ihrem 
 3. Baue die Bibliothek: `node scripts/build-data.mjs`. Nach einer ersetzten Datei vergleichst du die neue `data/library.json` mit der Fassung im Repository (`git show HEAD:data/library.json`). Ändern dürfen sich nur das betroffene Werk und der betroffene Stand, dazu Datumsangaben, Datei-Adressen und die Angabe `generator` des Stands.
 4. Erzeuge die Prüfberichte: `node scripts/validate.mjs` und `node scripts/validate-refs.mjs`. Lies `data/VALIDATION.md` und `data/VALIDATION_REFS.md`.
 5. Führe `npm run test:core` und `npm run test:app` aus.
-6. Erhöhe die Version, ergänze `CHANGELOG.md`, setze die Version in der Produktdokumentation mit `node scripts/check-dokumentation.mjs --fix` und eröffne einen Pull Request. `apply-fassungen.mjs` erledigt die Version an allen drei Orten selbst.
+6. Erhöhe die Version in `package.json` und `package-lock.json`, ergänze `CHANGELOG.md`, setze die Version in der Produktdokumentation mit `node scripts/check-dokumentation.mjs --fix` und eröffne einen Pull Request. Hast du `apply-fassungen.mjs` verwendet, entfällt das Erhöhen: Das Skript setzt die Version an allen drei Orten selbst.
 7. Schliesse das Issue nach der Release.
 
 ## Zeitgesteuerter Lauf: Übergabe, Verspätung, Start von Hand
