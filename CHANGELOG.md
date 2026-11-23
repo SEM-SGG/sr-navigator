@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.3.1 (23. November 2026)
+
+- VZAE (SR 142.201), Stand vom 1. Oktober 2026: Fedlex hat die Dateien in Deutsch, Französisch und Italienisch neu veröffentlicht. Der Navigator enthält jetzt die neuen Dateien.
+
 ## 1.3.0 (18. November 2026)
 
 - Der Navigator sucht selbst nach einer neuen Version. Er ruft dazu beim Start höchstens einmal pro Tag die Versionsangabe der Projektseite ab. Die Suche lässt sich in der Ansicht «Info» abschalten und dort von Hand starten.
