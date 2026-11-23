@@ -206,7 +206,7 @@ Sprachgleichheit (Blöcke, heutiger Stand) ohne → mit Brückenregel: AIG 480/4
 
 **EESV** (1 EU-Rechtsakte): 32017R2226: «Verordnung (EU) 2017/2226» ×6
 
-**Laufzeit** AIG, alle 23 Stände × 3 Sprachen (69 Läufe, Node v22.23.4): erster (kalter) Lauf 169 ms, Median 57 ms, Maximum 169 ms (Vorgabe < 300 ms). Die ms-Spalten in den Abschnitten unten sind im selben Prozess nach vielen weiteren Läufen gemessen und enthalten Speicherbereinigung.
+**Laufzeit** AIG, alle 23 Stände × 3 Sprachen (69 Läufe, Node v22.23.4): erster (kalter) Lauf 159 ms, Median 56 ms, Maximum 159 ms (Vorgabe < 300 ms). Die ms-Spalten in den Abschnitten unten sind im selben Prozess nach vielen weiteren Läufen gemessen und enthalten Speicherbereinigung.
 
 Lesehilfe: «Art» der Ursache: **Quelle** = die Sprachfassungen sagen Verschiedenes; **Datensatz** = Blockschlüssel bzw. Gliederung der Sprachfassungen weichen ab; **Index** = Grenze der Erkennung (meist unsicher statt aufgelöst). «geprüft: ja» = am Wortlaut nachgelesen; «nein (automatisch)» = Einordnung nach Regel, nicht einzeln nachgelesen.
 
@@ -218,9 +218,9 @@ Heute geltender Stand: 20261101; früher Stand: 20200401.
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 1021 | 636 | 672 | 254 (96) | 91 | 4 | 2 | 1437 | 70 |
-| FR | 1021 | 636 | 674 | 250 (93) | 91 | 6 | 2 | 1129 | 70 |
-| IT | 1038 | 643 | 671 | 272 (94) | 91 | 4 | 3 | 1142 | 62 |
+| DE | 1021 | 636 | 672 | 254 (96) | 91 | 4 | 2 | 1437 | 69 |
+| FR | 1021 | 636 | 674 | 250 (93) | 91 | 6 | 2 | 1129 | 68 |
+| IT | 1038 | 643 | 671 | 272 (94) | 91 | 4 | 3 | 1142 | 61 |
 
 **Prüfung 1 – Sprachgleichheit:** 480 von 494 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (97.2 %); nur Zitate (ohne Nennungen ganzer Erlasse): 428 von 440 (97.3 %); je Einheit: 177 von 185 (95.7 %). Abweichungen: 14.
 
@@ -365,9 +365,9 @@ Arten der Fedlex-Zitate (DE, Ziel nach ELI-Typ): SR (citationToRs) 125, fga 595,
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 703 | 429 | 498 | 180 (62) | 21 | 4 | 0 | 1041 | 52 |
+| DE | 703 | 429 | 498 | 180 (62) | 21 | 4 | 0 | 1041 | 47 |
 | FR | 703 | 430 | 501 | 178 (61) | 21 | 3 | 0 | 797 | 51 |
-| IT | 711 | 431 | 496 | 190 (60) | 21 | 4 | 1 | 809 | 46 |
+| IT | 711 | 431 | 496 | 190 (60) | 21 | 4 | 1 | 809 | 43 |
 
 **Prüfung 1 – Sprachgleichheit:** 322 von 336 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (95.8 %); nur Zitate (ohne Nennungen ganzer Erlasse): 292 von 303 (96.4 %); je Einheit: 124 von 131 (94.7 %). Abweichungen: 14.
 
@@ -411,9 +411,9 @@ Heute geltender Stand: 20261001; früher Stand: 20210101.
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 464 | 355 | 198 | 247 (161) | 13 | 6 | 0 | 657 | 41 |
-| FR | 461 | 356 | 190 | 248 (162) | 13 | 10 | 0 | 541 | 43 |
-| IT | 460 | 355 | 190 | 246 (160) | 13 | 11 | 0 | 551 | 35 |
+| DE | 464 | 355 | 198 | 247 (161) | 13 | 6 | 0 | 657 | 37 |
+| FR | 461 | 356 | 190 | 248 (162) | 13 | 10 | 0 | 541 | 37 |
+| IT | 460 | 355 | 190 | 246 (160) | 13 | 11 | 0 | 551 | 34 |
 
 **Prüfung 1 – Sprachgleichheit:** 292 von 302 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (96.7 %); nur Zitate (ohne Nennungen ganzer Erlasse): 261 von 270 (96.7 %); je Einheit: 108 von 116 (93.1 %). Abweichungen: 10.
 
@@ -547,9 +547,9 @@ Arten der Fedlex-Zitate (DE, Ziel nach ELI-Typ): SR (citationToRs) 66, fga 1, oc
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 477 | 364 | 202 | 252 (168) | 15 | 8 | 0 | 638 | 35 |
-| FR | 474 | 367 | 194 | 253 (169) | 15 | 12 | 0 | 533 | 43 |
-| IT | 473 | 366 | 194 | 251 (167) | 15 | 13 | 0 | 539 | 40 |
+| DE | 477 | 364 | 202 | 252 (168) | 15 | 8 | 0 | 638 | 63 |
+| FR | 474 | 367 | 194 | 253 (169) | 15 | 12 | 0 | 533 | 40 |
+| IT | 473 | 366 | 194 | 251 (167) | 15 | 13 | 0 | 539 | 41 |
 
 **Prüfung 1 – Sprachgleichheit:** 298 von 309 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (96.4 %); nur Zitate (ohne Nennungen ganzer Erlasse): 268 von 278 (96.4 %); je Einheit: 107 von 116 (92.2 %). Abweichungen: 11.
 
@@ -586,9 +586,9 @@ Heute geltender Stand: 20261001; früher Stand: 20210101.
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 424 | 364 | 89 | 85 (36) | 247 | 3 | 1 | 495 | 31 |
-| FR | 423 | 364 | 90 | 84 (35) | 239 | 10 | 1 | 434 | 31 |
-| IT | 425 | 362 | 89 | 85 (37) | 233 | 18 | 1 | 436 | 35 |
+| DE | 424 | 364 | 89 | 85 (36) | 247 | 3 | 1 | 495 | 28 |
+| FR | 423 | 364 | 90 | 84 (35) | 239 | 10 | 1 | 434 | 29 |
+| IT | 425 | 362 | 89 | 85 (37) | 233 | 18 | 1 | 436 | 25 |
 
 **Prüfung 1 – Sprachgleichheit:** 261 von 283 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (92.2 %); nur Zitate (ohne Nennungen ganzer Erlasse): 227 von 245 (92.7 %); je Einheit: 54 von 63 (85.7 %). Abweichungen: 22.
 
@@ -753,9 +753,9 @@ Arten der Fedlex-Zitate (DE, Ziel nach ELI-Typ): SR (citationToRs) 39, oc 151. F
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 287 | 235 | 82 | 61 (20) | 141 | 3 | 0 | 411 | 23 |
-| FR | 287 | 237 | 83 | 60 (19) | 143 | 1 | 0 | 345 | 26 |
-| IT | 289 | 237 | 82 | 61 (21) | 144 | 2 | 0 | 370 | 17 |
+| DE | 287 | 235 | 82 | 61 (20) | 141 | 3 | 0 | 411 | 21 |
+| FR | 287 | 237 | 83 | 60 (19) | 143 | 1 | 0 | 345 | 29 |
+| IT | 289 | 237 | 82 | 61 (21) | 144 | 2 | 0 | 370 | 23 |
 
 **Prüfung 1 – Sprachgleichheit:** 187 von 193 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (96.9 %); nur Zitate (ohne Nennungen ganzer Erlasse): 164 von 168 (97.6 %); je Einheit: 50 von 55 (90.9 %). Abweichungen: 6.
 
@@ -787,9 +787,9 @@ Heute geltender Stand: 20260612; früher Stand: 20210101.
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 588 | 406 | 396 | 149 (46) | 37 | 6 | 13 | 905 | 60 |
-| FR | 586 | 403 | 395 | 148 (47) | 37 | 6 | 13 | 738 | 40 |
-| IT | 586 | 404 | 395 | 143 (46) | 37 | 11 | 13 | 747 | 38 |
+| DE | 588 | 406 | 396 | 149 (46) | 37 | 6 | 13 | 905 | 42 |
+| FR | 586 | 403 | 395 | 148 (47) | 37 | 6 | 13 | 738 | 51 |
+| IT | 586 | 404 | 395 | 143 (46) | 37 | 11 | 13 | 747 | 51 |
 
 **Prüfung 1 – Sprachgleichheit:** 303 von 313 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (96.8 %); nur Zitate (ohne Nennungen ganzer Erlasse): 259 von 268 (96.6 %); je Einheit: 129 von 135 (95.6 %). Abweichungen: 10.
 
@@ -970,9 +970,9 @@ Arten der Fedlex-Zitate (DE, Ziel nach ELI-Typ): SR (citationToRs) 91, fga 474, 
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 458 | 305 | 322 | 121 (34) | 9 | 6 | 12 | 717 | 50 |
-| FR | 458 | 304 | 323 | 120 (35) | 9 | 6 | 12 | 608 | 42 |
-| IT | 456 | 303 | 321 | 121 (34) | 9 | 5 | 12 | 617 | 41 |
+| DE | 458 | 305 | 322 | 121 (34) | 9 | 6 | 12 | 717 | 32 |
+| FR | 458 | 304 | 323 | 120 (35) | 9 | 6 | 12 | 608 | 33 |
+| IT | 456 | 303 | 321 | 121 (34) | 9 | 5 | 12 | 617 | 30 |
 
 **Prüfung 1 – Sprachgleichheit:** 221 von 239 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (92.5 %); nur Zitate (ohne Nennungen ganzer Erlasse): 187 von 204 (91.7 %); je Einheit: 110 von 115 (95.7 %). Abweichungen: 18.
 
@@ -1055,9 +1055,9 @@ Heute geltender Stand: 20261001; früher Stand: 20220501.
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 50 | 43 | 21 | 23 (10) | 6 | 0 | 0 | 124 | 5 |
+| DE | 50 | 43 | 21 | 23 (10) | 6 | 0 | 0 | 124 | 6 |
 | FR | 50 | 43 | 21 | 23 (10) | 6 | 0 | 0 | 113 | 5 |
-| IT | 49 | 42 | 21 | 22 (10) | 5 | 1 | 0 | 113 | 4 |
+| IT | 49 | 42 | 21 | 22 (10) | 5 | 1 | 0 | 113 | 5 |
 
 **Prüfung 1 – Sprachgleichheit:** 37 von 39 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (94.9 %); nur Zitate (ohne Nennungen ganzer Erlasse): 28 von 29 (96.6 %); je Einheit: 21 von 23 (91.3 %). Abweichungen: 2.
 
@@ -1165,8 +1165,8 @@ Arten der Fedlex-Zitate (DE, Ziel nach ELI-Typ): SR (citationToRs) 15, oc 12. Fe
 
 | Sprache | Refs | Fundstellen | intern | SR (davon Bibliothek) | EU | unsicher | fehlt am Stand | Blöcke | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| DE | 49 | 43 | 21 | 21 (8) | 6 | 1 | 0 | 119 | 7 |
-| FR | 49 | 43 | 21 | 21 (8) | 6 | 1 | 0 | 108 | 5 |
+| DE | 49 | 43 | 21 | 21 (8) | 6 | 1 | 0 | 119 | 5 |
+| FR | 49 | 43 | 21 | 21 (8) | 6 | 1 | 0 | 108 | 7 |
 | IT | 49 | 43 | 21 | 21 (8) | 5 | 2 | 0 | 108 | 5 |
 
 **Prüfung 1 – Sprachgleichheit:** 38 von 39 Blöcken mit Verweisen haben in DE, FR und IT dieselbe Zielmenge (97.4 %); nur Zitate (ohne Nennungen ganzer Erlasse): 27 von 28 (96.4 %); je Einheit: 22 von 23 (95.7 %). Abweichungen: 1.

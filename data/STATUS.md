@@ -3,12 +3,6 @@
 Stand: 16. November 2026. `data/library.json` (schema 2): order `cc-2007-758` AIG, `cc-2007-759` VZAE, `cc-2018-493` VEV,
 `cc-1999-358` AsylG, `cc-2021-734` EESV (EESV auf Entscheid vom 15. November zusätzlich eingebettet). Prüfbericht `data/VALIDATION.md`.
 
-Nachtrag 18. November 2026 (Version 1.3.1): Fedlex hat die Dateien der VZAE-Fassung 20261001 in DE, FR und IT ersetzt
-(`…-20261001-<lang>-xml-1.xml` statt `…-xml.xml`). Rohdaten und Metadaten der VZAE sind am 18. November 2026 neu abgerufen
-(`fetched` 2026-11-18), die der übrigen Erlasse stammen vom 12. bis 15. November 2026. Geändert hat sich nur der italienische
-Wortlaut von Art. 83a Abs. 1 und die Fussnoten zu Art. 83a Abs. 1 und Art. 87 Abs. 1bis Bst. g (IT). `fetch-raw.mjs` lädt
-eine vorhandene Datei neu, wenn ihre Adresse bei Fedlex von der in `versions.json` gespeicherten abweicht.
-
 Reproduzieren: `node scripts/fetch-meta.mjs <id …>` (SPARQL-Antworten nach `raw/<id>/fedlex/`, nur bei neuem Abruf),
 `node scripts/build-data.mjs` (ca. 15 s), `node scripts/validate.mjs [--no-net]` (ca. 90 s), `node --test test/core/*.test.mjs`
 (26 Tests; Netztest mit `SR_NO_NET=1` abschaltbar).
