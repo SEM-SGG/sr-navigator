@@ -72,11 +72,12 @@ Voraussetzung ist Node.js. Geprüft ist der Build mit Node.js 22.
 | --- | --- | --- |
 | Abhängigkeiten installieren | `npm ci` | Ordner `node_modules/` |
 | Navigator bauen | `npm run build` | `dist/sr-navigator.html` |
-| Projektseite bauen | `npm run site` | `dist/site/` mit `index.html` und `version.json` |
+| Projektseite bauen | `npm run site` | `dist/site/` mit `index.html`, `version.json` und dem Navigator unter `app/index.html` |
 | Kern testen | `npm run test:core` | Parser, Datenmodell, Fedlex-Abruf, Verweis-Index |
 | Veröffentlichung testen | `npm run test:release` | Skript für die Release |
 | Oberfläche testen | `npm run test:app` | Unit-Tests und Browsertests in Chrome, Firefox und Edge |
 | Fedlex auf neue Fassungen prüfen | `npm run check:fassungen` | Befund als Tabelle, ohne Issue |
+| Neue Fassungen einbauen | `npm run apply:fassungen` | Rohdaten, Bibliothek, Prüfberichte, Version und `CHANGELOG.md` |
 
 Der volle Testlauf braucht den Ordner `raw/` mit den Rohdaten von Fedlex (rund 110 MB). Der Ordner liegt nicht im Repository. Fehlt er, überspringt der Kern sieben Tests und die Oberfläche fünf Browsertests. So lädst du die Rohdaten:
 

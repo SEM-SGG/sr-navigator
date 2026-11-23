@@ -1,7 +1,8 @@
 // Browsertests: Versionsprüfung über die Projektseite, Hinweis auf eine neuere Version, Abschnitt «Version» in Info.
 // Die Versionsangabe ist immer eine Attrappe (pw.mjs); kein Test fragt die echte Projektseite ab.
 // Varianten aus global-setup: sr-navigator-alt.html (Build-Datum 1. Juni 2026), sr-navigator-ohne-pruefung.html.
-import { test, expect, VERSION, CFG, MANIFEST_URL, LIST_URL, DOWNLOAD_URL, manifestRoute, currentManifest, updateSettled } from './pw.mjs';
+// Gehostete Fassung: dieselbe Datei unter <siteUrl>app/, ausgeliefert über hostedRoute (pw.mjs), ohne Netz.
+import { test, expect, VERSION, CFG, MANIFEST_URL, LIST_URL, DOWNLOAD_URL, HOSTED_URL, manifestRoute, hostedRoute, currentManifest, updateSettled } from './pw.mjs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync } from 'node:fs';
@@ -10,6 +11,8 @@ import { layoutCheck } from './helpers.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const NEW = 'file://' + join(ROOT, 'dist/sr-navigator.html');
 const OLD = 'file://' + join(ROOT, 'test/app/out/sr-navigator-alt.html');
+const NEW_FILE = join(ROOT, 'dist/sr-navigator.html');
+const OLD_FILE = join(ROOT, 'test/app/out/sr-navigator-alt.html');
 const PLAIN = 'file://' + join(ROOT, 'test/app/out/sr-navigator-ohne-pruefung.html');
 const SHOTS = join(ROOT, 'test/app/out/shots-release');
 mkdirSync(SHOTS, { recursive: true });
@@ -177,6 +180,126 @@ test('Build ohne Versionsprüfung: keine Anfrage, kein Schalter, CSP ohne Projek
   const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
   expect(csp).toContain('connect-src https://fedlex.data.admin.ch;');
   expect(log.requests).toEqual([]);
+});
+
+/** Öffnet die gehostete Fassung. Hält Konsolenfehler, Seitenfehler, Verstösse gegen die CSP und Anfragen ausserhalb von file: fest. */
+async function openHosted(page, hash = '#/bibliothek') {
+  const log = { errors: [], csp: [], requests: [] };
+  page.on('console', (m) => { if (m.type() === 'error') log.errors.push(m.text()); });
+  page.on('pageerror', (e) => log.errors.push('pageerror: ' + e.message));
+  page.on('request', (r) => { const u = r.url(); if (!/^(data|blob):/.test(u) && !u.endsWith('/favicon.ico')) log.requests.push(u.replace(/#.*$/, '')); });
+  await page.exposeFunction('__cspViolation', (v) => log.csp.push(v));
+  await page.addInitScript(() => document.addEventListener('securitypolicyviolation', (e) => window.__cspViolation(`${e.violatedDirective} ${e.blockedURI}`)));
+  await page.goto(HOSTED_URL + hash);
+  await page.waitForFunction(() => window.__sr && window.__sr.ready, null, { timeout: 30000 });
+  await updateSettled(page);
+  return log;
+}
+const ready = async (page) => { await page.waitForFunction(() => window.__sr && window.__sr.ready, null, { timeout: 30000 }); await updateSettled(page); };
+
+test('Gehostete Fassung: Start ohne Konsolenfehler und CSP-Verstoss; Info mit Texten der gehosteten Fassung; Schalter übersteht das Neuladen', async ({ page }) => {
+  const served = await hostedRoute(page, NEW_FILE);
+  const log = await openHosted(page);
+  expect(await page.evaluate(() => location.origin)).toBe(new URL(CFG.siteUrl).origin);
+  expect(log.requests).toEqual([HOSTED_URL, MANIFEST_URL]);
+  await expect(page.locator('.update-hint')).toHaveCount(0);
+  const sec = await info(page);
+  const host = new URL(CFG.siteUrl).host;
+  await expect(sec.locator('.vs-hosted')).toHaveText(`Der Navigator ist im Browser von ${host} geladen. Neue Versionen erscheinen beim Laden der Seite.`);
+  await expect(sec.locator('.vs-status')).toHaveText(/^Geprüft am .+: Diese Seite zeigt die aktuelle Version\.$/);
+  for (const text of await sec.locator('.vs-line, .vs-status, .vs-actions').allTextContents()) expect(text).not.toContain('Datei');
+  const off = sec.getByRole('link', { name: 'Datei für die Nutzung ohne Netz herunterladen' });
+  expect(await off.getAttribute('href')).toBe(DOWNLOAD_URL);
+  expect(await off.getAttribute('rel')).toBe('noopener noreferrer');
+  await sec.scrollIntoViewIfNeeded();
+  await sec.screenshot({ path: join(SHOTS, '1440-de-gehostet-info.png') });
+  // Einstellung in IndexedDB unter dem https-Ursprung: Schalter aus, Neuladen, Schalter bleibt aus, keine Anfrage.
+  await sec.locator('.vs-check input').uncheck();
+  await page.waitForTimeout(300);
+  await resetTried(page);
+  await page.reload();
+  await ready(page);
+  expect(served.count).toBe(2);
+  const sec2 = await info(page);
+  await expect(sec2.locator('.vs-check input')).not.toBeChecked();
+  expect(log.requests).toEqual([HOSTED_URL, MANIFEST_URL, HOSTED_URL]);
+  for (const lang of ['fr', 'it']) {
+    await page.evaluate((l) => { location.hash = `#/info?ui=${l}`; }, lang);
+    await page.reload();
+    await ready(page);
+    const s = await info(page);
+    expect(await s.textContent()).not.toContain('⟦');
+    await expect(s.locator('.vs-hosted')).toContainText(host);
+  }
+  expect(log.errors).toEqual([]);
+  expect(log.csp).toEqual([]);
+});
+
+test('Gehostete Fassung, alte Datei ohne erreichbare Versionsangabe: kein Hinweis nach Alter', async ({ page }) => {
+  await manifestRoute(page, 'offline');
+  await hostedRoute(page, OLD_FILE);
+  const log = await openHosted(page);
+  await expect(page.locator('.update-hint')).toHaveCount(0);
+  const sec = await info(page);
+  await expect(sec).toContainText('Version ' + VERSION);
+  await expect(sec.locator('.vs-line').first()).not.toContainText('Tage alt');
+  expect(log.errors.filter((e) => !/ERR_INTERNET_DISCONNECTED|Failed to load resource/.test(e))).toEqual([]);
+  expect(log.csp).toEqual([]);
+});
+
+test('Gehostete Fassung, neuere Version: Hinweis mit «Seite neu laden»; der Klick lädt die Seite neu; «Später erinnern» übersteht das Neuladen', async ({ page }) => {
+  const m = await manifestRoute(page, newer());
+  const served = await hostedRoute(page, NEW_FILE);
+  const log = await openHosted(page);
+  const hint = page.locator('.update-hint');
+  await expect(hint).toBeVisible();
+  await expect(hint).toHaveAttribute('data-kind', 'newer');
+  await expect(hint.locator('.uh-text')).toHaveText(`Eine neue Version des SR-Navigators ist verfügbar: ${NEXT} vom 12. Dezember 2026. Diese Seite zeigt Version ${VERSION}.`);
+  await expect(hint.locator('.uh-sub')).toHaveCount(0);
+  await expect(hint.locator('a.btn-primary')).toHaveCount(0);
+  await expect(hint.getByRole('button', { name: 'Seite neu laden' })).toBeVisible();
+  expect(await hint.getByRole('link', { name: 'Was ist neu' }).getAttribute('href')).toBe(LIST_URL);
+  await page.screenshot({ path: join(SHOTS, '1440-de-gehostet-neue-version.png') });
+  // Info: Stand der Prüfung und «Seite neu laden» statt Download
+  const sec = await info(page);
+  await expect(sec.locator('.vs-status')).toContainText(`Version ${NEXT} ist verfügbar`);
+  await expect(sec.locator('.vs-actions a')).toHaveCount(0);
+  await expect(sec.locator('.vs-actions').getByRole('button', { name: 'Seite neu laden' })).toBeVisible();
+  // Der Klick lädt die Seite neu. Die Attrappe liefert dieselbe Datei, darum bleibt der Hinweis; am selben Tag keine zweite Prüfung.
+  await page.evaluate(() => { window.__vorNeuladen = true; });
+  await Promise.all([page.waitForEvent('load'), hint.getByRole('button', { name: 'Seite neu laden' }).click()]);
+  await ready(page);
+  expect(await page.evaluate(() => window.__vorNeuladen)).toBeUndefined();
+  expect(served.count).toBe(2);
+  expect(m.count).toBe(1);
+  await expect(hint).toBeVisible();
+  await hint.getByRole('button', { name: 'Später erinnern' }).click();
+  await expect(hint).toHaveCount(0);
+  await page.waitForTimeout(300);
+  await page.reload();
+  await ready(page);
+  expect(served.count).toBe(3);
+  await expect(page.locator('.update-hint')).toHaveCount(0);
+  expect(log.errors).toEqual([]);
+  expect(log.csp).toEqual([]);
+});
+
+test('Gehostete Fassung, Hinweis FR und IT: Texte und Schaltfläche ohne Überlauf bei 1024 px', async ({ page }) => {
+  await manifestRoute(page, newer());
+  await hostedRoute(page, NEW_FILE);
+  await page.setViewportSize({ width: 1024, height: 900 });
+  for (const [lang, word] of [['fr', 'Recharger la page'], ['it', 'Ricaricare la pagina'], ['de', 'Seite neu laden']]) {
+    await page.goto('about:blank');
+    await page.goto(HOSTED_URL + `#/bibliothek?ui=${lang}`);
+    await ready(page);
+    const hint = page.locator('.update-hint');
+    await expect(hint).toBeVisible();
+    await expect(hint.locator('button.btn-primary')).toHaveText(word);
+    expect(await hint.textContent()).not.toContain('⟦');
+    const issues = await page.evaluate(layoutCheck);
+    expect(issues, `${lang} 1024px: ${JSON.stringify(issues).slice(0, 400)}`).toEqual([]);
+    await page.screenshot({ path: join(SHOTS, `1024-${lang}-gehostet-neue-version.png`) });
+  }
 });
 
 for (const [lang, word] of [['fr', 'Télécharger la dernière version'], ['it', 'Scaricare la versione più recente'], ['de', 'Neueste Version herunterladen']]) {

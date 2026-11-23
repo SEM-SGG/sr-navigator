@@ -73,7 +73,8 @@ export function go(patch, { replace = false } = {}) {
 }
 export function useRoute() {
   const [st, set] = useState(current);
-  useEffect(() => { const f = (s) => set(s); subs.add(f); return () => subs.delete(f); }, []);
+  // Ändert sich der Zustand zwischen dem ersten Rendern und der Anmeldung, holt die Komponente den Wert hier nach.
+  useEffect(() => { const f = (s) => set(s); subs.add(f); if (current !== st) set(current); return () => subs.delete(f); }, []);
   return st;
 }
 
@@ -86,7 +87,8 @@ export function createStore(initial) {
     set: (v) => { value = typeof v === 'function' ? v(value) : v; for (const f of ls) f(value); },
     use() {
       const [v, setV] = useState(value);
-      useEffect(() => { const f = (x) => setV(() => x); ls.add(f); return () => ls.delete(f); }, []);
+      // Wie in useRoute: Ein Wert, der vor der Anmeldung gesetzt wurde, ginge sonst bis zum nächsten Rendern verloren.
+      useEffect(() => { const f = (x) => setV(() => x); ls.add(f); if (value !== v) f(value); return () => ls.delete(f); }, []);
       return v;
     },
   };

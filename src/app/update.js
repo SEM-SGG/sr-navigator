@@ -8,7 +8,7 @@ import { releaseInfo, parseManifest, shouldAutoCheck } from './lib/release.js';
 /** Zustand der laufenden Sitzung: { status: 'idle' | 'checking' | 'done' | 'failed', manual } */
 export const updateStore = createStore({ status: 'idle', manual: false });
 
-const info = () => releaseInfo(typeof window !== 'undefined' ? window.__srMeta : null);
+const info = () => (typeof window !== 'undefined' ? releaseInfo(window.__srMeta, location.href) : releaseInfo(null));
 const patch = (p) => { settingsStore.set({ ...settingsStore.get(), ...p }); persistSettings(); };
 
 export async function checkForUpdate({ manual = false } = {}) {

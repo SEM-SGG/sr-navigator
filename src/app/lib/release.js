@@ -2,6 +2,8 @@
 // Der Abruf der Versionsangabe liegt in src/app/update.js, die Oberfläche in src/app/ui/updatehint.js.
 // Die Adressen kommen aus release.config.json (beim Build eingebettet). Verwendet werden nur Adressen der Form
 // https://github.com/<besitzer>/<repo>/… und https://<besitzer>.github.io/<repo>/…
+// Dieselbe Datei liegt auch auf der Projektseite unter app/ («gehostete Fassung»). releaseInfo erkennt das an der Adresse
+// der Seite; dann entfallen der Hinweis nach Alter und der Download-Hinweis, und eine neue Version kommt mit dem Neuladen.
 
 const DAY = 86400000;
 const HOUR = 3600000;
@@ -10,8 +12,14 @@ export const FRESH_DAYS = 14;
 
 const num = (v, fallback) => (Number.isFinite(v) && v > 0 ? v : fallback);
 
-/** Angaben zur Veröffentlichung aus den eingebetteten Metadaten. Fehlt die Konfiguration, gibt es weder Prüfung noch Hinweis. */
-export function releaseInfo(meta) {
+/** Liegt die Seite unter der Projektseite? Nur https und nur als Präfix der validierten siteUrl (endet auf «/»). */
+const isHosted = (href, siteUrl) => !!siteUrl && typeof href === 'string' && href.startsWith('https:') && href.startsWith(siteUrl);
+
+/**
+ * Angaben zur Veröffentlichung aus den eingebetteten Metadaten. Fehlt die Konfiguration, gibt es weder Prüfung noch Hinweis.
+ * href ist die Adresse der Seite (location.href); hosted ist true, wenn sie unter siteUrl liegt.
+ */
+export function releaseInfo(meta, href) {
   const m = meta || {};
   const r = m.release && typeof m.release === 'object' ? m.release : null;
   const repoUrl = r && typeof r.repoUrl === 'string' && /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+$/.test(r.repoUrl) ? r.repoUrl : null;
@@ -27,6 +35,7 @@ export function releaseInfo(meta) {
     issuesUrl: repoUrl ? `${repoUrl}/issues/new/choose` : null,
     siteUrl,
     siteHost: siteUrl ? new URL(siteUrl).host : null,
+    hosted: isHosted(href, siteUrl),
     manifestUrl: siteUrl && manifest ? siteUrl + manifest : null,
     checkEveryMs: num(r && r.checkEveryHours, 24) * HOUR,
     remindAfterDays: num(r && r.remindAfterDays, 60),
@@ -95,6 +104,7 @@ const snoozed = (settings, key, now) => {
  * Welcher Hinweis erscheint unter der Kopfzeile?
  *   { kind: 'newer', version, date, url, key }  die Prüfung hat eine neuere Version gefunden
  *   { kind: 'age', days, url, key }             keine frische Prüfung, und die Datei ist älter als remindAfterDays
+ *                                               (nicht in der gehosteten Fassung: Sie ist beim Laden aktuell)
  *   { kind: 'none' }
  * «Später erinnern» stellt genau diesen Hinweis zurück (key). Eine noch neuere Version erscheint trotzdem.
  */
@@ -105,7 +115,7 @@ export function hintState(info, settings, now = Date.now()) {
     const key = 'v' + last.version;
     return snoozed(settings, key, now) ? { kind: 'none', snoozed: true } : { kind: 'newer', version: last.version, date: last.date, url: last.url, key };
   }
-  if (last && last.fresh) return { kind: 'none' };
+  if ((last && last.fresh) || info.hosted) return { kind: 'none' };
   const days = info.built ? ageDays(info.built, now) : 0;
   if (days < info.remindAfterDays) return { kind: 'none' };
   return snoozed(settings, 'age', now) ? { kind: 'none', snoozed: true } : { kind: 'age', days, url: info.downloadUrl, key: 'age' };

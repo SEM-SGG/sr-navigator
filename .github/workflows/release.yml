@@ -1,7 +1,8 @@
 name: Release
 
 # Veröffentlicht eine neue Version, sobald «version» in package.json auf main steigt, und stellt danach die Projektseite
-# mit der Versionsangabe (version.json) bereit. Der Navigator liest diese Angabe, um auf neue Versionen hinzuweisen.
+# mit der Versionsangabe (version.json) und dem Navigator unter app/ bereit. Der Navigator liest diese Angabe, um auf neue
+# Versionen hinzuweisen.
 # Der manuelle Start wiederholt einen unterbrochenen Lauf. Besteht die Release schon, baut er nur die Projektseite neu.
 on:
   push:
@@ -86,7 +87,7 @@ jobs:
           asset="$(node scripts/release-info.mjs --asset)"
           date="$(gh release view "v${version}" --json publishedAt --jq '.publishedAt[0:10]')"
           gh release download "v${version}" --pattern "${asset}" --dir dist
-          node scripts/build-site.mjs --date "${date}"
+          node scripts/build-site.mjs --date "${date}" --require-app
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -107,8 +107,9 @@ test('EESV aus raw/: Abfragen auf dem echten Bundle', { skip: !RAW_OK && RAW_SKI
   assert.equal(ds.schema, 2);
   assert.equal(ds.work.sr, '142.206');
   assert.equal(ds.work.base, 'oc/2021/734');
-  assert.equal(ds.timeline.length, 6);
-  assert.deepEqual(ds.stages.map((s) => s.id), ['20220501', '20230901', '20230913', '20240101', '20260612', '20261001']);
+  // Spätere Fassungen in raw/ kommen hinzu; die ersten sechs Stände bleiben.
+  assert.ok(ds.timeline.length >= 6);
+  assert.deepEqual(ds.stages.map((s) => s.id).slice(0, 6), ['20220501', '20230901', '20230913', '20240101', '20260612', '20261001']);
   assert.equal(stageAt(ds, '2026-09-30'), '20260612');
   assert.equal(stageAt(ds, '2026-10-01'), '20261001');
   assert.equal(stageAt(ds, '2022-04-30'), null);

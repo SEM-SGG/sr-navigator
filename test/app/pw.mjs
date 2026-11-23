@@ -1,6 +1,7 @@
 // Gemeinsame Grundlage der Browsertests: ersetzt die Versionsangabe der Projektseite durch eine Attrappe.
 // Ohne sie fragte jeder Test beim Start die echte Projektseite ab. Die Attrappe meldet die Version dieser Datei,
 // also «aktuell». Tests, die etwas anderes brauchen, setzen mit manifestRoute() eine eigene Antwort.
+// hostedRoute() liefert eine gebaute Datei unter <siteUrl>app/ aus (gehostete Fassung), ebenfalls ohne Netz.
 import { test as base, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
@@ -23,6 +24,27 @@ export async function manifestRoute(target, answer) {
     if (answer === 'offline') return route.abort('internetdisconnected');
     if (typeof answer === 'number') return route.fulfill({ status: answer, headers: HEAD, body: '{}' });
     return route.fulfill({ status: 200, headers: HEAD, body: JSON.stringify(answer) });
+  });
+  return log;
+}
+
+export const HOSTED_URL = CFG.siteUrl + 'app/';
+const SITE_ORIGIN = new URL(CFG.siteUrl).origin;
+
+/**
+ * Liefert die Datei file unter HOSTED_URL (auch app/index.html) aus, als wäre sie auf der Projektseite. Alle anderen
+ * Anfragen an den Ursprung der Projektseite ausser der Versionsangabe enden mit 404 (etwa favicon.ico); nichts geht ins Netz.
+ */
+export async function hostedRoute(target, file) {
+  const log = { count: 0 };
+  const body = readFileSync(file);
+  await target.route((u) => u.origin === SITE_ORIGIN && u.href !== MANIFEST_URL, (route) => {
+    const u = new URL(route.request().url());
+    if (u.origin + u.pathname === HOSTED_URL || u.origin + u.pathname === HOSTED_URL + 'index.html') {
+      log.count++;
+      return route.fulfill({ status: 200, headers: { 'content-type': 'text/html; charset=utf-8' }, body });
+    }
+    return route.fulfill({ status: 404, headers: { 'content-type': 'text/plain' }, body: 'nicht vorhanden' });
   });
   return log;
 }
