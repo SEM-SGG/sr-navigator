@@ -58,9 +58,10 @@ test('loadWork mit fetch aus raw/ ergibt dasselbe Bundle wie der Build (EESV)', 
   const b = await loadWork('cc-2021-734', { fetch: rawFetch('cc-2021-734', { stats, missing }), DOMParser, today: fetchedDate('cc-2021-734'), onProgress: (p) => progress.push(p) });
   const { bundle } = await buildFromRaw('cc-2021-734');
   assert.deepEqual(missing, []);
-  assert.equal(stats.files, 18);
+  const files = bundle.stages.length * bundle.langs.length; // je Stand eine Datei je Sprache; folgt neuen Fassungen in raw/
+  assert.equal(stats.files, files);
   assert.deepEqual(JSON.parse(JSON.stringify(b)), JSON.parse(JSON.stringify(bundle)));
-  assert.ok(progress.some((p) => p.phase === 'download' && p.done === 18));
+  assert.ok(progress.some((p) => p.phase === 'download' && p.done === files));
   assert.ok(progress.some((p) => p.phase === 'parse'));
 });
 
@@ -86,7 +87,7 @@ test('checkUpdates und updateWork ohne neue Fassung ändern nichts', { skip: !RA
   // eine fehlende Fassung wird erkannt
   const older = { ...bundle, timeline: bundle.timeline.slice(0, -1), stages: bundle.stages.slice(0, -1) };
   const chk2 = await checkUpdates(older, { fetch });
-  assert.deepEqual(chk2.newVersions.map((v) => v.date), ['2026-10-01']);
+  assert.deepEqual(chk2.newVersions.map((v) => v.date), [bundle.timeline[bundle.timeline.length - 1].date]);
 });
 
 test('Echter Abruf gegen Fedlex: Suche und loadWork (GebV-AIG, SR 142.209)', { skip: !NET && 'SR_NO_NET=1', timeout: 120000 }, async () => {

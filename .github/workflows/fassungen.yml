@@ -1,21 +1,45 @@
 name: Fassungen
 
 # Prüft jeden Montag, ob Fedlex neue Fassungen der eingebetteten Erlasse führt, und eröffnet dazu ein Issue.
+# Bei einem Befund baut der Job «einbau» die Fassungen ein und eröffnet einen Pull Request gegen den Zweig, auf dem der
+# Workflow läuft (zeitgesteuert: main). Scheitert der Einbau, eine Prüfung oder ein Test, ist der Pull Request ein Entwurf
+# und der Lauf endet rot. Scheitert schon das Laden der Rohdaten, entsteht kein Pull Request; das Issue bleibt.
+# Ein offener Pull Request mit demselben Befund (Fingerabdruck) bleibt unverändert.
+# «CI» zum Pull Request wartet auf die Freigabe eines Menschen (Approve workflows to run).
+# Der Probelauf (manueller Start) eröffnet kein Issue und den Pull Request immer als Entwurf mit «Probelauf:» im Titel.
 # GitHub schaltet zeitgesteuerte Workflows ab, wenn im Repository 60 Tage lang nichts geschieht.
 on:
   schedule:
     - cron: "23 5 * * 1"
   workflow_dispatch:
+    inputs:
+      probelauf:
+        description: "Probelauf: kein Issue, Pull Request als Entwurf mit «Probelauf:» im Titel"
+        type: boolean
+        default: false
 
-permissions:
-  contents: read
-  issues: write
+permissions: {}
+
+concurrency:
+  group: fassungen-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BASE: ${{ github.ref_name }}
+  PROBELAUF: ${{ inputs.probelauf && 'true' || 'false' }}
 
 jobs:
   check:
     name: Check Fedlex for new versions
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      einbau: ${{ steps.plan.outputs.einbau }}
+      befund: ${{ steps.plan.outputs.befund }}
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -25,4 +49,66 @@ jobs:
         with:
           node-version: 22
       - name: Compare the embedded acts with Fedlex
-        run: node scripts/check-fassungen.mjs --issue
+        run: |
+          if [ "$PROBELAUF" = true ]; then issue=""; else issue="--issue"; fi
+          node scripts/check-fassungen.mjs $issue --out "$RUNNER_TEMP/befund.json"
+      - name: Decide whether to build a pull request
+        id: plan
+        run: node scripts/fassungen-pr.mjs plan --befund "$RUNNER_TEMP/befund.json"
+
+  einbau:
+    name: Build the new versions and open a pull request
+    needs: check
+    if: needs.check.outputs.einbau == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      BEFUND: ${{ needs.check.outputs.befund }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      # Der Zwischenspeicher beschleunigt nur. Ohne ihn lädt der Einbau alle Rohdaten neu (rund 110 MB).
+      - name: Restore the Fedlex raw data
+        uses: actions/cache/restore@v4
+        with:
+          path: raw
+          key: fedlex-raw-${{ github.run_id }}
+          restore-keys: fedlex-raw-
+      - name: Build the new versions into the library
+        id: apply
+        continue-on-error: true
+        run: |
+          printf '%s' "$BEFUND" > "$RUNNER_TEMP/befund.json"
+          node scripts/apply-fassungen.mjs --befund "$RUNNER_TEMP/befund.json" --out "$RUNNER_TEMP/einbau"
+      - name: Save the Fedlex raw data
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v4
+        with:
+          path: raw
+          key: fedlex-raw-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Run the tests
+        id: tests
+        if: steps.apply.outcome == 'success'
+        continue-on-error: true
+        run: node scripts/fassungen-pr.mjs tests --out "$RUNNER_TEMP/einbau"
+      - name: Open or update the pull request
+        if: ${{ !cancelled() }}
+        run: node scripts/fassungen-pr.mjs publish --einbau "$RUNNER_TEMP/einbau"
+      - name: Upload the build summary
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: einbau
+          path: ${{ runner.temp }}/einbau
+          if-no-files-found: ignore
+          retention-days: 14

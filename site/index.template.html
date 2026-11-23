@@ -25,6 +25,8 @@
   .cta { margin: 32px 0 8px; padding: 24px; background: var(--surface); border-left: 4px solid var(--primary); }
   .btn { display: inline-block; padding: 14px 64px 14px 16px; background: var(--primary); color: #ffffff; text-decoration: none; font-size: 16px; }
   .btn:hover { background: var(--primary-hover); }
+  .btn-2 { background: var(--canvas); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); margin-left: 8px; }
+  .btn-2:hover { background: var(--hairline); }
   .meta { margin: 12px 0 0; font-size: 14px; color: var(--ink-muted); }
   ol, ul { margin: 0 0 12px; padding-left: 24px; max-width: 68ch; }
   li { margin: 0 0 6px; }
@@ -37,7 +39,7 @@
   html.js[data-ui="de"] section[data-lang="de"], html.js[data-ui="fr"] section[data-lang="fr"], html.js[data-ui="it"] section[data-lang="it"] { display: block; }
   html:not(.js) .langs { display: none; }
   html:not(.js) section[data-lang] + section[data-lang] { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--hairline); }
-  @media (max-width: 600px) { h1 { font-size: 32px; } .btn { display: block; padding-right: 16px; } }
+  @media (max-width: 600px) { h1 { font-size: 32px; } .btn { display: block; padding-right: 16px; } .btn-2 { margin: 8px 0 0; } }
 </style>
 </head>
 <body>
@@ -53,15 +55,17 @@
   <h1>SR-Navigator</h1>
   <p class="lead">Der SR-Navigator zeigt, wie sich Erlasse der Systematischen Rechtssammlung der Schweiz (SR) je Bestimmung geändert haben.</p>
   <div class="cta">
-    <a class="btn" href="{{DOWNLOAD_URL}}">SR-Navigator herunterladen</a>
+    <a class="btn" href="app/">Im Browser öffnen</a><a class="btn btn-2" href="{{DOWNLOAD_URL}}">Datei herunterladen</a>
     <p class="meta">Version {{VERSION}} vom {{DATE_DE}}. Eine HTML-Datei{{SIZE_DE}}.</p>
   </div>
   <h2>So startest du</h2>
   <ol>
-    <li>Lade die Datei herunter und speichere sie in einem Ordner deiner Wahl.</li>
-    <li>Öffne die Datei mit einem Doppelklick. Sie läuft in Chrome, Edge und Firefox, ohne Installation.</li>
+    <li>Wähle «Im Browser öffnen». Der Navigator startet ohne Download und ohne Installation, in Chrome, Edge und Firefox.</li>
+    <li>Lege ein Lesezeichen an. Neue Versionen erscheinen beim Laden der Seite.</li>
     <li>Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.</li>
   </ol>
+  <h2>Ohne Internetverbindung arbeiten</h2>
+  <p>Lade die Datei herunter, speichere sie in einem Ordner deiner Wahl und öffne sie mit einem Doppelklick. Die Datei und der Navigator im Browser speichern ihre Daten getrennt. Mit der Projektdatei (Ansicht «Bibliothek») nimmst du deinen Stand von einem zum anderen mit.</p>
   <h2>Funktionen</h2>
   <ul>
     <li>Jede Bestimmung in jeder Fassung lesen, mit Fussnoten und Chronologie der Änderungen.</li>
@@ -72,7 +76,7 @@
   </ul>
   <p>Fest eingebettet sind AIG (SR 142.20), VZAE (SR 142.201), VEV (SR 142.204), AsylG (SR 142.31) und EESV (SR 142.206).</p>
   <h2>Neue Versionen</h2>
-  <p>Der Navigator meldet selbst, wenn eine neuere Version vorliegt. Er ruft dazu höchstens einmal pro Tag die Versionsangabe dieser Seite ab. Die Prüfung lässt sich in der Ansicht «Info» abschalten.</p>
+  <p>Der Navigator meldet selbst, wenn eine neuere Version vorliegt. Er ruft dazu höchstens einmal pro Tag die Versionsangabe dieser Seite ab. Die Prüfung lässt sich in der Ansicht «Info» abschalten. Im Browser lädst du die Seite neu. Eine heruntergeladene Datei ersetzt du durch die neue.</p>
   <h2>Verbindlichkeit</h2>
   <p>Der SR-Navigator ist kein amtliches Produkt. Er zeigt die Fassungen von Fedlex und markiert Unterschiede. Massgebend ist die Amtliche Sammlung (AS).</p>
   <div class="links"><a href="{{LIST_URL}}">Alle Versionen und Änderungen</a><a href="{{REPO_URL}}">Quellcode auf GitHub</a><a href="{{ISSUES_URL}}">Fehler melden</a></div>
@@ -83,15 +87,17 @@
   <h1>SR-Navigator</h1>
   <p class="lead">Le SR-Navigator montre, disposition par disposition, comment les actes du Recueil systématique du droit fédéral (RS) ont été modifiés.</p>
   <div class="cta">
-    <a class="btn" href="{{DOWNLOAD_URL}}">Télécharger le SR-Navigator</a>
+    <a class="btn" href="app/">Ouvrir dans le navigateur</a><a class="btn btn-2" href="{{DOWNLOAD_URL}}">Télécharger le fichier</a>
     <p class="meta">Version {{VERSION}} du {{DATE_FR}}. Un fichier HTML{{SIZE_FR}}.</p>
   </div>
   <h2>Pour commencer</h2>
   <ol>
-    <li>Télécharger le fichier et l’enregistrer dans un dossier de son choix.</li>
-    <li>Ouvrir le fichier par un double-clic. Il fonctionne dans Chrome, Edge et Firefox, sans installation.</li>
+    <li>Choisir «Ouvrir dans le navigateur». L’outil démarre sans téléchargement ni installation, dans Chrome, Edge et Firefox.</li>
+    <li>Ajouter un signet. Les nouvelles versions s’affichent au chargement de la page.</li>
     <li>Travailler toujours dans le même navigateur. Les actes ajoutés et le panier sont enregistrés dans ce navigateur.</li>
   </ol>
+  <h2>Travailler sans connexion Internet</h2>
+  <p>Télécharger le fichier, l’enregistrer dans un dossier de son choix et l’ouvrir par un double-clic. Le fichier et l’outil dans le navigateur enregistrent leurs données séparément. Le fichier de projet (vue «Bibliothèque») permet de reprendre son travail de l’un à l’autre.</p>
   <h2>Fonctions</h2>
   <ul>
     <li>Lire chaque disposition dans chaque version, avec les notes et la chronologie des modifications.</li>
@@ -102,7 +108,7 @@
   </ul>
   <p>Sont intégrés la LEI (RS 142.20), l’OASA (RS 142.201), l’OEV (RS 142.204), la LAsi (RS 142.31) et l’OEES (RS 142.206).</p>
   <h2>Nouvelles versions</h2>
-  <p>L’outil signale lui-même qu’une version plus récente existe. À cette fin, il consulte au plus une fois par jour l’indication de version de cette page. La vérification se désactive dans la vue «Info».</p>
+  <p>L’outil signale lui-même qu’une version plus récente existe. À cette fin, il consulte au plus une fois par jour l’indication de version de cette page. La vérification se désactive dans la vue «Info». Dans le navigateur, il suffit de recharger la page. Un fichier téléchargé est remplacé par le nouveau.</p>
   <h2>Portée juridique</h2>
   <p>Le SR-Navigator n’est pas un produit officiel. Il affiche les versions de Fedlex et marque les différences. Le Recueil officiel (RO) fait foi.</p>
   <div class="links"><a href="{{LIST_URL}}">Toutes les versions et modifications</a><a href="{{REPO_URL}}">Code source sur GitHub</a><a href="{{ISSUES_URL}}">Signaler une erreur</a></div>
@@ -113,15 +119,17 @@
   <h1>SR-Navigator</h1>
   <p class="lead">Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli atti della Raccolta sistematica del diritto federale (RS).</p>
   <div class="cta">
-    <a class="btn" href="{{DOWNLOAD_URL}}">Scaricare il SR-Navigator</a>
+    <a class="btn" href="app/">Aprire nel browser</a><a class="btn btn-2" href="{{DOWNLOAD_URL}}">Scaricare il file</a>
     <p class="meta">Versione {{VERSION}} del {{DATE_IT}}. Un file HTML{{SIZE_IT}}.</p>
   </div>
   <h2>Per iniziare</h2>
   <ol>
-    <li>Scaricare il file e salvarlo in una cartella a scelta.</li>
-    <li>Aprire il file con un doppio clic. Funziona in Chrome, Edge e Firefox, senza installazione.</li>
+    <li>Scegliere «Aprire nel browser». Lo strumento si avvia senza download e senza installazione, in Chrome, Edge e Firefox.</li>
+    <li>Aggiungere un segnalibro. Le nuove versioni compaiono al caricamento della pagina.</li>
     <li>Lavorare sempre nello stesso browser. Gli atti aggiunti e il cestino sono salvati in questo browser.</li>
   </ol>
+  <h2>Lavorare senza connessione Internet</h2>
+  <p>Scaricare il file, salvarlo in una cartella a scelta e aprirlo con un doppio clic. Il file e lo strumento nel browser salvano i dati separatamente. Con il file di progetto (vista «Biblioteca») si porta il proprio lavoro dall’uno all’altro.</p>
   <h2>Funzioni</h2>
   <ul>
     <li>Leggere ogni disposizione in ogni versione, con le note e la cronologia delle modifiche.</li>
@@ -132,7 +140,7 @@
   </ul>
   <p>Sono integrati la LStrI (RS 142.20), l’OASA (RS 142.201), l’OEV (RS 142.204), la LAsi (RS 142.31) e l’OEES (RS 142.206).</p>
   <h2>Nuove versioni</h2>
-  <p>Lo strumento segnala da sé quando esiste una versione più recente. A tale scopo consulta al massimo una volta al giorno l’indicazione della versione di questa pagina. La verifica si disattiva nella vista «Info».</p>
+  <p>Lo strumento segnala da sé quando esiste una versione più recente. A tale scopo consulta al massimo una volta al giorno l’indicazione della versione di questa pagina. La verifica si disattiva nella vista «Info». Nel browser basta ricaricare la pagina. Un file scaricato va sostituito con quello nuovo.</p>
   <h2>Valore giuridico</h2>
   <p>Il SR-Navigator non è un prodotto ufficiale. Mostra le versioni di Fedlex e ne evidenzia le differenze. Fa stato la Raccolta ufficiale (RU).</p>
   <div class="links"><a href="{{LIST_URL}}">Tutte le versioni e le modifiche</a><a href="{{REPO_URL}}">Codice sorgente su GitHub</a><a href="{{ISSUES_URL}}">Segnalare un errore</a></div>

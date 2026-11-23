@@ -1,9 +1,11 @@
-// Baut die Projektseite (GitHub Pages) nach dist/site/: index.html (Download-Seite in DE, FR, IT) und version.json.
+// Baut die Projektseite (GitHub Pages) nach dist/site/: index.html (Download-Seite in DE, FR, IT), version.json und
+// app/index.html (der Navigator selbst, unverändert kopiert aus dist/<asset>, zum Öffnen über einen Link).
 // Der Navigator ruft version.json ab, um auf eine neuere Version hinzuweisen (src/app/update.js).
 // Aufruf im Wurzelverzeichnis:
-//   node scripts/build-site.mjs [--date JJJJ-MM-TT] [--out dist/site]
-// --date ist das Datum der Release (Vorgabe: heute). Die Grösse der Datei liest das Skript aus dist/<asset>, falls vorhanden.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync } from 'node:fs';
+//   node scripts/build-site.mjs [--date JJJJ-MM-TT] [--out dist/site] [--require-app]
+// --date ist das Datum der Release (Vorgabe: heute). Die Grösse der Datei liest das Skript aus dist/<asset>.
+// Fehlt dist/<asset>, entsteht die Seite ohne app/; mit --require-app bricht das Skript dann ab (Workflow «Release»).
+import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, copyFileSync, rmSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 import { changelogSection } from './lib/changelog.mjs';
@@ -48,12 +50,21 @@ function main() {
   const notes = changelogSection(read('CHANGELOG.md'), version);
   if (!notes) throw new Error(`CHANGELOG.md: Abschnitt «## ${version} (Datum)» fehlt oder ist leer.`);
   const asset = join(ROOT, 'dist', config.asset);
-  const sizeBytes = existsSync(asset) ? statSync(asset).size : null;
+  const hasApp = existsSync(asset);
+  if (!hasApp && args.includes('--require-app')) {
+    throw new Error(`dist/${config.asset} fehlt. Ohne diese Datei entsteht keine Seite unter app/. Zuerst «npm run build» ausführen oder die Datei der Release nach dist/ laden.`);
+  }
+  const sizeBytes = hasApp ? statSync(asset).size : null;
   mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'index.html'), renderPage(read('site/index.template.html'), { version, date, config, sizeBytes }));
   writeFileSync(join(out, config.manifest || 'version.json'), JSON.stringify(buildManifest({ version, date, config, notes }), null, 2) + '\n');
   writeFileSync(join(out, '.nojekyll'), '');
-  console.log(`${out.replace(ROOT + '/', '')}: index.html, ${config.manifest || 'version.json'} (Version ${version} vom ${date})`);
+  // Navigator unter app/: dieselbe Datei wie in der Release, Byte für Byte. Ohne Build entfällt app/index.html (eine alte Kopie wird entfernt).
+  if (hasApp) { mkdirSync(join(out, 'app'), { recursive: true }); copyFileSync(asset, join(out, 'app', 'index.html')); }
+  else rmSync(join(out, 'app', 'index.html'), { force: true });
+  const files = ['index.html', config.manifest || 'version.json', ...(hasApp ? [`app/index.html (Kopie von dist/${config.asset})`] : [])];
+  console.log(`${out.replace(ROOT + '/', '')}: ${files.join(', ')} (Version ${version} vom ${date})`);
+  if (!hasApp) console.log(`dist/${config.asset} fehlt: Seite ohne app/ gebaut.`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

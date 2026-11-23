@@ -1,20 +1,22 @@
 # SR-Navigator
 
-Der SR-Navigator zeigt, wie sich Erlasse der Systematischen Rechtssammlung der Schweiz (SR) je Bestimmung geändert haben. Er ist eine einzelne HTML-Datei und läuft im Browser, ohne Installation.
+Der SR-Navigator zeigt, wie sich Erlasse der Systematischen Rechtssammlung der Schweiz (SR) je Bestimmung geändert haben. Er läuft im Browser, ohne Installation: über einen Link oder als einzelne HTML-Datei.
 
 Der SR-Navigator ist kein amtliches Produkt. Er zeigt die Fassungen von Fedlex und markiert Unterschiede. Massgebend ist die Amtliche Sammlung (AS).
 
-## Herunterladen und starten
+## Starten
 
-1. Öffne die [Projektseite des SR-Navigators](https://sem-sgg.github.io/sr-navigator/) und lade die Datei herunter. Du brauchst dafür kein GitHub-Konto.
+1. Öffne die [Projektseite des SR-Navigators](https://sem-sgg.github.io/sr-navigator/) und wähle **Im Browser öffnen**. Der Navigator startet ohne Download und ohne Installation, in Chrome, Edge und Firefox. Du brauchst kein GitHub-Konto.
+2. Lege ein Lesezeichen an. Die Adresse lautet `https://sem-sgg.github.io/sr-navigator/app/`.
+3. Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.
+
+### Ohne Internetverbindung arbeiten
+
+1. Lade auf der Projektseite die Datei herunter oder nutze den [direkten Download der aktuellen Datei](https://github.com/SEM-SGG/sr-navigator/releases/latest/download/sr-navigator.html).
 2. Speichere die Datei `sr-navigator.html` in einem Ordner deiner Wahl.
-3. Öffne die Datei mit einem Doppelklick. Sie läuft in Chrome, Edge und Firefox.
+3. Öffne die Datei mit einem Doppelklick.
 
-Du kannst die [aktuelle Datei auch direkt herunterladen](https://github.com/SEM-SGG/sr-navigator/releases/latest/download/sr-navigator.html).
-
-Arbeite immer im gleichen Browser. Hinzugefügte Erlasse und der Sammelkorb liegen im Speicher dieses Browsers.
-
-Die [Produktdokumentation](docs/sr-navigator-dokumentation.html) beschreibt den SR-Navigator in Deutsch, Französisch und Italienisch. Sie ist eine eigenständige HTML-Datei mit Sprachumschalter und lässt sich offline lesen. GitHub zeigt HTML-Dateien als Quelltext an und eine Datei dieser Grösse gar nicht: Öffne die Dateiseite, wähle **Download raw file** und öffne die heruntergeladene Datei im Browser.
+Die Datei und der Navigator im Browser speichern ihre Daten getrennt. Mit der Projektdatei (Ansicht **Bibliothek**) nimmst du deinen Stand von einem zum anderen mit.
 
 ## Funktionen
 
@@ -28,7 +30,11 @@ Fest eingebettet sind AIG (SR 142.20), VZAE (SR 142.201), VEV (SR 142.204), Asyl
 
 ## Neue Versionen
 
-Der Navigator meldet selbst, wenn eine neuere Version vorliegt. Der Hinweis erscheint unter der Kopfzeile und führt zum Download.
+Der Navigator meldet selbst, wenn eine neuere Version vorliegt. Der Hinweis erscheint unter der Kopfzeile.
+
+Im Browser wählst du **Seite neu laden**. Deine Daten bleiben erhalten.
+
+Bei der heruntergeladenen Datei führt der Hinweis zum Download:
 
 1. Wenn du Erlasse hinzugefügt hast: Sichere in der Ansicht **Bibliothek** die Projektdatei.
 2. Lade die neue Datei über **Neueste Version herunterladen** herunter.
@@ -50,11 +56,11 @@ Die Suche nach einer neuen Version schaltest du in der Ansicht **Info** im Absch
 
 ## Français
 
-Le SR-Navigator montre, disposition par disposition, comment les actes du Recueil systématique du droit fédéral (RS) ont été modifiés. Il s’agit d’un seul fichier HTML, à télécharger depuis la [page du projet](https://sem-sgg.github.io/sr-navigator/#fr). L’interface existe en français. Le SR-Navigator n’est pas un produit officiel. Le Recueil officiel (RO) fait foi.
+Le SR-Navigator montre, disposition par disposition, comment les actes du Recueil systématique du droit fédéral (RS) ont été modifiés. Il s’ouvre dans le navigateur depuis la [page du projet](https://sem-sgg.github.io/sr-navigator/#fr) ou se télécharge sous la forme d’un seul fichier HTML. L’interface existe en français. Le SR-Navigator n’est pas un produit officiel. Le Recueil officiel (RO) fait foi.
 
 ## Italiano
 
-Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli atti della Raccolta sistematica del diritto federale (RS). È un unico file HTML, da scaricare dalla [pagina del progetto](https://sem-sgg.github.io/sr-navigator/#it). L’interfaccia esiste in italiano. Il SR-Navigator non è un prodotto ufficiale. Fa stato la Raccolta ufficiale (RU).
+Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli atti della Raccolta sistematica del diritto federale (RS). Si apre nel browser dalla [pagina del progetto](https://sem-sgg.github.io/sr-navigator/#it) oppure si scarica come unico file HTML. L’interfaccia esiste in italiano. Il SR-Navigator non è un prodotto ufficiale. Fa stato la Raccolta ufficiale (RU).
 
 ## Fehler melden
 
@@ -72,11 +78,12 @@ Voraussetzung ist Node.js. Geprüft ist der Build mit Node.js 22.
 | --- | --- | --- |
 | Abhängigkeiten installieren | `npm ci` | Ordner `node_modules/` |
 | Navigator bauen | `npm run build` | `dist/sr-navigator.html` |
-| Projektseite bauen | `npm run site` | `dist/site/` mit `index.html` und `version.json` |
+| Projektseite bauen | `npm run site` | `dist/site/` mit `index.html`, `version.json` und dem Navigator unter `app/index.html` |
 | Kern testen | `npm run test:core` | Parser, Datenmodell, Fedlex-Abruf, Verweis-Index |
 | Veröffentlichung testen | `npm run test:release` | Skript für die Release |
 | Oberfläche testen | `npm run test:app` | Unit-Tests und Browsertests in Chrome, Firefox und Edge |
 | Fedlex auf neue Fassungen prüfen | `npm run check:fassungen` | Befund als Tabelle, ohne Issue |
+| Neue Fassungen einbauen | `npm run apply:fassungen` | Rohdaten, Bibliothek, Prüfberichte, Version und `CHANGELOG.md` |
 
 Der volle Testlauf braucht den Ordner `raw/` mit den Rohdaten von Fedlex (rund 110 MB). Der Ordner liegt nicht im Repository. Fehlt er, überspringt der Kern sieben Tests und die Oberfläche fünf Browsertests. So lädst du die Rohdaten:
 

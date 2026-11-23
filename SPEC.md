@@ -558,3 +558,66 @@ Entscheid des Auftraggebers: Der SR-Navigator folgt dem SGK-Navigator. Er liegt 
   Für den Code ist keine Lizenz festgelegt; Lizenzen Dritter stehen in `LICENSES/`.
 - **Tests:** `test/app/release.test.mjs`, `test/app/release.spec.mjs` mit Attrappe für die Versionsangabe
   (`test/app/pw.mjs`; kein Test fragt die echte Projektseite ab), `test/release/publish.test.mjs`.
+
+## 16 Etappe 6: Navigator als Link und automatischer Einbau neuer Fassungen (Auftrag vom 23. November 2026)
+
+Ziel: Nutzende und Pflegende ohne technisches Vorwissen. Nutzende öffnen den Navigator über einen Link. Die pflegende
+Person führt einen Pull Request zusammen, statt eine Fassung mit Node.js einzubauen.
+
+### 16.1 Gehostete Fassung
+
+- **Bereitstellung:** `scripts/build-site.mjs` kopiert `dist/<asset>` unverändert nach `dist/site/app/index.html`. Die
+  Adresse lautet `<siteUrl>app/`. Es bleibt bei einem Build: Die Datei unter `app/` ist bytegleich zur Datei der Release.
+  Der Workflow «Release» ruft das Skript mit `--require-app` auf und bricht ab, wenn die Datei fehlt.
+- **Erkennung** (`src/app/lib/release.js`): `releaseInfo(meta, href)` liefert `hosted: true`, wenn die Adresse der Seite
+  mit `https:` beginnt und unter `siteUrl` liegt. Über `file://` und unter fremden Adressen bleibt das Verhalten aus §15.
+- **Hinweis:** In der gehosteten Fassung führt eine neuere Version zu «Seite neu laden» statt zum Download. Der Hinweis
+  nach Alter entfällt. Die Ansicht Info nennt die Betriebsart und bietet die Datei für die Nutzung ohne Netz an.
+- **Speicher:** IndexedDB und `localStorage` gehören zum Ursprung `https://<besitzer>.github.io`. Alle Seiten der
+  Organisation teilen ihn. Der SR-Navigator nutzt die Namen `sr-navigator` und `sr-navigator.ui`, der SGK-Navigator
+  `sgk-navigator` und `sgk-navigator.ui`. Zwischen lokaler Datei und gehosteter Fassung wandern Daten nur über die
+  Projektdatei.
+- **Netzzugriff und CSP:** unverändert. `connect-src` nennt Fedlex und den Ursprung der Projektseite.
+- **Grenze:** GitHub Pages liefert mit `max-age=600` aus. Bis zehn Minuten nach einer Release kann «Seite neu laden»
+  noch die alte Datei liefern; der Hinweis bleibt dann stehen.
+- **Projektseite:** `site/index.template.html` nennt «Im Browser öffnen» (`app/`) als ersten Weg und den Download als
+  zweiten (Entscheid vom 23. November 2026, vor dem Test im Netz des SEM).
+- **Kein Service Worker.** Für die Nutzung ohne Netz bleibt der Download.
+- **Zustandsspeicher** (`src/app/state.js`): `useRoute` und `createStore().use()` holen einen Wert nach, der zwischen dem
+  ersten Rendern und der Anmeldung gesetzt wurde. Vorher erschien der Hinweis auf eine neue Version in diesem Fall erst
+  beim nächsten Rendern.
+- **Tests:** `test/app/release.test.mjs` (Erkennung, Hinweis, `build-site`), `test/app/release.spec.mjs` (die gebaute
+  Datei unter `<siteUrl>app/`, ausgeliefert über eine Attrappe; Start ohne Verstoss gegen die CSP, Neuladen, Einstellung
+  übersteht das Neuladen).
+
+### 16.2 Automatischer Einbau neuer Fassungen
+
+- **Ablauf** (`.github/workflows/fassungen.yml`): Job `check` wie bisher (Issue «Neue Fassungen auf Fedlex»), dazu der
+  Befund als JSON mit Fingerabdruck. Bei einem Befund folgt der Job `einbau`: Rohdaten laden, Bibliothek bauen,
+  Prüfberichte erzeugen, Version um eine Patch-Stufe erhöhen, `CHANGELOG.md` ergänzen, Tests ausführen, Pull Request
+  eröffnen oder aktualisieren.
+- **Skripte:** `scripts/apply-fassungen.mjs` (Einbau, Ergebnis `einbau.json`; Exit-Code 2, wenn die Rohdaten fehlen),
+  `scripts/fassungen-pr.mjs` (`plan`, `tests`, `publish`), `scripts/lib/fassungen.mjs` (reine Funktionen).
+- **Gebaut werden alle eingebetteten Erlasse.** Frisch geladene Rohdaten tragen das Datum des Abrufs (`fetched`), und die
+  Prüfung «loadWork = Build» vergleicht jeden Erlass mit seinen Rohdaten.
+- **Urteil:** Nicht bestanden sind Abdeckung unter 100 Prozent, fehlende Fussnoten, offene Impact-Einträge, mehr
+  Schlüsselwechsel als vorher, unerlaubtes Markup und Abweichungen zwischen Laden und Bau. Mehr redaktionelle oder
+  strukturelle Änderungen und mehr Sprachausnahmen ergeben einen Hinweis. Geänderter Wortlaut in einem nicht betroffenen
+  Erlass oder Stand ergibt eine Warnung.
+- **Pull Request:** Zweig `fassungen/einbau` gegen `main` (`fassungen/einbau-<ziel>` gegen andere Zweige,
+  `fassungen/probelauf-<ziel>` im Probelauf). Der Text nennt Befund, geänderte Bestimmungen je Sprache, Kennzahlen der
+  Prüfberichte vorher und nachher, Testergebnis und die Prüfschritte für die pflegende Person. Scheitert Einbau, Prüfung
+  oder Test, ist der Pull Request ein Entwurf und der Lauf rot. Ein offener Pull Request mit demselben Fingerabdruck und
+  Status «ok» bleibt unverändert.
+- **CI:** GitHub legt zum Pull Request des Standard-Tokens einen Lauf «CI» an, der auf Freigabe wartet. Die pflegende
+  Person gibt ihn im Pull Request mit «Approve workflows to run» frei. Der Workflow startet «CI» nicht selbst: Ein über
+  `workflow_dispatch` gestarteter Lauf legt den Check nur auf dem Commit an, er erscheint nicht unter den Checks des
+  Pull Requests (Probelauf vom 23. November 2026, Pull Request 6).
+- **Einrichtung:** Einstellung «Allow GitHub Actions to create and approve pull requests», in der Organisation und im
+  Repository.
+- **Tests:** `test/release/fassungen.test.mjs`, `test/release/fassungen-pr.test.mjs` (git gegen ein lokales Remote,
+  Attrappe für `gh`). Die Tests zur EESV in `test/core/` lesen Zahl und Datum der Stände aus `raw/`, damit eine neue
+  Fassung sie nicht bricht.
+- **Probelauf vom 23. November 2026** (lokal, echter Abruf): Ausgangsstand 1.3.0 ergibt für die ersetzten Dateien der
+  VZAE dieselbe Bibliothek wie der Einbau von Hand in 1.3.1, bis auf Datumsangaben und ein Vorhaben, das Fedlex seither
+  nachgeführt hat. Ein Ausgangsstand ohne den letzten Stand der EESV ergibt wieder den Stand 1.3.1.

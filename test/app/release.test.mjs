@@ -1,7 +1,12 @@
-// Unit-Tests: Version, Versionsprüfung und Hinweis (src/app/lib/release.js) sowie Release-Angaben. Ohne DOM und ohne Netz.
+// Unit-Tests: Version, Versionsprüfung und Hinweis (src/app/lib/release.js), gehostete Fassung, Release-Angaben und
+// scripts/build-site.mjs (in einem leeren Ordner). Ohne DOM und ohne Netz.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, cpSync, existsSync, realpathSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { releaseInfo, compareVersions, parseManifest, ageDays, shouldAutoCheck, lastCheck, hintState, snooze, autoCheckEnabled, FRESH_DAYS } from '../../src/app/lib/release.js';
 import { changelogSection, changelogDate } from '../../scripts/lib/changelog.mjs';
 import { buildManifest } from '../../scripts/build-site.mjs';
@@ -108,6 +113,43 @@ test('hintState: ohne frische Prüfung erinnert das Alter der Datei, mit frische
   assert.equal(hintState(null, {}).kind, 'none');
 });
 
+test('releaseInfo: gehostet nur unter https und unter siteUrl (Präfix mit «/»)', () => {
+  const hosted = (href, release = REL) => releaseInfo({ ...META, release }, href).hosted;
+  assert.equal(hosted(REL.siteUrl + 'app/'), true);
+  assert.equal(hosted(REL.siteUrl + 'app/index.html#/info?ui=fr'), true);
+  assert.equal(hosted(REL.siteUrl), true);
+  for (const href of [
+    'https://example-org.github.io/sr-navigator-x/app/', // anderes Repository mit gleichem Anfang
+    'https://example-org.github.io/sr-navigator', // ohne «/» am Ende
+    'https://example-org.github.io/', 'https://example-org.github.io/andere/app/',
+    'https://evil.example/sr-navigator/app/', 'https://example-org.github.io.evil.example/sr-navigator/app/',
+    'http://example-org.github.io/sr-navigator/app/',
+    'file:///Users/x/Downloads/sr-navigator.html', 'file:///https://example-org.github.io/sr-navigator/app/',
+    '', null, undefined, 42,
+  ]) assert.equal(hosted(href), false, String(href));
+  assert.equal(releaseInfo(META).hosted, false, 'ohne Adresse nicht gehostet');
+  assert.equal(hosted(REL.siteUrl + 'app/', { ...REL, siteUrl: null }), false, 'ohne siteUrl nie gehostet');
+  assert.equal(hosted(REL.siteUrl + 'app/', { ...REL, siteUrl: 'https://example-org.github.io/sr-navigator' }), false, 'ungültige siteUrl');
+});
+
+test('hintState gehostet: neuere Version wie bisher, kein Hinweis nach Alter, «Später erinnern» gilt', () => {
+  const r = releaseInfo(META, REL.siteUrl + 'app/');
+  assert.equal(r.hosted, true);
+  const now = at('2026-07-02');
+  assert.deepEqual(hintState(r, seen('1.4.0', '2026-07-02T08:00:00.000Z'), now),
+    { kind: 'newer', version: '1.4.0', date: '2026-07-01', url: REL.repoUrl + '/releases/latest/download/sr-navigator.html', key: 'v1.4.0' });
+  const z = snooze(r, 'v1.4.0', now);
+  const s = { ...seen('1.4.0', '2026-07-02T08:00:00.000Z'), releaseSnooze: z };
+  assert.deepEqual(hintState(r, s, at('2026-07-08')), { kind: 'none', snoozed: true });
+  assert.equal(hintState(r, s, at('2026-07-09')).kind, 'newer');
+  assert.equal(hintState(r, { ...seen('1.5.0', '2026-07-03T08:00:00.000Z'), releaseSnooze: z }, at('2026-07-03')).kind, 'newer');
+  // Gleiche Datei über file:// erinnert nach 60 Tagen; gehostet nie, auch ohne Prüfung oder mit alter Prüfung.
+  assert.equal(hintState(releaseInfo(META, 'file:///x/sr-navigator.html'), {}, at('2026-11-18')).kind, 'age');
+  assert.deepEqual(hintState(r, {}, at('2026-11-18')), { kind: 'none' });
+  assert.deepEqual(hintState(r, seen('1.3.0', '2026-07-02T08:00:00.000Z'), at('2027-06-01')), { kind: 'none' });
+  assert.equal(hintState(r, seen('1.3.0', '2026-07-02T08:00:00.000Z'), at('2026-07-03')).kind, 'none');
+});
+
 test('buildManifest: Versionsangabe der Projektseite passt zu parseManifest', () => {
   const m = buildManifest({ version: '1.3.0', date: '2026-11-18', config: REL, notes: '- Eintrag' });
   assert.deepEqual(m, { version: '1.3.0', date: '2026-11-18', url: REL.repoUrl + '/releases/download/v1.3.0/sr-navigator.html', notes: { de: '- Eintrag' } });
@@ -136,4 +178,52 @@ test('Release-Angaben stimmen überein: package.json, CHANGELOG.md, release.conf
   assert.ok(r.downloadUrl, 'release.config.json ergibt keine Download-Adresse');
   assert.ok(r.downloadUrl.endsWith('/' + cfg.asset));
   assert.ok(r.manifestUrl, 'release.config.json ergibt keine Adresse der Versionsangabe');
+});
+
+/** Kopie von scripts/build-site.mjs mit den nötigen Dateien in einem leeren Ordner; dist/<asset> nach Wahl. */
+function siteSandbox({ app = true } = {}) {
+  const root = fileURLToPath(new URL('../../', import.meta.url));
+  // realpath: Unter macOS ist tmpdir() ein symbolischer Link; sonst erkennt das Skript den direkten Aufruf nicht.
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'sr-site-')));
+  for (const f of ['scripts/build-site.mjs', 'scripts/lib/changelog.mjs', 'site/index.template.html', 'package.json', 'CHANGELOG.md', 'release.config.json']) {
+    mkdirSync(join(dir, f, '..'), { recursive: true });
+    cpSync(join(root, f), join(dir, f));
+  }
+  const cfg = JSON.parse(readFileSync(join(dir, 'release.config.json'), 'utf8'));
+  // Inhalt mit Zeichen ausserhalb von ASCII, Zeilenenden \r\n und Nullbyte: Die Kopie muss Byte für Byte gleich sein.
+  const bytes = Buffer.concat([Buffer.from('<!DOCTYPE html>\r\n<title>SR-Navigator «Prüfung» ß</title>\n', 'utf8'), Buffer.from([0, 255, 254, 10])]);
+  if (app) { mkdirSync(join(dir, 'dist')); writeFileSync(join(dir, 'dist', cfg.asset), bytes); }
+  const run = (...args) => spawnSync(process.execPath, [join(dir, 'scripts/build-site.mjs'), '--date', '2026-11-23', ...args], { cwd: dir, encoding: 'utf8' });
+  return { dir, out: join(dir, 'dist/site'), bytes, run };
+}
+
+test('build-site: app/index.html ist bytegleich zu dist/<asset>; ohne Datei entsteht die Seite ohne app/', () => {
+  const s = siteSandbox();
+  const a = s.run();
+  assert.equal(a.status, 0, a.stderr);
+  assert.ok(readFileSync(join(s.out, 'app/index.html')).equals(s.bytes), 'Kopie weicht ab');
+  assert.match(a.stdout, /app\/index\.html/);
+  for (const f of ['index.html', 'version.json', '.nojekyll']) assert.ok(existsSync(join(s.out, f)), f);
+  // Die Projektseite führt in allen drei Sprachen zuerst zum Navigator im Browser, daneben zum Download.
+  const page = readFileSync(join(s.out, 'index.html'), 'utf8');
+  assert.equal((page.match(/<a class="btn" href="app\/">/g) || []).length, 3);
+  assert.equal((page.match(/<a class="btn btn-2" href="https:\/\/github\.com\/[^"]+\/releases\/latest\/download\/[^"]+">/g) || []).length, 3);
+  const b = siteSandbox({ app: false });
+  const r = b.run();
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(existsSync(join(b.out, 'index.html')) && existsSync(join(b.out, 'version.json')));
+  assert.equal(existsSync(join(b.out, 'app')), false);
+  assert.match(r.stdout, /ohne app\//);
+});
+
+test('build-site --require-app: bricht ohne dist/<asset> mit Meldung ab und schreibt nichts; mit Datei läuft es', () => {
+  const b = siteSandbox({ app: false });
+  const r = b.run('--require-app');
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /dist\/sr-navigator\.html fehlt/);
+  assert.equal(existsSync(b.out), false, 'keine halbe Seite');
+  const s = siteSandbox();
+  const a = s.run('--require-app');
+  assert.equal(a.status, 0, a.stderr);
+  assert.ok(readFileSync(join(s.out, 'app/index.html')).equals(s.bytes));
 });

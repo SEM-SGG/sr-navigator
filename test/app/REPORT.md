@@ -320,3 +320,55 @@ unverändert. `scripts/fetch-raw.mjs` lädt jetzt eine vorhandene Datei neu, wen
 Keine Erwartung in einem Test angepasst. Die Browsertests prüfen «Aktualisieren» nur für die EESV. Für die VZAE meldet
 `checkUpdates` mit den Antworten aus `raw/` nachher keine neue Fassung und keine ersetzte Datei; vorher meldete es
 20261001 DE, FR und IT.
+
+# Gehostete Fassung unter app/
+
+Stand: 23. November 2026, Version 1.4.0. Auftrag: Dieselbe Datei liegt zusätzlich auf der Projektseite unter
+`app/` (`https://sem-sgg.github.io/sr-navigator/app/`) und lässt sich über einen Link öffnen. Es bleibt bei einem Build.
+Die Datei erkennt zur Laufzeit an `location.href`, ob sie unter `siteUrl` liegt, und passt nur den Versionshinweis an.
+Die Projektseite nennt «Im Browser öffnen» (`app/`) als ersten Weg.
+
+## 1 Tests
+
+| Suite | Vorher | Nachher |
+|---|---|---|
+| Kern (`npm run test:core`, `SR_NO_NET=1`, ohne `raw/`) | 43 bestanden, 8 übersprungen | 43 bestanden, 8 übersprungen |
+| Veröffentlichung (`npm run test:release`) | 5 bestanden | 5 bestanden |
+| Unit Oberfläche (`npm run test:app:unit`) | 33 bestanden | 37 bestanden (4 neue in `release.test.mjs`) |
+| Playwright, Projekt chrome (`NO_NET=1`, ohne `raw/`), vor der Korrektur in `src/app/state.js` (siehe 3) | 36 bestanden, 2 fehlgeschlagen, 6 übersprungen | 39 bestanden, 3 fehlgeschlagen, 6 übersprungen (4 neue Tests) |
+| `release.spec.mjs`, je Test dreimal (`--repeat-each=3`) | ohne Korrektur: 34 bestanden, 8 fehlgeschlagen | mit Korrektur: 42 bestanden |
+| Kern mit `raw/` und Netz (`npm run test:core`), Endstand | nicht gefahren | 51 bestanden, 0 übersprungen |
+| Playwright, Projekt chrome (`NO_NET=1`, mit `raw/`), Endstand mit Korrektur, zwei Läufe | nicht gefahren | je 47 bestanden, 1 übersprungen |
+
+Keine Erwartung in einem bestehenden Test angepasst. `npm run site` legt `dist/site/app/index.html` an; die Datei ist
+bytegleich zu `dist/sr-navigator.html` (`cmp`).
+
+## 2 Was die neuen Tests belegen
+
+- `releaseInfo` meldet `hosted` nur für `https:`-Adressen unter `siteUrl`. Nicht gehostet sind `…/sr-navigator-x/`,
+  `…/sr-navigator` ohne Schrägstrich, fremde Hosts, `http:`, `file:` und eine ungültige oder fehlende `siteUrl`.
+- Gehostet erscheint der Hinweis auf eine neuere Version wie bisher, der Hinweis nach Alter nie. «Später erinnern»
+  wirkt gleich wie über `file://`.
+- `scripts/build-site.mjs` kopiert `dist/<asset>` Byte für Byte nach `app/index.html`. Ohne Datei entsteht die Seite
+  ohne `app/`; mit `--require-app` bricht das Skript mit Meldung ab und schreibt nichts.
+- Im Browser unter `<siteUrl>app/` (ausgeliefert über `context.route`, ohne Netz): Start ohne Konsolenfehler und ohne
+  Verstoss gegen die CSP. Anfragen nur an die Seite und an die Versionsangabe (dazu `favicon.ico` des Browsers, beantwortet mit 404). Die Ansicht Info nennt den Host,
+  meldet «Diese Seite zeigt die aktuelle Version» und spricht nicht von «Datei»; der Link «Datei für die Nutzung ohne
+  Netz herunterladen» zeigt auf den Download der Release. Der abgeschaltete Schalter der Versionsprüfung übersteht das
+  Neuladen (IndexedDB unter dem https-Ursprung). FR und IT ohne fehlende Texte.
+- Eine alte Datei (Build-Datum 1. Juni 2026) zeigt gehostet ohne erreichbare Versionsangabe keinen Hinweis.
+- Bei neuerer Version zeigt der Hinweis «Seite neu laden», ohne Untertext zum Ersetzen der Datei. Der Klick lädt die
+  Seite neu; am selben Tag folgt keine zweite Prüfung. «Später erinnern» übersteht das Neuladen. In der Info steht
+  «Seite neu laden» statt Download. Hinweis in DE, FR und IT bei 1024 px ohne Überlauf.
+
+## 3 Wackelnde Tests: Ursache in `src/app/state.js`, behoben
+
+Die Fehlschläge in Abschnitt 1 betrafen Tests, die auf den Hinweis oder auf den Wechsel nach `#/info` kurz nach dem
+Start warten, bestehende wie neue. Sie traten schon vor dieser Änderung auf (Lauf «Vorher»). Ursache: `createStore().use()`
+las den Wert beim Rendern und meldete sich erst im `useEffect` als Empfänger an. Setzte die Versionsprüfung den Wert
+dazwischen, verpasste die Komponente die Änderung, und der Hinweis erschien erst beim nächsten Rendern. In der
+Datenbank stand das Ergebnis der Prüfung trotzdem richtig. Korrektur: `useRoute` und `createStore().use()` gleichen den
+Wert im `useEffect` nach der Anmeldung ab. Die Läufe im Endstand (Abschnitt 1) sind ohne Fehlschlag.
+
+Die lokalen Läufe nutzen Chrome auf macOS über eine eigene Konfiguration unter `test/app/out/`. Firefox und Edge sind
+für diese Änderung nicht gefahren.
