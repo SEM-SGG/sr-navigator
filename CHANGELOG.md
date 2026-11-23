@@ -1,5 +1,13 @@
 # Änderungen
 
+## 1.4.1 (23. November 2026)
+
+- Anleitung: «Stellen weitergeben» und «Zweck» beschreiben den Weg über den Link. Über den Link geöffnet, öffnet eine kopierte Adresse bei allen dieselbe Stelle. Bei der heruntergeladenen Datei gilt das nur, wenn die Datei beim Empfänger am selben Ort liegt.
+- Anleitung: «Projektdatei sichern und laden» nennt den Wechsel zwischen dem Navigator über den Link und der heruntergeladenen Datei.
+- Ansicht «Info»: Link zur Produktdokumentation und die Adresse sektion-grenze@sem.admin.ch für Rückmeldungen ohne GitHub-Konto.
+- Die Produktdokumentation liegt auf der Projektseite unter `dokumentation.html` und nennt die Datenregel der SGG. Projektseite, README und Issue-Vorlagen verlinken sie und nennen dieselbe Adresse für Rückmeldungen.
+- Pflege: Arbeitsanleitung für Agenten in `AGENTS.md` mit kopierbaren Aufträgen. Eine Prüfung in «CI» und vor der Veröffentlichung vergleicht die Version in der Produktdokumentation mit `package.json`; der Workflow «Fassungen» setzt sie beim Einbau selbst.
+
 ## 1.4.0 (23. November 2026)
 
 - Der Navigator lässt sich im Browser öffnen, ohne Download: Die Projektseite führt mit «Im Browser öffnen» zur Adresse `app/`. Es ist dieselbe Datei wie in der Release.

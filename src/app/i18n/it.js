@@ -248,7 +248,8 @@ export default {
     hosted: 'Lo strumento è caricato nel browser da {host}. Le nuove versioni compaiono al caricamento della pagina.',
     offlineFile: 'Scaricare il file per l’uso senza rete',
     site: 'Pagina del progetto', source: 'Codice sorgente su GitHub', report: 'Segnalare un errore',
-    reportNote: 'Una segnalazione richiede un account GitHub ed è visibile pubblicamente. Non inserire contenuti riservati.',
+    reportNote: 'Una segnalazione tramite GitHub richiede un account ed è visibile pubblicamente. Non inserire contenuti con la classificazione AD USO INTERNO o superiore né dati personali.',
+    contact: 'Senza account GitHub: e-mail a', docs: 'Documentazione di prodotto',
   },
   info: {
     title: 'Stato dei dati, metodo e carattere vincolante',
@@ -323,7 +324,7 @@ export default {
     zweck: {
       text: [
         'Il SR-Navigator mostra, per atti della Raccolta sistematica, come ogni disposizione è cambiata nelle versioni di Fedlex: cronologia con confronto parola per parola, confronto di due versioni o lingue, esportazione in PNG o PDF.',
-        'Funziona come file unico, senza installazione. LStrI, OASA, OEV, LAsi e OEES sono integrate; altri atti si caricano da Fedlex nella [[nav.bibliothek]].',
+        'Funziona nel browser, senza installazione: tramite il link della pagina del progetto oppure come file unico, utilizzabile anche senza connessione Internet. LStrI, OASA, OEV, LAsi e OEES sono integrate; altri atti si caricano da Fedlex nella [[nav.bibliothek]].',
       ],
     },
     terms: [
@@ -375,11 +376,13 @@ export default {
       projekt: { title: 'Salvare e caricare un progetto', steps: [
         'Nella [[nav.bibliothek]] scegliere [[lib.project.save]]. Il file contiene gli atti aggiunti e aggiornati, il cestino e le impostazioni.',
         'Su un altro computer scegliere [[lib.project.load]].',
+        'Lo strumento aperto tramite il link e il file scaricato salvano i dati separatamente. Con il file di progetto si porta il proprio lavoro dall’uno all’altro.',
       ] },
       links: { title: 'Trasmettere un passo', steps: [
         'L’indirizzo nel browser contiene atto, unità, disposizione, versione e lingua. Copiarlo e trasmetterlo.',
-        'Il destinatario apre lo stesso file; il collegamento mostra lo stesso passo.',
-      ] },
+        'Aperto tramite il link della pagina del progetto: l’indirizzo copiato apre lo stesso passo per tutti i destinatari.',
+        'Aperto come file scaricato: l’indirizzo indica la cartella sul proprio computer. Apre lo stesso passo solo se il file si trova nello stesso posto presso il destinatario.',
+      ], after: 'Gli atti aggiunti personalmente vanno prima aggiunti anche dal destinatario nella [[nav.bibliothek]].' },
       uebersicht: { title: 'Panoramica di un atto', steps: [
         'La [[nav.uebersicht]] presenta le cifre chiave, l’[[ov.tl.title]], gli [[ov.acts.title]], la [[ov.mx.title]] e i [[ov.pend.title]].',
         'Nell’asse temporale le versioni con testo sono scure, quelle solo in PDF chiare e quelle future tratteggiate in beige.',

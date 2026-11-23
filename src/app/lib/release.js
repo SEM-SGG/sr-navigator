@@ -26,6 +26,7 @@ export function releaseInfo(meta, href) {
   const asset = r && typeof r.asset === 'string' && /^[\w][\w.-]*$/.test(r.asset) ? r.asset : null;
   const siteUrl = r && typeof r.siteUrl === 'string' && /^https:\/\/[\w-]+\.github\.io\/[\w.-]+\/$/.test(r.siteUrl) ? r.siteUrl : null;
   const manifest = r && typeof r.manifest === 'string' && /^[\w][\w.-]*\.json$/.test(r.manifest) ? r.manifest : null;
+  const contact = r && typeof r.contact === 'string' && /^[\w.+-]+@[\w-]+(\.[\w-]+)+$/.test(r.contact) ? r.contact : null;
   return {
     version: typeof m.version === 'string' ? m.version : null,
     built: typeof m.built === 'string' ? m.built.slice(0, 10) : null,
@@ -35,6 +36,10 @@ export function releaseInfo(meta, href) {
     issuesUrl: repoUrl ? `${repoUrl}/issues/new/choose` : null,
     siteUrl,
     siteHost: siteUrl ? new URL(siteUrl).host : null,
+    // Produktdokumentation auf der Projektseite (Konvention der Organisation: dokumentation.html an der Wurzel).
+    docsUrl: siteUrl ? siteUrl + 'dokumentation.html' : null,
+    // Funktionsadresse für Rückmeldungen ohne GitHub-Konto.
+    contact,
     hosted: isHosted(href, siteUrl),
     manifestUrl: siteUrl && manifest ? siteUrl + manifest : null,
     checkEveryMs: num(r && r.checkEveryHours, 24) * HOUR,

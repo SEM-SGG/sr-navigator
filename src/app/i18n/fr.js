@@ -248,7 +248,8 @@ export default {
     hosted: 'L’outil est chargé dans le navigateur depuis {host}. Les nouvelles versions s’affichent au chargement de la page.',
     offlineFile: 'Télécharger le fichier pour une utilisation hors ligne',
     site: 'Page du projet', source: 'Code source sur GitHub', report: 'Signaler une erreur',
-    reportNote: 'Un signalement exige un compte GitHub et est visible publiquement. Ne saisir aucun contenu confidentiel.',
+    reportNote: 'Un signalement via GitHub exige un compte et est visible publiquement. Ne saisir aucun contenu portant la mention INTERNE ou supérieure ni aucune donnée personnelle.',
+    contact: 'Sans compte GitHub: courriel à', docs: 'Documentation produit',
   },
   info: {
     title: 'État des données, méthode et force obligatoire',
@@ -323,7 +324,7 @@ export default {
     zweck: {
       text: [
         'Le SR-Navigator montre, pour des actes du Recueil systématique, comment chaque disposition a évolué au fil des versions de Fedlex: chronologie avec comparaison mot à mot, comparaison de deux versions ou langues, export en PNG ou PDF.',
-        'Il fonctionne comme un fichier unique, sans installation. LEI, OASA, OEV, LAsi et OEES sont intégrées; d’autres actes se chargent depuis Fedlex dans la [[nav.bibliothek]].',
+        'Il fonctionne dans le navigateur, sans installation: par le lien de la page du projet ou comme fichier unique, utilisable aussi sans connexion Internet. LEI, OASA, OEV, LAsi et OEES sont intégrées; d’autres actes se chargent depuis Fedlex dans la [[nav.bibliothek]].',
       ],
     },
     terms: [
@@ -375,11 +376,13 @@ export default {
       projekt: { title: 'Sauvegarder et charger un projet', steps: [
         'Dans la [[nav.bibliothek]], choisir [[lib.project.save]]. Le fichier contient les actes ajoutés et mis à jour, le panier et les réglages.',
         'Sur un autre ordinateur, choisir [[lib.project.load]].',
+        'L’outil ouvert par le lien et le fichier téléchargé enregistrent leurs données séparément. Le fichier de projet permet de reprendre son travail de l’un à l’autre.',
       ] },
       links: { title: 'Transmettre un passage', steps: [
         'L’adresse dans le navigateur contient l’acte, l’unité, la disposition, la version et la langue. La copier et la transmettre.',
-        'Le destinataire ouvre le même fichier; le lien affiche le même passage.',
-      ] },
+        'Ouvert par le lien de la page du projet: l’adresse copiée ouvre le même passage pour tous les destinataires.',
+        'Ouvert comme fichier téléchargé: l’adresse indique le dossier sur son propre ordinateur. Elle n’ouvre le même passage que si le fichier se trouve au même endroit chez le destinataire.',
+      ], after: 'Les actes ajoutés soi-même doivent d’abord être ajoutés aussi par le destinataire dans la [[nav.bibliothek]].' },
       uebersicht: { title: 'Aperçu d’un acte', steps: [
         'L’[[nav.uebersicht]] présente les chiffres clés, la [[ov.tl.title]], les [[ov.acts.title]], la [[ov.mx.title]] et les [[ov.pend.title]].',
         'Dans la frise, les versions avec texte sont foncées, les versions en PDF seulement claires et les versions futures hachurées en beige.',

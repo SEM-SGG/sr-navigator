@@ -1,6 +1,7 @@
 // Hinweis auf eine neuere Version (Band unter der Kopfzeile) und Abschnitt «Version» der Info-Ansicht.
 // Die Logik liegt in ../lib/release.js, der Abruf der Versionsangabe in ../update.js. Links öffnen in neuem Tab.
 // Gehostete Fassung (Datei von der Projektseite unter app/): «Seite neu laden» statt Download, Texte ohne «Datei».
+// Die Links zur Projektseite, zur Produktdokumentation und die E-Mail-Adresse sind Links, keine Abrufe.
 import { html } from 'htm/preact';
 import { Icon } from './common.js';
 import { t } from '../lib/i18n.js';
@@ -72,10 +73,12 @@ export function VersionSection() {
     ${r.repoUrl ? html`<p class="vs-links">
       ${r.hosted && r.downloadUrl ? html`<a class="vs-offline" href=${r.downloadUrl} ...${ext}>${t('release.offlineFile')}</a>` : null}
       ${r.siteUrl ? html`<a href=${r.siteUrl} ...${ext}>${t('release.site')}</a>` : null}
+      ${r.docsUrl ? html`<a href=${r.docsUrl} ...${ext}>${t('release.docs')}</a>` : null}
       <a href=${r.listUrl} ...${ext}>${t('release.list')}</a>
       <a href=${r.repoUrl} ...${ext}>${t('release.source')}</a>
       <a href=${r.issuesUrl} ...${ext}>${t('release.report')}</a>
     </p>
-    <p class="hint-text">${t('release.reportNote')}</p>` : null}
+    <p class="hint-text">${t('release.reportNote')}</p>
+    ${r.contact ? html`<p class="hint-text vs-contact">${t('release.contact')} <a href=${'mailto:' + r.contact}>${r.contact}</a></p>` : null}` : null}
   </section>`;
 }

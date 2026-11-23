@@ -249,7 +249,8 @@ export default {
     hosted: 'Der Navigator ist im Browser von {host} geladen. Neue Versionen erscheinen beim Laden der Seite.',
     offlineFile: 'Datei für die Nutzung ohne Netz herunterladen',
     site: 'Projektseite', source: 'Quellcode auf GitHub', report: 'Fehler melden',
-    reportNote: 'Eine Meldung verlangt ein GitHub-Konto und ist öffentlich sichtbar. Keine vertraulichen Inhalte eintragen.',
+    reportNote: 'Eine Meldung über GitHub verlangt ein Konto und ist öffentlich sichtbar. Keine Inhalte mit dem Vermerk INTERN oder höher und keine Personendaten eintragen.',
+    contact: 'Ohne GitHub-Konto: E-Mail an', docs: 'Produktdokumentation',
   },
   info: {
     title: 'Datenstand, Methodik und Verbindlichkeit',
@@ -324,7 +325,7 @@ export default {
     zweck: {
       text: [
         'Der SR-Navigator zeigt für Erlasse der Systematischen Rechtssammlung, wie sich jede Bestimmung über die Fassungen von Fedlex verändert hat: Chronologie mit Wort-Diff, Vergleich zweier Fassungen oder Sprachen, Export als PNG oder PDF.',
-        'Er läuft als einzelne Datei ohne Installation. Fest eingebettet sind AIG, VZAE, VEV, AsylG und EESV; weitere Erlasse laden Sie in der [[nav.bibliothek]] von Fedlex.',
+        'Er läuft im Browser ohne Installation: über den Link der Projektseite oder als einzelne Datei, auch ohne Internetverbindung. Fest eingebettet sind AIG, VZAE, VEV, AsylG und EESV; weitere Erlasse laden Sie in der [[nav.bibliothek]] von Fedlex.',
       ],
     },
     terms: [
@@ -376,11 +377,13 @@ export default {
       projekt: { title: 'Projektdatei sichern und laden', steps: [
         'In der [[nav.bibliothek]] [[lib.project.save]] wählen. Die Datei enthält hinzugefügte und aktualisierte Erlasse, Sammelkorb und Einstellungen.',
         'Auf einem anderen Rechner [[lib.project.load]] wählen.',
+        'Der Navigator über den Link und die heruntergeladene Datei speichern getrennt. Mit der Projektdatei nehmen Sie den Stand vom einen zum anderen mit.',
       ] },
       links: { title: 'Stellen weitergeben', steps: [
         'Die Adresse im Browser enthält Erlass, Einheit, Bestimmung, Fassung und Sprache. Kopieren und weitergeben.',
-        'Die Datei muss beim Empfänger am selben Ort liegen oder dort geöffnet werden; der Link öffnet dieselbe Stelle.',
-      ] },
+        'Über den Link der Projektseite geöffnet: Die kopierte Adresse öffnet bei allen Empfängern dieselbe Stelle.',
+        'Als heruntergeladene Datei geöffnet: Die Adresse nennt den Ordner auf dem eigenen Rechner. Sie öffnet dieselbe Stelle allein dann, wenn die Datei beim Empfänger am selben Ort liegt.',
+      ], after: 'Selbst hinzugefügte Erlasse muss der Empfänger zuerst ebenfalls in der [[nav.bibliothek]] hinzufügen.' },
       uebersicht: { title: 'Übersicht eines Erlasses', steps: [
         'Die [[nav.uebersicht]] zeigt Kennzahlen, den [[ov.tl.title]], die [[ov.acts.title]], die [[ov.mx.title]] und die [[ov.pend.title]].',
         'Im Zeitstrahl sind Fassungen mit Wortlaut dunkel, Fassungen ohne Wortlaut hell und künftige beige schraffiert.',

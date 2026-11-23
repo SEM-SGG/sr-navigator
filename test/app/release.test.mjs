@@ -2,7 +2,7 @@
 // scripts/build-site.mjs (in einem leeren Ordner). Ohne DOM und ohne Netz.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, cpSync, existsSync, realpathSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, cpSync, existsSync, realpathSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -36,6 +36,10 @@ test('releaseInfo: Adressen nur in den Formen github.com/<besitzer>/<repo> und <
   assert.equal(releaseInfo({ ...META, release: { ...REL, manifest: '../x.json' } }).manifestUrl, null);
   assert.equal(releaseInfo({ ...META, release: { ...REL, asset: '../x.html' } }).downloadUrl, null);
   assert.equal(releaseInfo(null).downloadUrl, null);
+  assert.equal(r.docsUrl, 'https://example-org.github.io/sr-navigator/dokumentation.html');
+  assert.equal(r.contact, null, 'ohne Feld contact keine E-Mail-Adresse');
+  assert.equal(releaseInfo({ ...META, release: { ...REL, contact: 'stelle@example.org' } }).contact, 'stelle@example.org');
+  for (const bad of ['javascript:alert(1)', 'a@b', 'x@example.org?subject=1', 42]) assert.equal(releaseInfo({ ...META, release: { ...REL, contact: bad } }).contact, null, String(bad));
   assert.equal(releaseInfo({ built: '2026-06-01T00:00:00Z' }).remindAfterDays, 60);
 });
 
@@ -178,6 +182,8 @@ test('Release-Angaben stimmen überein: package.json, CHANGELOG.md, release.conf
   assert.ok(r.downloadUrl, 'release.config.json ergibt keine Download-Adresse');
   assert.ok(r.downloadUrl.endsWith('/' + cfg.asset));
   assert.ok(r.manifestUrl, 'release.config.json ergibt keine Adresse der Versionsangabe');
+  assert.equal(r.docsUrl, cfg.siteUrl + 'dokumentation.html');
+  assert.equal(r.contact, 'sektion-grenze@sem.admin.ch', 'Funktionsadresse für Rückmeldungen ohne GitHub-Konto');
 });
 
 /** Kopie von scripts/build-site.mjs mit den nötigen Dateien in einem leeren Ordner; dist/<asset> nach Wahl. */
@@ -185,7 +191,7 @@ function siteSandbox({ app = true } = {}) {
   const root = fileURLToPath(new URL('../../', import.meta.url));
   // realpath: Unter macOS ist tmpdir() ein symbolischer Link; sonst erkennt das Skript den direkten Aufruf nicht.
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'sr-site-')));
-  for (const f of ['scripts/build-site.mjs', 'scripts/lib/changelog.mjs', 'site/index.template.html', 'package.json', 'CHANGELOG.md', 'release.config.json']) {
+  for (const f of ['scripts/build-site.mjs', 'scripts/lib/changelog.mjs', 'site/index.template.html', 'docs/sr-navigator-dokumentation.html', 'package.json', 'CHANGELOG.md', 'release.config.json']) {
     mkdirSync(join(dir, f, '..'), { recursive: true });
     cpSync(join(root, f), join(dir, f));
   }
@@ -203,11 +209,16 @@ test('build-site: app/index.html ist bytegleich zu dist/<asset>; ohne Datei ents
   assert.equal(a.status, 0, a.stderr);
   assert.ok(readFileSync(join(s.out, 'app/index.html')).equals(s.bytes), 'Kopie weicht ab');
   assert.match(a.stdout, /app\/index\.html/);
-  for (const f of ['index.html', 'version.json', '.nojekyll']) assert.ok(existsSync(join(s.out, f)), f);
+  for (const f of ['index.html', 'version.json', '.nojekyll', 'dokumentation.html']) assert.ok(existsSync(join(s.out, f)), f);
+  // Produktdokumentation unter der festen Adresse dokumentation.html, Byte für Byte wie im Repository.
+  assert.ok(readFileSync(join(s.out, 'dokumentation.html')).equals(readFileSync(join(s.dir, 'docs/sr-navigator-dokumentation.html'))), 'Kopie der Dokumentation weicht ab');
   // Die Projektseite führt in allen drei Sprachen zuerst zum Navigator im Browser, daneben zum Download.
   const page = readFileSync(join(s.out, 'index.html'), 'utf8');
   assert.equal((page.match(/<a class="btn" href="app\/">/g) || []).length, 3);
   assert.equal((page.match(/<a class="btn btn-2" href="https:\/\/github\.com\/[^"]+\/releases\/latest\/download\/[^"]+">/g) || []).length, 3);
+  // In allen drei Sprachen: Link zur Produktdokumentation und Funktionsadresse für Rückmeldungen ohne GitHub-Konto.
+  assert.equal((page.match(/<a href="dokumentation\.html">/g) || []).length, 3);
+  assert.equal((page.match(/<a href="mailto:sektion-grenze@sem\.admin\.ch">sektion-grenze@sem\.admin\.ch<\/a>/g) || []).length, 3);
   const b = siteSandbox({ app: false });
   const r = b.run();
   assert.equal(r.status, 0, r.stderr);
@@ -226,4 +237,13 @@ test('build-site --require-app: bricht ohne dist/<asset> mit Meldung ab und schr
   const a = s.run('--require-app');
   assert.equal(a.status, 0, a.stderr);
   assert.ok(readFileSync(join(s.out, 'app/index.html')).equals(s.bytes));
+});
+
+test('build-site: ohne Produktdokumentation bricht das Skript mit Meldung ab und schreibt nichts', () => {
+  const s = siteSandbox();
+  rmSync(join(s.dir, 'docs/sr-navigator-dokumentation.html'));
+  const r = s.run();
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /docs\/sr-navigator-dokumentation\.html fehlt/);
+  assert.equal(existsSync(s.out), false, 'keine halbe Seite');
 });

@@ -20,10 +20,11 @@ import { planPr, branchName, prText, testCounts } from './lib/fassungen.mjs';
 
 export const BOT = { name: 'github-actions[bot]', email: '41898282+github-actions[bot]@users.noreply.github.com' };
 /** Dateien, die der Einbau ändert. Nur sie gehen in den Commit. */
-export const COMMIT_FILES = ['data/library.json', 'data/build-log.json', 'data/validation-summary.json', 'data/VALIDATION.md', 'data/VALIDATION_REFS.md', 'scripts/dev/cache/fedlex-citations.json', 'package.json', 'package-lock.json', 'CHANGELOG.md'];
+export const COMMIT_FILES = ['data/library.json', 'data/build-log.json', 'data/validation-summary.json', 'data/VALIDATION.md', 'data/VALIDATION_REFS.md', 'scripts/dev/cache/fedlex-citations.json', 'package.json', 'package-lock.json', 'CHANGELOG.md', 'docs/sr-navigator-dokumentation.html'];
 
 export const TESTS = [
   { id: 'release-info', label: 'Version, Changelog und Einstellungen', cmd: 'node', args: ['scripts/release-info.mjs'] },
+  { id: 'dokumentation', label: 'Version in der Produktdokumentation', cmd: 'node', args: ['scripts/check-dokumentation.mjs'] },
   { id: 'core', label: 'Kern mit Rohdaten (test:core)', cmd: 'npm', args: ['run', 'test:core'], unset: ['SR_NO_NET'] },
   { id: 'release', label: 'Veröffentlichung (test:release)', cmd: 'npm', args: ['run', 'test:release'] },
   { id: 'unit', label: 'Oberfläche, Unit-Tests (test:app:unit)', cmd: 'npm', args: ['run', 'test:app:unit'] },

@@ -621,3 +621,26 @@ Person führt einen Pull Request zusammen, statt eine Fassung mit Node.js einzub
 - **Probelauf vom 23. November 2026** (lokal, echter Abruf): Ausgangsstand 1.3.0 ergibt für die ersetzten Dateien der
   VZAE dieselbe Bibliothek wie der Einbau von Hand in 1.3.1, bis auf Datumsangaben und ein Vorhaben, das Fedlex seither
   nachgeführt hat. Ein Ausgangsstand ohne den letzten Stand der EESV ergibt wieder den Stand 1.3.1.
+
+## 17 Etappe 7: Pflege durch Agenten, Produktdokumentation auf der Projektseite (Auftrag vom 23. November 2026)
+
+Ziel: Bau und Pflege übernimmt ein Agent (Claude Code im Browser oder Codex mit angebundenem Repository). Fachpersonen
+geben ihm kopierbare Aufträge und prüfen den Pull Request im Browser.
+
+- **Arbeitsanleitung:** `AGENTS.md` (Grundregeln, Prüfbefehle, Abläufe, Beschreibung des Pull Requests), `CLAUDE.md`
+  bindet sie ein. Vorlage `.github/pull_request_template.md` mit der Zeile zur Produktdokumentation.
+- **Produktdokumentation:** `scripts/build-site.mjs` kopiert `docs/sr-navigator-dokumentation.html` unverändert nach
+  `dist/site/dokumentation.html` (Konvention der Organisation: `dokumentation.html` an der Wurzel der Pages-Seite). Fehlt
+  die Datei, bricht das Skript ab. Der Workflow «Release» läuft auch bei einer Änderung der Datei.
+- **Versionsprüfung der Dokumentation:** `scripts/check-dokumentation.mjs` (Logik in `scripts/lib/dokumentation.mjs`)
+  vergleicht jede Angabe «Version 1.2.3», «Versione 1.2.3» und «(v1.2.3)» mit `package.json` und nennt jede abweichende
+  Zeile; `--fix` setzt die Version. Die Prüfung läuft in «CI», im Workflow «Release» vor der Veröffentlichung und als
+  Test beim Einbau neuer Fassungen. `scripts/apply-fassungen.mjs` setzt die neue Version in der Dokumentation selbst,
+  `scripts/fassungen-pr.mjs` committet die Datei mit. Die Fusszeile der Dokumentation nennt kein Datum und keine
+  Dateigrösse mehr, weil der automatische Einbau sie nicht nachführt.
+- **Rückmeldung ohne GitHub-Konto:** Funktionsadresse in `release.config.json` (`contact`). `releaseInfo` übernimmt sie
+  nur in der Form einer E-Mail-Adresse und liefert dazu `docsUrl` (`<siteUrl>dokumentation.html`). Die Ansicht Info zeigt
+  den Link zur Dokumentation und die Adresse als `mailto:`-Link; die Projektseite nennt beide. Links sind keine Abrufe;
+  Netzzugriff und CSP bleiben unverändert.
+- **Datenregel der SGG:** wörtlich im README, sinngemäss in der Produktdokumentation (§04), Hinweis in den
+  Issue-Vorlagen und in der Ansicht Info.

@@ -5,7 +5,7 @@ title: ""
 labels: []
 ---
 
-Diese Meldung ist öffentlich sichtbar. Trage keine vertraulichen Inhalte ein.
+Diese Meldung ist öffentlich sichtbar. Nach der Datenregel der SGG (README, Abschnitt «Datenregel») gehören Inhalte mit dem Vermerk INTERN, VERTRAULICH oder GEHEIM, besonders schützenswerte Personendaten und Falldaten zu Personen aus Verfahren nicht in ein Issue. Ohne GitHub-Konto schreibst du an sektion-grenze@sem.admin.ch.
 
 **Version des Navigators** (Ansicht «Info», Abschnitt «Version»):
 
