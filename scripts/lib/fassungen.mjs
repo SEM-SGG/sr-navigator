@@ -44,7 +44,7 @@ export function bumpVersionFiles(pkgText, lockText) {
   const from = pkg.version;
   const version = bumpPatch(from);
   if (lock.version !== from || !lock.packages || !lock.packages[''] || lock.packages[''].version !== from) {
-    throw new Error(`package-lock.json nennt nicht die Version ${from} aus package.json. Führe «npm install» aus und committe die Lock-Datei.`);
+    throw new Error(`package-lock.json nennt nicht die Version ${from} aus package.json. Führe «node scripts/check-dokumentation.mjs --fix» aus und committe die Lock-Datei.`);
   }
   const re = new RegExp(`("version"\\s*:\\s*)"${from.replace(/\./g, '\\.')}"`);
   const pkgOut = pkgText.replace(re, `$1"${version}"`);
