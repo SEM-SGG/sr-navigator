@@ -33,7 +33,7 @@ Weitere Quellen: [`README.md`](README.md) (Aufbau, Befehle, Netzzugriff, Datenre
   node scripts/check-dokumentation.mjs --fix
   ```
 
-  Füge danach zuoberst in `CHANGELOG.md` einen Abschnitt `## <version> (<Tag>. <Monat> <Jahr>)` ein, zum Beispiel `## 1.4.2 (2. Dezember 2026)`, mit je einer Zeile `- ` pro Änderung, verständlich für Nutzende. Der Abschnitt wird zum Text der Release. Lautet der Auftrag, in einem bestehenden Pull Request die Version in der Produktdokumentation nachzusetzen (`MAINTAINING.md`, «Neue Version veröffentlichen», Schritt 7), führst du auf dessen Zweig `node scripts/check-dokumentation.mjs --fix` aus, committest und pushst ohne `--force`. Änderungen nur an `MAINTAINING.md`, `AGENTS.md`, Tests oder Workflows brauchen keine neue Version. Eine Änderung an `docs/sr-navigator-dokumentation.html` oder `site/` ohne neue Version stellt die Projektseite nach dem Merge neu bereit.
+  Füge danach zuoberst in `CHANGELOG.md` einen Abschnitt `## <version> (<Tag>. <Monat> <Jahr>)` ein, zum Beispiel `## 1.4.2 (2. Dezember 2026)`, mit je einer Zeile `- ` pro Änderung, verständlich für Nutzende. Der Abschnitt wird zum Text der Release. Lautet der Auftrag, in einem bestehenden Pull Request die Version in der Produktdokumentation und in `package-lock.json` nachzusetzen (`MAINTAINING.md`, «Neue Version veröffentlichen», Schritt 7), führst du auf dessen Zweig `node scripts/check-dokumentation.mjs --fix` aus, committest `docs/sr-navigator-dokumentation.html` und `package-lock.json` und pushst ohne `--force`. Das Skript setzt in `package-lock.json` nur die beiden Felder `version`; führe dafür kein `npm install` aus. Nennt ein älterer Auftrag nur die Produktdokumentation, gilt dasselbe. Änderungen nur an `MAINTAINING.md`, `AGENTS.md`, Tests oder Workflows brauchen keine neue Version. Eine Änderung an `docs/sr-navigator-dokumentation.html` oder `site/` ohne neue Version stellt die Projektseite nach dem Merge neu bereit.
 
 ## Prüfbefehle
 
@@ -43,7 +43,7 @@ Diese Befehle laufen vor jedem Pull Request, in dieser Reihenfolge, im Wurzelver
 | --- | --- |
 | `npm ci` | endet ohne Fehler |
 | `node scripts/release-info.mjs` | `Version <x>: Abschnitt in CHANGELOG.md vorhanden, Datei sr-navigator.html.` |
-| `node scripts/check-dokumentation.mjs` | `docs/sr-navigator-dokumentation.html: Version <x> an allen 11 Stellen.` |
+| `node scripts/check-dokumentation.mjs` | `docs/sr-navigator-dokumentation.html: Version <x> an allen 11 Stellen.` und `package-lock.json: Version <x> in beiden Feldern.` |
 | `SR_NO_NET=1 npm run test:core` | `fail 0`; ohne Ordner `raw/` acht übersprungen |
 | `npm run test:release` | `fail 0`, `skipped 0` |
 | `npm run test:app:unit` | `fail 0`, `skipped 0` |

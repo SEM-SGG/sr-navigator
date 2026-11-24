@@ -6,7 +6,7 @@ Was Programmcode oder Node.js verlangt, erledigt ein Agent (ein KI-Werkzeug wie 
 
 ## Neue Version veröffentlichen
 
-GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien. Die Version in der Produktdokumentation führt ein Agent nach (Schritt 7).
+GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien. Die Version in der Produktdokumentation und in `package-lock.json` führt ein Agent nach (Schritt 7).
 
 1. Öffne im Repository die Datei `package.json` und klicke auf den Stift.
 2. Erhöhe die Zahl bei `"version"`, zum Beispiel von `1.3.0` auf `1.3.1`.
@@ -14,13 +14,13 @@ GitHub testet, baut und veröffentlicht den Navigator. Du änderst zwei Dateien.
 4. Öffne im selben Zweig die Datei `CHANGELOG.md` und klicke auf den Stift.
 5. Füge zuoberst einen Abschnitt mit der neuen Version ein. Die Überschrift hat die Form `## 1.3.1 (2. Dezember 2026)`. Darunter steht je Änderung eine Zeile mit `- `. Der Abschnitt wird zum Text der Release.
 6. Speichere mit **Commit changes** im selben Zweig.
-7. Eröffne den Pull Request. Der Workflow «CI» (automatischer Ablauf für die Prüfung, kurz für Continuous Integration) prüft die Änderung. Der Schritt «Check the version in the product documentation» bleibt rot, solange `docs/sr-navigator-dokumentation.html` die alte Version nennt. Kopiere dann diesen Auftrag für einen Agenten und ersetze `…` durch die Nummer des Pull Requests:
+7. Eröffne den Pull Request. Der Workflow «CI» (automatischer Ablauf für die Prüfung, kurz für Continuous Integration) prüft die Änderung. Der Schritt «Check the version in the product documentation and package-lock.json» bleibt rot, solange `docs/sr-navigator-dokumentation.html` und `package-lock.json` die alte Version nennen. Kopiere dann diesen Auftrag für einen Agenten und ersetze `…` durch die Nummer des Pull Requests:
 
    ```
-   Führe in Pull Request #… im Repository SEM-SGG/sr-navigator die Version in der Produktdokumentation nach. Halte dich an AGENTS.md.
+   Führe in Pull Request #… im Repository SEM-SGG/sr-navigator die Version in der Produktdokumentation und in package-lock.json nach. Halte dich an AGENTS.md.
    ```
 
-   Der Agent passt die Datei auf dem Zweig des Pull Requests an. Danach läuft «CI» erneut und wird grün.
+   Der Agent passt beide Dateien auf dem Zweig des Pull Requests an. Danach läuft «CI» erneut und wird grün.
 8. Führe den Pull Request zusammen, sobald der Lauf grün ist.
 
 Der Workflow «Release» legt danach die Release `v1.3.1` an und aktualisiert die Projektseite. Ab dann zeigen alle Navigatoren mit älterer Version den Hinweis auf die neue Datei.
@@ -50,7 +50,8 @@ Welche Zahl du erhöhst:
 | `CHANGELOG.md: Abschnitt … fehlt` | Zur Version in `package.json` gibt es keinen Abschnitt | Abschnitt ergänzen, Überschrift genau in der Form `## 1.3.1 (Datum)` |
 | `Version … hat nicht die Form 1.2.3` | Tippfehler in `package.json` | Version berichtigen |
 | `docs/sr-navigator-dokumentation.html: Die Versionsangabe passt nicht zu package.json` | Die Produktdokumentation nennt eine andere Version | Die Meldung nennt jede betroffene Zeile. Gib einem Agenten den Auftrag aus Abschnitt «Neue Version veröffentlichen», Schritt 7 (er führt `node scripts/check-dokumentation.mjs --fix` aus). |
-| Fehler im Schritt «Deploy to GitHub Pages» | Projektseite ist nicht eingerichtet | Abschnitt «Einmalige Einrichtung» |
+| `package-lock.json: Die Versionsangabe passt nicht zu package.json` | `package-lock.json` nennt eine andere Version | Derselbe Auftrag wie in der Zeile davor. Der Agent setzt die Version in beiden Dateien. |
+| Fehler im Schritt «Deploy to GitHub Pages (third attempt)» | Projektseite ist nicht eingerichtet, oder GitHub hatte einen vorübergehenden Aussetzer, zum Beispiel `No artifacts named "github-pages" were found` | Der Lauf versucht das Bereitstellen selbst bis zu dreimal. Ist nur ein früherer Versuch rot markiert und der Lauf grün, ist nichts zu tun. Ist der Lauf rot, prüfe den Abschnitt «Einmalige Einrichtung». Ist die Projektseite eingerichtet, starte den Lauf neu: im roten Lauf über **Re-run failed jobs** oder wie in Punkt 3 über **Run workflow**. |
 | Ein Test schlägt fehl | Die Änderung hat ein Verhalten verändert | Änderung zurücknehmen oder berichtigen |
 | Lauf «Fassungen» rot, Pull Request ist ein Entwurf | Einbau, Prüfung oder Test gescheitert | Abschnitt «Wenn der Pull Request ein Entwurf ist» |
 | Am Montag ist kein Lauf «Fassungen» erschienen | GitHub hat den zeitgesteuerten Lauf verzögert, ausgelassen oder abgeschaltet | Abschnitt «Zeitgesteuerter Lauf: Übergabe, Verspätung, Start von Hand» |
@@ -142,7 +143,7 @@ Diesen Weg geht ein Agent (Auftrag oben) oder eine Person mit Node.js auf ihrem 
 3. Baue die Bibliothek: `node scripts/build-data.mjs`. Nach einer ersetzten Datei vergleichst du die neue `data/library.json` mit der Fassung im Repository (`git show HEAD:data/library.json`). Ändern dürfen sich nur das betroffene Werk und der betroffene Stand, dazu Datumsangaben, Datei-Adressen und die Angabe `generator` des Stands.
 4. Erzeuge die Prüfberichte: `node scripts/validate.mjs` und `node scripts/validate-refs.mjs`. Lies `data/VALIDATION.md` und `data/VALIDATION_REFS.md`.
 5. Führe `npm run test:core` und `npm run test:app` aus.
-6. Erhöhe die Version in `package.json` und `package-lock.json`, ergänze `CHANGELOG.md`, setze die Version in der Produktdokumentation mit `node scripts/check-dokumentation.mjs --fix` und eröffne einen Pull Request. Hast du `apply-fassungen.mjs` verwendet, entfällt das Erhöhen: Das Skript setzt die Version an allen drei Orten selbst.
+6. Erhöhe die Version in `package.json`, ergänze `CHANGELOG.md`, setze die Version in `package-lock.json` und in der Produktdokumentation mit `node scripts/check-dokumentation.mjs --fix` und eröffne einen Pull Request. Hast du `apply-fassungen.mjs` verwendet, entfällt das Erhöhen: Das Skript setzt die Version an allen drei Orten selbst.
 7. Schliesse das Issue nach der Release.
 
 ## Zeitgesteuerter Lauf: Übergabe, Verspätung, Start von Hand

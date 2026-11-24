@@ -634,7 +634,9 @@ geben ihm kopierbare Aufträge und prüfen den Pull Request im Browser.
   die Datei, bricht das Skript ab. Der Workflow «Release» läuft auch bei einer Änderung der Datei.
 - **Versionsprüfung der Dokumentation:** `scripts/check-dokumentation.mjs` (Logik in `scripts/lib/dokumentation.mjs`)
   vergleicht jede Angabe «Version 1.2.3», «Versione 1.2.3» und «(v1.2.3)» mit `package.json` und nennt jede abweichende
-  Zeile; `--fix` setzt die Version. Die Prüfung läuft in «CI», im Workflow «Release» vor der Veröffentlichung und als
+  Zeile; `--fix` setzt die Version. Ebenso prüft und setzt es die beiden Felder `version` in `package-lock.json` (Wurzel
+  und `packages[""]`, Logik in `scripts/lib/lockfile.mjs`); der übrige Inhalt der Lock-Datei bleibt byte-gleich. So
+  stimmt die Lock-Datei auch nach einer Veröffentlichung über den Browser (`MAINTAINING.md`). Die Prüfung läuft in «CI», im Workflow «Release» vor der Veröffentlichung und als
   Test beim Einbau neuer Fassungen. `scripts/apply-fassungen.mjs` setzt die neue Version in der Dokumentation selbst,
   `scripts/fassungen-pr.mjs` committet die Datei mit. Die Fusszeile der Dokumentation nennt kein Datum und keine
   Dateigrösse mehr, weil der automatische Einbau sie nicht nachführt.
