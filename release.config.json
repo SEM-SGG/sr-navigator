@@ -4,6 +4,7 @@
   "siteUrl": "https://sem-sgg.github.io/sr-navigator/",
   "manifest": "version.json",
   "contact": "sektion-grenze@sem.admin.ch",
+  "beta": true,
   "checkEveryHours": 24,
   "snoozeDays": 7,
   "remindAfterDays": 60

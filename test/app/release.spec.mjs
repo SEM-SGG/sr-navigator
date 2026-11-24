@@ -1,11 +1,12 @@
 // Browsertests: Versionsprüfung über die Projektseite, Hinweis auf eine neuere Version, Abschnitt «Version» in Info.
 // Die Versionsangabe ist immer eine Attrappe (pw.mjs); kein Test fragt die echte Projektseite ab.
 // Varianten aus global-setup: sr-navigator-alt.html (Build-Datum 1. Juni 2026), sr-navigator-ohne-pruefung.html.
+// Kopfzeile (Etikett BETA, Rückmelde-Symbol): Varianten aus dist/sr-navigator.html mit geänderten Release-Angaben (variant()).
 // Gehostete Fassung: dieselbe Datei unter <siteUrl>app/, ausgeliefert über hostedRoute (pw.mjs), ohne Netz.
 import { test, expect, VERSION, CFG, MANIFEST_URL, LIST_URL, DOWNLOAD_URL, HOSTED_URL, manifestRoute, hostedRoute, currentManifest, updateSettled } from './pw.mjs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { layoutCheck } from './helpers.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -330,3 +331,113 @@ for (const [lang, word] of [['fr', 'Télécharger la dernière version'], ['it',
     }
   });
 }
+
+// ------------------------------------------------------------ Kopfzeile: Etikett BETA und Rückmelde-Symbol
+// Die Varianten setzen die Release-Angaben im eingebetteten JSON «sr-meta» unabhängig vom Schalter in release.config.json.
+const ISSUES_URL = `${CFG.repoUrl}/issues/new/choose`;
+function variant(name, change) {
+  const src = readFileSync(NEW_FILE, 'utf8');
+  const re = /(<script type="application\/json" id="sr-meta">)([\s\S]*?)(<\/script>)/;
+  const m = src.match(re);
+  if (!m) throw new Error('sr-meta fehlt in dist/sr-navigator.html');
+  const meta = JSON.parse(m[2]);
+  change(meta.release);
+  const file = join(ROOT, 'test/app/out', `sr-navigator-${name}.html`);
+  writeFileSync(file, src.replace(re, (_, a, __, c) => a + JSON.stringify(meta).replace(/<\/script/gi, '<\\/script') + c));
+  return 'file://' + file;
+}
+const box = (loc) => loc.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height }; });
+
+test('Kopfzeile: Etikett BETA und Rückmelde-Symbol rechts neben dem Produktnamen, in DE, FR und IT und in allen Ansichten', async ({ page }) => {
+  const MIT = variant('beta', (r) => { r.beta = true; });
+  const TEXT = {
+    de: ['BETA', 'Beta: Dieses Tool ist in Erprobung. Rückmeldungen sind willkommen.', 'Fehler melden oder Änderung vorschlagen'],
+    fr: ['BÊTA', 'Bêta\u00a0: cet outil est en phase d’essai. Vos retours sont les bienvenus.', 'Signaler une erreur ou proposer une modification'],
+    it: ['BETA', 'Beta: questo strumento è in fase di prova. I riscontri sono benvenuti.', 'Segnalare un errore o proporre una modifica'],
+  };
+  const log = await open(page, MIT);
+  for (const [lang, [label, note, name]] of Object.entries(TEXT)) {
+    await page.evaluate((l) => { location.hash = `#/bibliothek?ui=${l}`; }, lang);
+    const tag = page.locator('.app-head .tag-beta');
+    await expect(tag).toBeVisible();
+    await expect(tag.locator('[aria-hidden="true"]')).toHaveText(label);
+    await expect(tag).toHaveAttribute('title', note);
+    await expect(tag.locator('.sr')).toHaveText(note);
+    // nicht anklickbar, nicht im Link des Produktnamens, nicht fokussierbar
+    expect(await tag.evaluate((e) => !e.closest('a, button') && !e.querySelector('a, button') && e.tabIndex < 0)).toBe(true);
+    const link = page.locator('.app-head a.head-report');
+    await expect(link).toHaveAccessibleName(name);
+    await expect(link).toHaveAttribute('href', ISSUES_URL);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(await link.getAttribute('title')).toMatch(new RegExp('^' + name + '\\. .*GitHub'));
+    expect(await link.evaluate((e) => !!e.closest('.brand'))).toBe(false);
+    expect(await page.evaluate(() => !!document.querySelector('symbol#bug') && document.querySelector('.head-report use').getAttribute('href'))).toBe('#bug');
+    // Reihenfolge: Produktname, Etikett, Symbol; Symbol mindestens so gross wie der Sammelkorb
+    const [b, g, l, k] = await Promise.all([box(page.locator('.app-head .brand')), box(tag), box(link), box(page.locator('#btn-basket'))]);
+    expect(b.right).toBeLessThanOrEqual(g.left);
+    expect(g.right).toBeLessThanOrEqual(l.left);
+    expect(l.left - g.right).toBeLessThanOrEqual(12);
+    expect(l.height).toBeGreaterThanOrEqual(k.height);
+    expect(l.width).toBeGreaterThanOrEqual(k.height);
+  }
+  for (const v of ['#/info', '#/anleitung', `#/lesen?w=cc-2007-758&u=art_5`]) {
+    await page.evaluate((h) => { location.hash = h; }, v);
+    await expect(page.locator('.app-head .tag-beta')).toBeVisible();
+    await expect(page.locator('.app-head a.head-report')).toBeVisible();
+  }
+  // Tastatur: vom Produktnamen mit Tab direkt zum Symbol, Fokusrahmen sichtbar
+  await page.locator('.app-head .brand').focus();
+  await page.keyboard.press('Tab');
+  const focused = await page.evaluate(() => { const e = document.activeElement; const s = getComputedStyle(e); return { cls: e.className, outline: s.outlineStyle, width: parseFloat(s.outlineWidth) }; });
+  expect(focused.cls).toContain('head-report');
+  expect(focused.outline).not.toBe('none');
+  expect(focused.width).toBeGreaterThanOrEqual(2);
+  // Druck: weder Etikett noch Symbol
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.locator('.tag-beta')).toBeHidden();
+  await expect(page.locator('.head-report')).toBeHidden();
+  await page.emulateMedia({ media: 'screen' });
+  expect(log.errors).toEqual([]);
+  expect(log.requests).toEqual([MANIFEST_URL]);
+});
+
+test('Kopfzeile: Schalter beta: false blendet nur das Etikett aus; ohne Adresse des Repositorys fehlt nur das Symbol', async ({ page }) => {
+  const OHNE = variant('ohne-beta', (r) => { r.beta = false; });
+  let log = await open(page, OHNE);
+  await expect(page.locator('.tag-beta')).toHaveCount(0);
+  const link = page.locator('.app-head a.head-report');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute('href', ISSUES_URL);
+  const [b, l] = await Promise.all([box(page.locator('.app-head .brand')), box(link)]);
+  expect(l.left - b.right).toBeLessThanOrEqual(12); // rückt an den Produktnamen
+  expect(log.errors).toEqual([]);
+  const OHNE_REPO = variant('ohne-repo', (r) => { r.beta = true; delete r.repoUrl; });
+  await page.goto('about:blank');
+  log = await open(page, OHNE_REPO);
+  await expect(page.locator('.app-head .tag-beta')).toBeVisible();
+  await expect(page.locator('.head-report')).toHaveCount(0);
+  expect(log.errors).toEqual([]);
+});
+
+test('Kopfzeile: bei 375 px einzeilig, Etikett und Symbol im Fenster; bei 1024 px in DE, FR und IT ohne Überlauf', async ({ page }) => {
+  const MIT = variant('beta', (r) => { r.beta = true; });
+  await page.setViewportSize({ width: 375, height: 800 });
+  await open(page, MIT);
+  const head = await box(page.locator('.app-head'));
+  for (const sel of ['.app-head .brand', '.app-head .tag-beta', '.app-head a.head-report']) {
+    const r = await box(page.locator(sel));
+    expect(r.top, sel).toBeGreaterThanOrEqual(head.top);
+    expect(r.bottom, sel).toBeLessThanOrEqual(head.bottom);
+    expect(r.left, sel).toBeGreaterThanOrEqual(0);
+    expect(r.right, sel).toBeLessThanOrEqual(375);
+  }
+  expect(head.height).toBe(48);
+  await page.setViewportSize({ width: 1024, height: 900 });
+  for (const lang of ['de', 'fr', 'it']) {
+    await page.evaluate((l) => { location.hash = `#/bibliothek?ui=${l}`; }, lang);
+    await expect(page.locator('.app-head .tag-beta')).toBeVisible();
+    const issues = await page.evaluate(layoutCheck);
+    expect(issues, `${lang} 1024px: ${JSON.stringify(issues).slice(0, 400)}`).toEqual([]);
+  }
+});

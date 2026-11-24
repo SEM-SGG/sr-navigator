@@ -11,7 +11,12 @@ export default {
     module: 'Testo normativo', views: 'Viste', bibliothek: 'Biblioteca', uebersicht: 'Panoramica', lesen: 'Leggere',
     chronik: 'Cronologia', vergleich: 'Confronto', aktualisieren: 'Aggiornare', anleitung: 'Istruzioni', info: 'Info',
   },
-  head: { work: 'Atto', pickWork: 'Scegliere un atto', toLibrary: 'Aprire la biblioteca', needWork: 'Scegliere prima un atto' },
+  head: {
+    work: 'Atto', pickWork: 'Scegliere un atto', toLibrary: 'Aprire la biblioteca', needWork: 'Scegliere prima un atto',
+    beta: 'BETA', betaNote: 'Beta: questo strumento è in fase di prova. I riscontri sono benvenuti.',
+    report: 'Segnalare un errore o proporre una modifica',
+    reportTip: '{name}. Apre GitHub in una nuova scheda. Le segnalazioni sono pubbliche: nessun contenuto con la classificazione AD USO INTERNO o superiore né dati personali.',
+  },
   common: {
     closeMsg: 'Chiudere il messaggio', loading: 'Caricamento dei dati …', provision: 'Disposizione', skip: 'Vai al contenuto',
     stage: 'Versione', unit: 'Unità', wholeUnit: 'unità intera', newTab: '(si apre in una nuova scheda)',

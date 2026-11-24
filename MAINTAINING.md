@@ -160,6 +160,16 @@ Der Workflow «Fassungen» startet von selbst am Montagmorgen. GitHub führt ihn
 
 **Wenn GitHub den Workflow abgeschaltet hat:** Bei öffentlichen Repositories schaltet GitHub zeitgesteuerte Workflows nach 60 Tagen ohne Aktivität im Repository ab. Zeigt **Actions** einen entsprechenden Hinweis, wähle den Workflow «Fassungen» und klicke **Enable workflow**. Wer das tut, erhält ab dann die Fehlermails.
 
+## BETA-Kennzeichnung entfernen
+
+Während der Erprobung zeigt der Navigator in der Kopfzeile neben dem Namen das Etikett «BETA». Ist die Erprobung abgeschlossen, kopiere diesen Auftrag für einen Agenten:
+
+```
+Entferne die BETA-Kennzeichnung aus dem SR-Navigator im Repository SEM-SGG/sr-navigator. Halte dich an AGENTS.md, Ablauf «BETA-Kennzeichnung entfernen».
+```
+
+Der Agent setzt in `release.config.json` das Feld `beta` auf `false`, passt die Produktdokumentation an, erhöht die Version und eröffnet einen Pull Request. Prüfe ihn und führe ihn zusammen. Der Workflow «Release» veröffentlicht danach die neue Version ohne Etikett. Das Käfer-Symbol für Meldungen bleibt.
+
 ## Einstellungen
 
 Die Datei `release.config.json` steuert Adressen und Versionsprüfung. Nach einer Änderung braucht es eine neue Version.
@@ -171,6 +181,7 @@ Die Datei `release.config.json` steuert Adressen und Versionsprüfung. Nach eine
 | `siteUrl` | Adresse der Projektseite, Form `https://<besitzer>.github.io/<repo>/` |
 | `manifest` | Name der Versionsangabe auf der Projektseite |
 | `contact` | Funktionsadresse für Rückmeldungen ohne GitHub-Konto (Ansicht **Info** und Projektseite) |
+| `beta` | `true` zeigt in der Kopfzeile neben dem Namen das Etikett «BETA» (Erprobung), `false` blendet es aus. Das Käfer-Symbol für Meldungen bleibt in beiden Fällen. Ablauf: «BETA-Kennzeichnung entfernen» |
 | `checkEveryHours` | Abstand zwischen zwei Suchen beim Start, in Stunden |
 | `snoozeDays` | Tage, um die «Später erinnern» den Hinweis zurückstellt |
 | `remindAfterDays` | Alter der Datei in Tagen, ab dem der Navigator ohne erreichbare Versionsangabe erinnert |

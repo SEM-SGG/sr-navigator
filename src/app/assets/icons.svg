@@ -54,4 +54,5 @@
 <symbol id="layers" viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5 9-5z"></path><path d="M3 14l9 5 9-5"></path></symbol>
 <symbol id="message" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5z"></path></symbol>
 <symbol id="flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></symbol>
+<symbol id="bug" viewBox="0 0 24 24"><path d="M9 9a3 3 0 016 0"></path><rect x="7" y="9" width="10" height="11" rx="5"></rect><path d="M12 13v7M10 6.6L8.5 4M14 6.6L15.5 4M7 14.5H3.5M17 14.5h3.5M7.6 11.5L4.5 9.5M16.4 11.5l3.1-2M7.6 17.8L4.5 20M16.4 17.8l3.1 2.2"></path></symbol>
 </svg>
