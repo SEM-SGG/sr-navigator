@@ -43,6 +43,15 @@ test('releaseInfo: Adressen nur in den Formen github.com/<besitzer>/<repo> und <
   assert.equal(releaseInfo({ built: '2026-06-01T00:00:00Z' }).remindAfterDays, 60);
 });
 
+test('releaseInfo: Etikett BETA nur mit beta: true; die Adresse für Meldungen hängt nicht am Schalter', () => {
+  assert.equal(releaseInfo(META).beta, false, 'ohne Feld beta kein Etikett');
+  assert.equal(releaseInfo({ ...META, release: { ...REL, beta: true } }).beta, true);
+  for (const off of [false, 'true', 1, null]) assert.equal(releaseInfo({ ...META, release: { ...REL, beta: off } }).beta, false, String(off));
+  assert.equal(releaseInfo(null).beta, false);
+  assert.equal(releaseInfo({ ...META, release: { ...REL, beta: false } }).issuesUrl, REL.repoUrl + '/issues/new/choose');
+  assert.equal(releaseInfo({ ...META, release: { ...REL, beta: true, repoUrl: null } }).issuesUrl, null);
+});
+
 test('compareVersions: Zahl für Zahl, auch Datumsversionen und Zusatz -n; ungültige Eingaben ergeben null', () => {
   assert.equal(compareVersions('1.3.0', '1.2.1'), 1);
   assert.equal(compareVersions('1.2.1', '1.3.0'), -1);
@@ -184,6 +193,8 @@ test('Release-Angaben stimmen überein: package.json, CHANGELOG.md, release.conf
   assert.ok(r.manifestUrl, 'release.config.json ergibt keine Adresse der Versionsangabe');
   assert.equal(r.docsUrl, cfg.siteUrl + 'dokumentation.html');
   assert.equal(r.contact, 'sektion-grenze@sem.admin.ch', 'Funktionsadresse für Rückmeldungen ohne GitHub-Konto');
+  assert.equal(typeof cfg.beta, 'boolean', 'Schalter beta (Etikett BETA) ist true oder false');
+  assert.ok(r.issuesUrl, 'release.config.json ergibt keine Adresse für Meldungen (Rückmelde-Symbol)');
 });
 
 /** Kopie von scripts/build-site.mjs mit den nötigen Dateien in einem leeren Ordner; dist/<asset> nach Wahl. */

@@ -1,5 +1,12 @@
 # Änderungen
 
+## 1.5.0 (24. November 2026)
+
+- Der SR-Navigator ist bis Januar 2027 in Erprobung. Die Kopfzeile zeigt neben dem Namen das Etikett «BETA» («BÊTA» in Französisch). Der Hinweis beim Etikett lädt zu Rückmeldungen ein.
+- Neues Käfer-Symbol in der Kopfzeile neben dem Namen: Es öffnet auf GitHub in einem neuen Tab die Auswahl für eine Meldung (Fehler melden, Wunsch oder Änderungsvorschlag). Meldungen auf GitHub sind öffentlich; der Hinweis beim Symbol nennt die Datenregel.
+- Neue Vorlage «Wunsch oder Änderungsvorschlag» für Meldungen auf GitHub.
+- Pflege: Das Etikett lässt sich mit dem Feld `beta` in `release.config.json` ausschalten (Ablauf «BETA-Kennzeichnung entfernen» in `AGENTS.md` und `MAINTAINING.md`).
+
 ## 1.4.1 (23. November 2026)
 
 - Anleitung: «Stellen weitergeben» und «Zweck» beschreiben den Weg über den Link. Über den Link geöffnet, öffnet eine kopierte Adresse bei allen dieselbe Stelle. Bei der heruntergeladenen Datei gilt das nur, wenn die Datei beim Empfänger am selben Ort liegt.

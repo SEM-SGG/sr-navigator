@@ -112,6 +112,20 @@ Behebe den Fehler aus Issue #… im Repository SEM-SGG/sr-navigator. Halte dich 
 7. Erhöhe die Version um eine Patch-Stufe und ergänze `CHANGELOG.md`.
 8. Führe die Prüfbefehle aus und eröffne den Pull Request mit `Closes #<nummer>`.
 
+### BETA-Kennzeichnung entfernen
+
+```
+Entferne die BETA-Kennzeichnung aus dem SR-Navigator im Repository SEM-SGG/sr-navigator. Halte dich an AGENTS.md, Ablauf «BETA-Kennzeichnung entfernen».
+```
+
+Hintergrund: Während der Erprobung zeigt die Kopfzeile neben dem Produktnamen das Etikett «BETA» («BÊTA» in Französisch). Der Schalter ist das Feld `beta` in `release.config.json`. Das Käfer-Symbol daneben (Fehler melden oder Änderung vorschlagen) hängt nicht am Schalter und bleibt.
+
+1. Lege einen Zweig ab `origin/main` an.
+2. Setze in `release.config.json` das Feld `"beta"` auf `false`. Lösche weder das Feld noch den Code und die Texte des Etiketts; die Tests prüfen beide Stellungen des Schalters.
+3. Streiche in `docs/sr-navigator-dokumentation.html`, Kasten «Integrierte Anleitung, Fehlermeldung & Rückmeldung», in Deutsch, Französisch und Italienisch nur den Satzteil zur Erprobung und zum Etikett. Der Satz zum Käfer-Symbol bleibt.
+4. Erhöhe die Version um eine Patch-Stufe und ergänze `CHANGELOG.md`, zum Beispiel mit «Die Erprobung ist abgeschlossen: Die Kopfzeile zeigt das Etikett BETA nicht mehr.» (Abschnitt «Grundregeln»).
+5. Führe die Prüfbefehle aus und eröffne den Pull Request. Unter «Von der prüfenden Person zu kontrollieren» nennst du, dass die Kopfzeile nach dem Zusammenführen und der Release kein Etikett mehr zeigt und das Käfer-Symbol bleibt.
+
 ### Pull Requests von Dependabot
 
 Das Repository erhält keine Pull Requests von Dependabot: Es gibt keine `.github/dependabot.yml`, und die automatischen Sicherheitsupdates sind ausgeschaltet. Richte Dependabot nicht ein. Meldet GitHub eine Sicherheitslücke in einer Abhängigkeit, behandelt die Fachperson sie mit dem Auftrag «Behebe den Fehler aus Issue #…», nachdem sie dazu ein Issue eröffnet hat.

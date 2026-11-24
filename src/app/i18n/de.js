@@ -12,7 +12,12 @@ export default {
     module: 'Rechtstext', views: 'Ansichten', bibliothek: 'Bibliothek', uebersicht: 'Übersicht', lesen: 'Lesen',
     chronik: 'Chronologie', vergleich: 'Vergleich', aktualisieren: 'Aktualisieren', anleitung: 'Anleitung', info: 'Info',
   },
-  head: { work: 'Erlass', pickWork: 'Erlass wählen', toLibrary: 'Bibliothek öffnen', needWork: 'Zuerst einen Erlass wählen' },
+  head: {
+    work: 'Erlass', pickWork: 'Erlass wählen', toLibrary: 'Bibliothek öffnen', needWork: 'Zuerst einen Erlass wählen',
+    beta: 'BETA', betaNote: 'Beta: Dieses Tool ist in Erprobung. Rückmeldungen sind willkommen.',
+    report: 'Fehler melden oder Änderung vorschlagen',
+    reportTip: '{name}. Öffnet GitHub in einem neuen Tab. Meldungen sind öffentlich: keine Inhalte mit dem Vermerk INTERN oder höher und keine Personendaten.',
+  },
   common: {
     closeMsg: 'Meldung schliessen', loading: 'Daten werden geladen …', provision: 'Bestimmung', skip: 'Zum Inhalt',
     stage: 'Fassung', unit: 'Einheit', wholeUnit: 'ganze Einheit', newTab: '(öffnet in neuem Tab)',

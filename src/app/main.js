@@ -9,7 +9,7 @@ import { toastStore, basketStore, panelStore, libraryStore, initLibrary, loadPer
 import { Icon, Seg } from './ui/common.js';
 import { cardTitle, cardSubtitle, formatLabel } from './ui/card.js';
 import { srModule } from './modules/sr/index.js';
-import { UpdateHint } from './ui/updatehint.js';
+import { UpdateHint, HeadFeedback } from './ui/updatehint.js';
 import { autoCheck } from './update.js';
 import { registerStrings, setUiLang, initialUiLang, useUiLang, t, withUiLang, uiLang, keysOf, UI_LANGS, HTML_LANG } from './lib/i18n.js';
 import de from './i18n/de.js';
@@ -141,9 +141,12 @@ function Header({ route, data }) {
   const items = basketStore.use();
   return html`<header class="app-head">
     <a class="skip" href="#main" onClick=${(e) => { e.preventDefault(); const m = document.getElementById('main'); if (m) m.focus(); }}>${t('common.skip')}</a>
-    <a class="brand" href="#/bibliothek" onClick=${(e) => { e.preventDefault(); go({ view: 'bibliothek' }); }}>
-      <span class="brand-name"><strong><b>SR</b> Navigator</strong><span>${t('app.subtitle')}</span></span>
-    </a>
+    <div class="brand-group">
+      <a class="brand" href="#/bibliothek" onClick=${(e) => { e.preventDefault(); go({ view: 'bibliothek' }); }}>
+        <span class="brand-name"><strong><b>SR</b> Navigator</strong><span>${t('app.subtitle')}</span></span>
+      </a>
+      <${HeadFeedback} />
+    </div>
     <${WorkPicker} route=${route} data=${data} />
     <span class="spacer"></span>
     <div class="head-tools">

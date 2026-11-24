@@ -68,7 +68,7 @@ Il SR-Navigator mostra, disposizione per disposizione, come sono cambiati gli at
 
 ## Rückmeldung und Fehler
 
-- **Mit GitHub-Konto:** Melde Fehler und Wünsche über [ein Issue in diesem Repository](https://github.com/SEM-SGG/sr-navigator/issues/new/choose) (einen Eintrag auf GitHub). Ein Issue ist öffentlich sichtbar. Halte dich an die Datenregel (Abschnitt unten).
+- **Mit GitHub-Konto:** Melde Fehler und Wünsche über [ein Issue in diesem Repository](https://github.com/SEM-SGG/sr-navigator/issues/new/choose) (einen Eintrag auf GitHub). Im Navigator führt das Käfer-Symbol in der Kopfzeile neben dem Namen direkt dorthin. Ein Issue ist öffentlich sichtbar. Halte dich an die Datenregel (Abschnitt unten).
 - **Ohne GitHub-Konto:** Schreibe an [sektion-grenze@sem.admin.ch](mailto:sektion-grenze@sem.admin.ch).
 
 ## Datenregel

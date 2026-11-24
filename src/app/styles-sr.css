@@ -6,6 +6,12 @@
 .app-head { align-items: center; }
 .app-head > .spacer { flex: 1 1 auto; }
 .app-head .brand-name strong b { color: var(--primary); font-weight: 600; }
+/* Produktname mit Etikett BETA und Rückmelde-Symbol: beide ausserhalb des Links .brand; die Trennlinie trägt die Gruppe. */
+.brand-group { display: flex; align-items: center; gap: var(--space-xs); flex: none; padding-right: var(--space-lg); border-right: 1px solid var(--hairline); }
+.brand-group > .brand { padding-right: 0; border-right: 0; }
+.tag-beta { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; line-height: 20px; background: var(--surface-1); color: var(--ink-muted); cursor: default; }
+@media (max-width: 1439px) { .brand-group { padding-right: var(--space-md); } }
+@media print { .tag-beta, .head-report { display: none !important; } }
 .app-subhead { flex: none; display: flex; align-items: stretch; min-height: var(--size-control-md); padding: 0 var(--space-lg); border-bottom: 1px solid var(--hairline); background: var(--canvas); overflow-x: auto; }
 .app-subhead .views { flex-wrap: nowrap; }
 .app-subhead .views a { min-height: var(--size-control-md); }

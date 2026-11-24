@@ -11,7 +11,12 @@ export default {
     module: 'Texte juridique', views: 'Vues', bibliothek: 'Bibliothèque', uebersicht: 'Aperçu', lesen: 'Lire',
     chronik: 'Chronologie', vergleich: 'Comparaison', aktualisieren: 'Mettre à jour', anleitung: 'Mode d’emploi', info: 'Info',
   },
-  head: { work: 'Acte', pickWork: 'Choisir un acte', toLibrary: 'Ouvrir la bibliothèque', needWork: 'Choisir d’abord un acte' },
+  head: {
+    work: 'Acte', pickWork: 'Choisir un acte', toLibrary: 'Ouvrir la bibliothèque', needWork: 'Choisir d’abord un acte',
+    beta: 'BÊTA', betaNote: 'Bêta : cet outil est en phase d’essai. Vos retours sont les bienvenus.',
+    report: 'Signaler une erreur ou proposer une modification',
+    reportTip: '{name}. Ouvre GitHub dans un nouvel onglet. Les signalements sont publics. Ne saisir aucun contenu portant la mention INTERNE ou supérieure ni aucune donnée personnelle.',
+  },
   common: {
     closeMsg: 'Fermer le message', loading: 'Chargement des données …', provision: 'Disposition', skip: 'Aller au contenu',
     stage: 'Version', unit: 'Unité', wholeUnit: 'unité entière', newTab: '(s’ouvre dans un nouvel onglet)',

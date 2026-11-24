@@ -40,6 +40,9 @@ export function releaseInfo(meta, href) {
     docsUrl: siteUrl ? siteUrl + 'dokumentation.html' : null,
     // Funktionsadresse für Rückmeldungen ohne GitHub-Konto.
     contact,
+    // Schalter «beta» in release.config.json: true zeigt das Etikett BETA neben dem Produktnamen (Erprobungsphase).
+    // Das Rückmelde-Symbol in der Kopfzeile hängt nicht daran, nur an issuesUrl.
+    beta: !!r && r.beta === true,
     hosted: isHosted(href, siteUrl),
     manifestUrl: siteUrl && manifest ? siteUrl + manifest : null,
     checkEveryMs: num(r && r.checkEveryHours, 24) * HOUR,

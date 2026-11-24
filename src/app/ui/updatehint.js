@@ -1,4 +1,5 @@
-// Hinweis auf eine neuere Version (Band unter der Kopfzeile) und Abschnitt «Version» der Info-Ansicht.
+// Hinweis auf eine neuere Version (Band unter der Kopfzeile), Abschnitt «Version» der Info-Ansicht und in der Kopfzeile
+// Etikett BETA und Rückmelde-Symbol (HeadFeedback).
 // Die Logik liegt in ../lib/release.js, der Abruf der Versionsangabe in ../update.js. Links öffnen in neuem Tab.
 // Gehostete Fassung (Datei von der Projektseite unter app/): «Seite neu laden» statt Download, Texte ohne «Datei».
 // Die Links zur Projektseite, zur Produktdokumentation und die E-Mail-Adresse sind Links, keine Abrufe.
@@ -81,4 +82,15 @@ export function VersionSection() {
     <p class="hint-text">${t('release.reportNote')}</p>
     ${r.contact ? html`<p class="hint-text vs-contact">${t('release.contact')} <a href=${'mailto:' + r.contact}>${r.contact}</a></p>` : null}` : null}
   </section>`;
+}
+
+/**
+ * Kopfzeile rechts neben dem Produktnamen (ausserhalb des Links .brand): Etikett BETA (Schalter «beta» in
+ * release.config.json, nicht anklickbar) und Rückmelde-Symbol zur Auswahl neuer Issues (nur mit issuesUrl).
+ */
+export function HeadFeedback() {
+  const r = info();
+  if (!r.beta && !r.issuesUrl) return null;
+  return html`${r.beta ? html`<span class="tag tag-beta" title=${t('head.betaNote')}><span aria-hidden="true">${t('head.beta')}</span><span class="sr">${t('head.betaNote')}</span></span>` : null}
+    ${r.issuesUrl ? html`<a class="btn-icon head-report" href=${r.issuesUrl} ...${ext} aria-label=${t('head.report')} title=${t('head.reportTip', { name: t('head.report') })}><${Icon} name="bug" /></a>` : null}`;
 }
