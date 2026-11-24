@@ -28,7 +28,7 @@ jobs:
         run: npm ci
       - name: Check version, changelog and release settings
         run: node scripts/release-info.mjs
-      - name: Check the version in the product documentation
+      - name: Check the version in the product documentation and package-lock.json
         run: node scripts/check-dokumentation.mjs
       - name: Run core tests
         run: npm run test:core

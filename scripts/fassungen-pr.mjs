@@ -24,7 +24,7 @@ export const COMMIT_FILES = ['data/library.json', 'data/build-log.json', 'data/v
 
 export const TESTS = [
   { id: 'release-info', label: 'Version, Changelog und Einstellungen', cmd: 'node', args: ['scripts/release-info.mjs'] },
-  { id: 'dokumentation', label: 'Version in der Produktdokumentation', cmd: 'node', args: ['scripts/check-dokumentation.mjs'] },
+  { id: 'dokumentation', label: 'Version in der Produktdokumentation und in package-lock.json', cmd: 'node', args: ['scripts/check-dokumentation.mjs'] },
   { id: 'core', label: 'Kern mit Rohdaten (test:core)', cmd: 'npm', args: ['run', 'test:core'], unset: ['SR_NO_NET'] },
   { id: 'release', label: 'Veröffentlichung (test:release)', cmd: 'npm', args: ['run', 'test:release'] },
   { id: 'unit', label: 'Oberfläche, Unit-Tests (test:app:unit)', cmd: 'npm', args: ['run', 'test:app:unit'] },
