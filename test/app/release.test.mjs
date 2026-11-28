@@ -267,7 +267,12 @@ test('Favicon «SR»: Navigator, Projektseite und Produktdokumentation tragen di
   const links = faviconLinks(root);
   assert.equal((links.match(/<link rel="icon" [^>]*href="data:image\/(png|svg\+xml);base64,[A-Za-z0-9+/=]+">/g) || []).length, 2);
   // Die Dokumentation wird unverändert kopiert; nach einer Änderung an den Favicon-Dateien die zwei Zeilen dort ersetzen.
-  assert.ok(readFileSync(join(root, 'docs/sr-navigator-dokumentation.html'), 'utf8').includes(links), 'Favicon in docs/sr-navigator-dokumentation.html fehlt oder ist veraltet');
+  const doc = readFileSync(join(root, 'docs/sr-navigator-dokumentation.html'), 'utf8');
+  assert.ok(doc.includes(links), 'Favicon in docs/sr-navigator-dokumentation.html fehlt oder ist veraltet');
+  // Dazu dasselbe Symbol sichtbar in Kopf- und Fusszeile der Dokumentation (Inhalt von favicon.svg ohne <svg>-Hülle).
+  const svg = readFileSync(join(root, 'src/app/assets/favicon.svg'), 'utf8').trim();
+  const mark = `<svg class="brand-mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false">${svg.slice(svg.indexOf('>') + 1, svg.lastIndexOf('</svg>'))}</svg>`;
+  assert.equal(doc.split(mark).length - 1, 2, 'Symbol in Kopf- und Fusszeile der Dokumentation fehlt oder ist veraltet');
   // Navigator: build.mjs setzt die Links im Seitenkopf direkt nach <title> (ein Build im Test wäre zu langsam).
   assert.match(readFileSync(join(root, 'build.mjs'), 'utf8'), /const htmlOut = `[^`]*<head>[^`]*<title>SR-Navigator<\/title>\n\$\{faviconLinks\(ROOT\)\}\n[^`]*<\/head>/, 'build.mjs bettet das Favicon nicht im <head> ein');
 });
