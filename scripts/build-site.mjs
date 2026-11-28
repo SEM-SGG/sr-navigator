@@ -11,6 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, copyFileS
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 import { changelogSection } from './lib/changelog.mjs';
+import { faviconLinks } from './lib/favicon.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** Produktdokumentation im Repository und ihr Name auf der Projektseite. */
@@ -40,7 +41,8 @@ export function renderPage(template, { version, date, config, sizeBytes }) {
     DOCS_URL: DOC_PAGE, CONTACT: config.contact || '', CONTACT_URL: config.contact ? `mailto:${config.contact}` : '',
   };
   if (!/^[\w.+-]+@[\w-]+(\.[\w-]+)+$/.test(values.CONTACT)) throw new Error('release.config.json: Feld «contact» fehlt oder ist keine E-Mail-Adresse.');
-  return template.replace(/\{\{(\w+)\}\}/g, (_, k) => {
+  // {{FAVICON}} ist HTML und wird darum nicht maskiert.
+  return template.replace('{{FAVICON}}', () => faviconLinks(ROOT)).replace(/\{\{(\w+)\}\}/g, (_, k) => {
     if (!(k in values)) throw new Error(`Vorlage: unbekannter Platzhalter {{${k}}}`);
     return esc(values[k]);
   });

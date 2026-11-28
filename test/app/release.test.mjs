@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { releaseInfo, compareVersions, parseManifest, ageDays, shouldAutoCheck, lastCheck, hintState, snooze, autoCheckEnabled, FRESH_DAYS } from '../../src/app/lib/release.js';
 import { changelogSection, changelogDate } from '../../scripts/lib/changelog.mjs';
 import { buildManifest } from '../../scripts/build-site.mjs';
+import { faviconLinks } from '../../scripts/lib/favicon.mjs';
 
 const REL = { repoUrl: 'https://github.com/example-org/sr-navigator', asset: 'sr-navigator.html', siteUrl: 'https://example-org.github.io/sr-navigator/', manifest: 'version.json', checkEveryHours: 24, snoozeDays: 7, remindAfterDays: 60 };
 const META = { built: '2026-06-01T12:00:00.000Z', version: '1.3.0', release: REL };
@@ -202,7 +203,7 @@ function siteSandbox({ app = true } = {}) {
   const root = fileURLToPath(new URL('../../', import.meta.url));
   // realpath: Unter macOS ist tmpdir() ein symbolischer Link; sonst erkennt das Skript den direkten Aufruf nicht.
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'sr-site-')));
-  for (const f of ['scripts/build-site.mjs', 'scripts/lib/changelog.mjs', 'site/index.template.html', 'docs/sr-navigator-dokumentation.html', 'package.json', 'CHANGELOG.md', 'release.config.json']) {
+  for (const f of ['scripts/build-site.mjs', 'scripts/lib/changelog.mjs', 'scripts/lib/favicon.mjs', 'src/app/assets/favicon.svg', 'src/app/assets/favicon-32.png', 'site/index.template.html', 'docs/sr-navigator-dokumentation.html', 'package.json', 'CHANGELOG.md', 'release.config.json']) {
     mkdirSync(join(dir, f, '..'), { recursive: true });
     cpSync(join(root, f), join(dir, f));
   }
@@ -229,6 +230,8 @@ test('build-site: app/index.html ist bytegleich zu dist/<asset>; ohne Datei ents
   assert.equal((page.match(/<a class="btn btn-2" href="https:\/\/github\.com\/[^"]+\/releases\/latest\/download\/[^"]+">/g) || []).length, 3);
   // In allen drei Sprachen: Link zur Produktdokumentation und Funktionsadresse für Rückmeldungen ohne GitHub-Konto.
   assert.equal((page.match(/<a href="dokumentation\.html">/g) || []).length, 3);
+  // Favicon «SR» im Browser-Tab, eingebettet als Data-URL (die CSP erlaubt Bilder nur aus data:).
+  assert.ok(page.includes(faviconLinks(s.dir)), 'Favicon fehlt auf der Projektseite');
   assert.equal((page.match(/<a href="mailto:sektion-grenze@sem\.admin\.ch">sektion-grenze@sem\.admin\.ch<\/a>/g) || []).length, 3);
   const b = siteSandbox({ app: false });
   const r = b.run();
@@ -257,4 +260,19 @@ test('build-site: ohne Produktdokumentation bricht das Skript mit Meldung ab und
   assert.notEqual(r.status, 0);
   assert.match(r.stderr, /docs\/sr-navigator-dokumentation\.html fehlt/);
   assert.equal(existsSync(s.out), false, 'keine halbe Seite');
+});
+
+test('Favicon «SR»: Navigator, Projektseite und Produktdokumentation tragen dieselben <link rel="icon">', () => {
+  const root = fileURLToPath(new URL('../../', import.meta.url));
+  const links = faviconLinks(root);
+  assert.equal((links.match(/<link rel="icon" [^>]*href="data:image\/(png|svg\+xml);base64,[A-Za-z0-9+/=]+">/g) || []).length, 2);
+  // Die Dokumentation wird unverändert kopiert; nach einer Änderung an den Favicon-Dateien die zwei Zeilen dort ersetzen.
+  const doc = readFileSync(join(root, 'docs/sr-navigator-dokumentation.html'), 'utf8');
+  assert.ok(doc.includes(links), 'Favicon in docs/sr-navigator-dokumentation.html fehlt oder ist veraltet');
+  // Dazu dasselbe Symbol sichtbar in Kopf- und Fusszeile der Dokumentation (Inhalt von favicon.svg ohne <svg>-Hülle).
+  const svg = readFileSync(join(root, 'src/app/assets/favicon.svg'), 'utf8').trim();
+  const mark = `<svg class="brand-mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false">${svg.slice(svg.indexOf('>') + 1, svg.lastIndexOf('</svg>'))}</svg>`;
+  assert.equal(doc.split(mark).length - 1, 2, 'Symbol in Kopf- und Fusszeile der Dokumentation fehlt oder ist veraltet');
+  // Navigator: build.mjs setzt die Links im Seitenkopf direkt nach <title> (ein Build im Test wäre zu langsam).
+  assert.match(readFileSync(join(root, 'build.mjs'), 'utf8'), /const htmlOut = `[^`]*<head>[^`]*<title>SR-Navigator<\/title>\n\$\{faviconLinks\(ROOT\)\}\n[^`]*<\/head>/, 'build.mjs bettet das Favicon nicht im <head> ein');
 });

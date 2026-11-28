@@ -9,6 +9,7 @@ import { gzipSync } from 'node:zlib';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fontFaceCss } from './build-fonts.mjs';
+import { faviconLinks } from './scripts/lib/favicon.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -105,6 +106,7 @@ const htmlOut = `<!DOCTYPE html>
 <meta http-equiv="Content-Security-Policy" content="${csp}">
 <meta name="description" content="SR-Navigator: Änderungen an Erlassen der Systematischen Rechtssammlung nachvollziehen, vergleichen und exportieren.">
 <title>SR-Navigator</title>
+${faviconLinks(ROOT)}
 <style>${fontCss}</style>
 <style>${css}</style>
 </head>
