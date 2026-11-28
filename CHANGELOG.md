@@ -1,5 +1,9 @@
 # Änderungen
 
+## 1.5.1 (28. November 2026)
+
+- Der Browser-Tab zeigt das Symbol «SR» (weiss auf Rot) für den Navigator, die Projektseite und die Produktdokumentation.
+
 ## 1.5.0 (24. November 2026)
 
 - Der SR-Navigator ist bis Januar 2027 in Erprobung. Die Kopfzeile zeigt neben dem Namen das Etikett «BETA» («BÊTA» in Französisch). Der Hinweis beim Etikett lädt zu Rückmeldungen ein.
